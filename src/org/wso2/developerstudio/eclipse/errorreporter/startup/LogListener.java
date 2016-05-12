@@ -18,7 +18,7 @@ package org.wso2.developerstudio.eclipse.errorreporter.startup;
 
 import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IStatus;
-//import org.wso2.developerstudio.eclipse.errorreporter.other.ErrorReporter;
+import org.wso2.developerstudio.eclipse.errorreporter.other.ErrorReporter;
 
 public class LogListener implements ILogListener {
 
@@ -33,8 +33,9 @@ public class LogListener implements ILogListener {
 		// here the dev studio plugin name shoud be included
 		if (status.getSeverity() == IStatus.ERROR && plugin.equals("org.eclipse.core.runtime")) {
 			System.out.println("testing-" + loggedStatus.getMessage());
-			//ErrorReporter errReporter = new ErrorReporter(status, plugin);
-			// errReporter.openErrorDialog();
+			ErrorReporter errReporter = new ErrorReporter(status, plugin);
+			//errReporter.openErrorDialog();
+			errReporter.collectErrorInfo();
 		}
 
 	}

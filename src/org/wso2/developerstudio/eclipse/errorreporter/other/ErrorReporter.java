@@ -38,7 +38,7 @@ public class ErrorReporter {
 	}
 
 	public void collectErrorInfo() {
-		//ErrorInfoCollector errInfoCollector = new ErrorInfoCollector(status, plugin);
+		ErrorInfoCollector errInfoCollector = new ErrorInfoCollector(status, plugin);
 
 	}
 

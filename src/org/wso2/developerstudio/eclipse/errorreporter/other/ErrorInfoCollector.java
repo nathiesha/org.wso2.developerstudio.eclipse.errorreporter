@@ -16,21 +16,30 @@
 
 package org.wso2.developerstudio.eclipse.errorreporter.other;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 import org.eclipse.core.runtime.IStatus;
 
 public class ErrorInfoCollector {
 
 	private String pluginId;
-	private String pluginVersion;
-	private String code;
+	private String pluginVersion;//
+	private int code;
 	private int severity;
 	private String message;
-	private String fingerprint;
+	private String fingerprint;//
+	private Exception e;
 	private String exception;
 	private String anoId;
+
+	//user information
 	private String name;
 	private String email;
 	private String comment;
+	private String severity2;
+
+	//system information
 	private String eclipseBuildId;
 	private String eclipseProduct;
 	private String JavaRuntimeVersion;
@@ -38,13 +47,22 @@ public class ErrorInfoCollector {
 	private String osgiOs;
 	private String osgiOsVersion;
 	private String osgiArch;
-	private String severity2;
+
 	private Bundles bundleArray[] = new Bundles[10];
 
 	public ErrorInfoCollector(IStatus status, String plugin) {
-		this.pluginId = plugin;
-		this.severity = status.getSeverity();
-		this.message = status.getMessage();
+		pluginId = plugin;
+		severity = status.getSeverity();
+		message = status.getMessage();
+		code=status.getCode();
+		
+		e=(Exception) status.getException();
+		StringWriter sw = new StringWriter();
+		PrintWriter pw = new PrintWriter(sw);
+		e.printStackTrace(pw);
+		exception=sw.toString();
+
+		collectSystemInfo();
 	}
 
 	public String getPluginId() {
@@ -63,11 +81,11 @@ public class ErrorInfoCollector {
 		this.pluginVersion = pluginVersion;
 	}
 
-	public String getCode() {
+	public int getCode() {
 		return code;
 	}
 
-	public void setCode(String code) {
+	public void setCode(int code) {
 		this.code = code;
 	}
 
@@ -199,18 +217,40 @@ public class ErrorInfoCollector {
 		this.bundleArray = bundleArray;
 	}
 
-	public String getException() {
-		return exception;
+	public Exception getException() {
+		return e;
 	}
 
-	public void setException(String exception) {
-		this.exception = exception;
+	public void setException(Exception exception) {
+		this.e = exception;
 	}
 
-	public void collectSystemInfo(String plugin) {
-		// String sVersion
+	public void collectSystemInfo() {
+
+		eclipseBuildId = System.getProperty("eclipse.buildId");
+		eclipseProduct = System.getProperty("eclipse.product");
+		JavaRuntimeVersion = System.getProperty("java.runtime.version");
+		osgiWs = System.getProperty("osgi.ws");
+		osgiOs = System.getProperty("os.name");
+		osgiOsVersion = System.getProperty("os.version");
+		osgiArch = System.getProperty("osgi.arch");
+		
+		System.out.println(eclipseBuildId);
+		System.out.println(eclipseProduct);
+		System.out.println(JavaRuntimeVersion);
+		System.out.println(osgiWs);
+		System.out.println(osgiOs);
+		System.out.println(osgiOsVersion);
+		System.out.println(osgiArch);
+		System.out.println(code);
+		System.out.println(message);
+		System.out.println(exception);
+		System.out.println(pluginId);
+		System.out.println(severity);
+		
+
+
 		// =plugin.Activator.getDefault().getBundle().getVersion().toString();
-
 	}
 
 }
