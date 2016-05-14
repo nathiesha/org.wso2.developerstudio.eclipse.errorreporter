@@ -19,6 +19,7 @@ package org.wso2.developerstudio.eclipse.errorreporter.startup;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.ui.IStartup;
 
+
 public class Startup implements IStartup {
 
 	@Override
@@ -30,10 +31,10 @@ public class Startup implements IStartup {
 		Platform.addLogListener(listener);
 
 		// listening to the dev studio plug-in error log
-
 		// devStudioPluginName.getDefault().getLog().addLogListener(listener);
 
 		System.out.println("This is to test early start up method");
+	
 	}
 
 }

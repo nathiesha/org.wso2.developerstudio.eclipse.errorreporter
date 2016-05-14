@@ -64,5 +64,13 @@
             class="org.wso2.developerstudio.eclipse.errorreporter.startup.Startup">
       </startup>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="org.wso2.developerstudio.eclipse.errorreporter.ui.prefs.PreferencePage"
+            id="org.wso2.developerstudio.eclipse.errorreporter.page1"
+            name="Developer Studio Error Reporting">
+      </page>
+   </extension>
 
 </plugin>

@@ -27,6 +27,7 @@ import org.eclipse.core.commands.ExecutionException;
 //import org.eclipse.ui.IWorkbenchWindow;
 //import org.eclipse.ui.handlers.HandlerUtil;
 import org.wso2.developerstudio.eclipse.errorreporter.ui.dialog.ErrorNotifyDialog;
+import org.wso2.developerstudio.eclipse.errorreporter.ui.prefs.Preferences;
 import org.eclipse.swt.widgets.Shell;
 
 /**
@@ -54,6 +55,10 @@ public class SampleHandler extends AbstractHandler {
 		// "ErrorReporterTool",
 		// "Hello, Eclipse world");
 
+		Preferences pr=new Preferences("org.wso2.developerstudio.eclipse.errorreporter");
+		pr.setPreferenceValue("hello", "world");
+		System.out.println(pr.getPreferenceKey("hello"));
+		
 		Shell shell = new Shell();
 		ErrorNotifyDialog dialog = new ErrorNotifyDialog(shell);
 		dialog.open();

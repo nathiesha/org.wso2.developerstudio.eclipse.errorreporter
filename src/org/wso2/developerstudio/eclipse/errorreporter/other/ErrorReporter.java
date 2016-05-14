@@ -39,6 +39,10 @@ public class ErrorReporter {
 
 	public void collectErrorInfo() {
 		ErrorInfoCollector errInfoCollector = new ErrorInfoCollector(status, plugin);
+		errInfoCollector.collectSystemInfo();
+		errInfoCollector.getMultiStatus(status);
+		
+
 
 	}
 

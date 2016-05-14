@@ -33,13 +33,13 @@ public class ErrorInfoCollector {
 	private String exception;
 	private String anoId;
 
-	//user information
+	// user information
 	private String name;
 	private String email;
 	private String comment;
 	private String severity2;
 
-	//system information
+	// system information
 	private String eclipseBuildId;
 	private String eclipseProduct;
 	private String JavaRuntimeVersion;
@@ -54,15 +54,55 @@ public class ErrorInfoCollector {
 		pluginId = plugin;
 		severity = status.getSeverity();
 		message = status.getMessage();
-		code=status.getCode();
-		
-		e=(Exception) status.getException();
+		code = status.getCode();
+
+		e = (Exception) status.getException();
 		StringWriter sw = new StringWriter();
 		PrintWriter pw = new PrintWriter(sw);
 		e.printStackTrace(pw);
-		exception=sw.toString();
+		exception = sw.toString();
 
-		collectSystemInfo();
+
+	}
+
+	public void collectSystemInfo() {
+
+		eclipseBuildId = System.getProperty("eclipse.buildId");
+		eclipseProduct = System.getProperty("eclipse.product");
+		JavaRuntimeVersion = System.getProperty("java.runtime.version");
+		osgiWs = System.getProperty("osgi.ws");
+		osgiOs = System.getProperty("os.name");
+		osgiOsVersion = System.getProperty("os.version");
+		osgiArch = System.getProperty("osgi.arch");
+
+		System.out.println(eclipseBuildId);
+		System.out.println(eclipseProduct);
+		System.out.println(JavaRuntimeVersion);
+		System.out.println(osgiWs);
+		System.out.println(osgiOs);
+		System.out.println(osgiOsVersion);
+		System.out.println(osgiArch);
+		System.out.println(code);
+		System.out.println(message);
+		System.out.println(exception);
+		System.out.println(pluginId);
+		System.out.println(severity);
+
+		// =plugin.Activator.getDefault().getBundle().getVersion().toString();
+	}
+	
+	public IStatus[] getMultiStatus(IStatus status)
+	{
+
+		if(status.isMultiStatus())
+		{
+			IStatus multiStatusArray[]=status.getChildren();
+			return multiStatusArray;
+			
+		}
+		
+		else
+			return null;
 	}
 
 	public String getPluginId() {
@@ -223,34 +263,6 @@ public class ErrorInfoCollector {
 
 	public void setException(Exception exception) {
 		this.e = exception;
-	}
-
-	public void collectSystemInfo() {
-
-		eclipseBuildId = System.getProperty("eclipse.buildId");
-		eclipseProduct = System.getProperty("eclipse.product");
-		JavaRuntimeVersion = System.getProperty("java.runtime.version");
-		osgiWs = System.getProperty("osgi.ws");
-		osgiOs = System.getProperty("os.name");
-		osgiOsVersion = System.getProperty("os.version");
-		osgiArch = System.getProperty("osgi.arch");
-		
-		System.out.println(eclipseBuildId);
-		System.out.println(eclipseProduct);
-		System.out.println(JavaRuntimeVersion);
-		System.out.println(osgiWs);
-		System.out.println(osgiOs);
-		System.out.println(osgiOsVersion);
-		System.out.println(osgiArch);
-		System.out.println(code);
-		System.out.println(message);
-		System.out.println(exception);
-		System.out.println(pluginId);
-		System.out.println(severity);
-		
-
-
-		// =plugin.Activator.getDefault().getBundle().getVersion().toString();
 	}
 
 }
