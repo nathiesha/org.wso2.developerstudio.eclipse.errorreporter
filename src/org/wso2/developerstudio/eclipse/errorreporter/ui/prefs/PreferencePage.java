@@ -46,14 +46,14 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 //	        getFieldEditorParent()));
 		  
 		  
-		addField(new StringFieldEditor("Name", "Name:",
+		addField(new StringFieldEditor("NAME", "Name:",
 			        getFieldEditorParent()));
-		addField(new StringFieldEditor("Email", "Email:",
+		addField(new StringFieldEditor("EMAIL", "Email:",
 			        getFieldEditorParent()));
 		  
-		addField(new BooleanFieldEditor("BOOLEAN_VALUE",
+		addField(new BooleanFieldEditor("ANOPACK",
 			        "&Anonymize package, class and method names", getFieldEditorParent()));
-	    addField(new BooleanFieldEditor("BOOLEAN_VALUE",
+	    addField(new BooleanFieldEditor("ANOLOG",
 	        "&Anonymize error log messages", getFieldEditorParent()));
 	    
 //	    addField(new RadioGroupFieldEditor("CHOICE",

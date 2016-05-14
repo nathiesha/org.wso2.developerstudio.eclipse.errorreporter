@@ -37,12 +37,13 @@ public class ErrorReporter {
 
 	}
 
-	public void collectErrorInfo() {
-		ErrorInfoCollector errInfoCollector = new ErrorInfoCollector(status, plugin);
-		errInfoCollector.collectSystemInfo();
+	public InfoCollector collectErrorInfo() {
+		InfoCollector errInfoCollector = new InfoCollector(status, plugin);
+		errInfoCollector.getErrorInfo();
+		errInfoCollector.getSystemInfo();
+		errInfoCollector.getUserInfo();
 		errInfoCollector.getMultiStatus(status);
-		
-
+		return errInfoCollector;		
 
 	}
 

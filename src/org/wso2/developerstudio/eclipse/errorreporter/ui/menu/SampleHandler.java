@@ -24,11 +24,14 @@ package org.wso2.developerstudio.eclipse.errorreporter.ui.menu;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.wso2.developerstudio.eclipse.errorreporter.Activator;
 //import org.eclipse.ui.IWorkbenchWindow;
 //import org.eclipse.ui.handlers.HandlerUtil;
 import org.wso2.developerstudio.eclipse.errorreporter.ui.dialog.ErrorNotifyDialog;
 import org.wso2.developerstudio.eclipse.errorreporter.ui.prefs.Preferences;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
  * Our sample handler extends AbstractHandler, an IHandler base class.
@@ -59,9 +62,15 @@ public class SampleHandler extends AbstractHandler {
 		pr.setPreferenceValue("hello", "world");
 		System.out.println(pr.getPreferenceKey("hello"));
 		
-		Shell shell = new Shell();
-		ErrorNotifyDialog dialog = new ErrorNotifyDialog(shell);
-		dialog.open();
+
+				    // RadioGroupFieldEditor can get access
+				 //   String choice = Activator.getDefault().getPreferenceStore().getString("CHOICE");
+				 //   System.out.println(choice);
+
+		
+//		Shell shell = new Shell();
+//		ErrorNotifyDialog dialog = new ErrorNotifyDialog(shell);
+//		dialog.open();
 
 		return null;
 	}

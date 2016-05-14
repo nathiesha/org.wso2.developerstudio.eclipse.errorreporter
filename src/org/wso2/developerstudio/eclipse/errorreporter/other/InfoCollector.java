@@ -20,9 +20,14 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import org.eclipse.core.runtime.IStatus;
+import org.wso2.developerstudio.eclipse.errorreporter.Activator;
 
-public class ErrorInfoCollector {
-
+public class InfoCollector {
+	
+	IStatus status;
+	String plugin;
+	
+	//error information
 	private String pluginId;
 	private String pluginVersion;//
 	private int code;
@@ -50,7 +55,13 @@ public class ErrorInfoCollector {
 
 	private Bundles bundleArray[] = new Bundles[10];
 
-	public ErrorInfoCollector(IStatus status, String plugin) {
+	public InfoCollector(IStatus status, String plugin) {
+		
+		this.plugin=plugin;
+		this.status=status;
+	}
+	
+	public void getErrorInfo() {
 		pluginId = plugin;
 		severity = status.getSeverity();
 		message = status.getMessage();
@@ -61,11 +72,9 @@ public class ErrorInfoCollector {
 		PrintWriter pw = new PrintWriter(sw);
 		e.printStackTrace(pw);
 		exception = sw.toString();
-
-
 	}
 
-	public void collectSystemInfo() {
+	public void getSystemInfo() {
 
 		eclipseBuildId = System.getProperty("eclipse.buildId");
 		eclipseProduct = System.getProperty("eclipse.product");
@@ -90,6 +99,18 @@ public class ErrorInfoCollector {
 
 		// =plugin.Activator.getDefault().getBundle().getVersion().toString();
 	}
+	
+	public void getUserInfo()
+	{
+		
+		name = Activator.getDefault().getPreferenceStore()
+		        .getString("NAME");
+	    
+		email = Activator.getDefault().getPreferenceStore()
+		        .getString("EMAIL");
+
+	}
+	
 	
 	public IStatus[] getMultiStatus(IStatus status)
 	{
