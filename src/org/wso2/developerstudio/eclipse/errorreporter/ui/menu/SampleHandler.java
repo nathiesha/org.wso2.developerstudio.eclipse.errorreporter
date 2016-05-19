@@ -16,6 +16,10 @@
 
 package org.wso2.developerstudio.eclipse.errorreporter.ui.menu;
 
+//import java.io.IOException;
+//
+//import org.apache.http.client.ClientProtocolException;
+
 //this is a sample class
 
 //only used for testing
@@ -24,14 +28,15 @@ package org.wso2.developerstudio.eclipse.errorreporter.ui.menu;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.wso2.developerstudio.eclipse.errorreporter.Activator;
-//import org.eclipse.ui.IWorkbenchWindow;
-//import org.eclipse.ui.handlers.HandlerUtil;
-import org.wso2.developerstudio.eclipse.errorreporter.ui.dialog.ErrorNotifyDialog;
+//import org.wso2.developerstudio.eclipse.errorreporter.other.RemoteJiraConnector;
+//import org.eclipse.jface.dialogs.MessageDialog;
+//import org.wso2.developerstudio.eclipse.errorreporter.Activator;
+////import org.eclipse.ui.IWorkbenchWindow;
+////import org.eclipse.ui.handlers.HandlerUtil;
+//import org.wso2.developerstudio.eclipse.errorreporter.ui.dialog.ErrorNotifyDialog;
 import org.wso2.developerstudio.eclipse.errorreporter.ui.prefs.Preferences;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.handlers.HandlerUtil;
+//import org.eclipse.swt.widgets.Shell;
+//import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
  * Our sample handler extends AbstractHandler, an IHandler base class.
@@ -61,6 +66,17 @@ public class SampleHandler extends AbstractHandler {
 		Preferences pr=new Preferences("org.wso2.developerstudio.eclipse.errorreporter");
 		pr.setPreferenceValue("hello", "world");
 		System.out.println(pr.getPreferenceKey("hello"));
+		
+//		RemoteJiraConnector jira=new RemoteJiraConnector();
+//		try {
+//			jira.get();
+//		} catch (ClientProtocolException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		
 
 				    // RadioGroupFieldEditor can get access
