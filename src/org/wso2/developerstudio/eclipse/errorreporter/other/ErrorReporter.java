@@ -16,35 +16,102 @@
 
 package org.wso2.developerstudio.eclipse.errorreporter.other;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.widgets.Shell;
+import org.wso2.developerstudio.eclipse.errorreporter.Activator;
 import org.wso2.developerstudio.eclipse.errorreporter.ui.dialog.ErrorNotifyDialog;
 
 public class ErrorReporter {
-	IStatus status;
-	String plugin;
+	
+	private IStatus status;
+	private String plugin;
+	private int input;
 
 	public ErrorReporter(IStatus status, String plugin) {
 		this.status = status;
 		this.plugin = plugin;
 
 	}
+	
+	public void reportError() {
+		InfoCollector errInfoCollector = new InfoCollector(status, plugin);
+		collectErrorInfo(errInfoCollector);
+		input= openErrorDialog();
+		
+		switch(input)
+		{
+			case 0:
+				reportSender();
+				
+			case 1:
+				
+				
+			case 2:
+				
+		}
+		
+	}
+	
+	public void reportSender(){
+		
+		if(Activator.getDefault().getPreferenceStore()
+				.getBoolean("Jira"))
+		{
+			
+		    Job reporterJob = new Job("Report the Developer Studio Error") {
+				@Override
+				protected IStatus run(IProgressMonitor monitor) {
+					// TODO send report to jira only
+					return Status.OK_STATUS;
+				}
+		     };
+		     
+		     reporterJob.setUser(true);
+		     reporterJob.schedule();
+			
+		}
+		
+		else
+		{
+			//TODO email jira
+		}
+		
+		
+	}
 
-	public void openErrorDialog() {
+
+	public int openErrorDialog() {
 		Shell shell = new Shell();
 		ErrorNotifyDialog dialog = new ErrorNotifyDialog(shell);
-		dialog.open();
+		return dialog.open();
 
 	}
 
-	public InfoCollector collectErrorInfo() {
-		InfoCollector errInfoCollector = new InfoCollector(status, plugin);
+	public void collectErrorInfo( InfoCollector errInfoCollector) {
 		errInfoCollector.getErrorInfo();
 		errInfoCollector.getSystemInfo();
 		errInfoCollector.getUserInfo();
-		errInfoCollector.getMultiStatus(status);
-		return errInfoCollector;		
+		errInfoCollector.getMultiStatus(status);	
 
+	}
+
+	public String getPlugin() {
+		return plugin;
+	}
+
+	public void setPlugin(String plugin) {
+		this.plugin = plugin;
+	}
+
+	public IStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(IStatus status) {
+		this.status = status;
 	}
 
 }

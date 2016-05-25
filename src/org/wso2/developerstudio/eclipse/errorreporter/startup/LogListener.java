@@ -22,7 +22,7 @@ import org.wso2.developerstudio.eclipse.errorreporter.other.ErrorReporter;
 
 public class LogListener implements ILogListener {
 
-	IStatus loggedStatus;
+	private IStatus loggedStatus;
 
 	@Override
 	public void logging(IStatus status, String plugin) {
@@ -31,13 +31,24 @@ public class LogListener implements ILogListener {
 
 		// method to check whether the error belongs to dev studio
 		// here the dev studio plugin name shoud be included
-		if (status.getSeverity() == IStatus.ERROR && plugin.equals("org.eclipse.core.runtime")) {
-			System.out.println("testing-" + loggedStatus.getMessage());
+		if (loggedStatus.getSeverity() == IStatus.ERROR && plugin.equals("org.eclipse.core.runtime")) {
+
+			// create error reporter
 			ErrorReporter errReporter = new ErrorReporter(status, plugin);
-			//errReporter.openErrorDialog();
-			errReporter.collectErrorInfo();
+			errReporter.reportError();
+
+			// temp to test the logging method
+			System.out.println("testing-" + loggedStatus.getMessage());
 		}
 
+	}
+
+	public IStatus getLoggedStatus() {
+		return loggedStatus;
+	}
+
+	public void setLoggedStatus(IStatus loggedStatus) {
+		this.loggedStatus = loggedStatus;
 	}
 
 }

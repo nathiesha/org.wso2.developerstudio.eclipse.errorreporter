@@ -19,22 +19,22 @@ package org.wso2.developerstudio.eclipse.errorreporter.startup;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.ui.IStartup;
 
-
 public class Startup implements IStartup {
 
 	@Override
 	public void earlyStartup() {
 
-		// listening to the eclipse error log
-
+		// attach a listener to the eclipse error log
 		LogListener listener = new LogListener();
 		Platform.addLogListener(listener);
 
-		// listening to the dev studio plug-in error log
+		// attach a listener to the dev studio plug-in error log
+		// TODO devStudio plugin names should be included here
 		// devStudioPluginName.getDefault().getLog().addLogListener(listener);
 
+		// temporary print statement to test the method
 		System.out.println("This is to test early start up method");
-	
+
 	}
 
 }
