@@ -50,5 +50,9 @@ public class Preferences {
 		return sub1.get(key, "");
 	}
 
-	
+	//To get preferences
+
+//	Preferences pr=new Preferences("org.wso2.developerstudio.eclipse.errorreporter");
+//	pr.setPreferenceValue("hello", "world");
+//	System.out.println(pr.getPreferenceKey("hello"));
 }

@@ -44,19 +44,24 @@ public class ErrorReporter {
 		switch(input)
 		{
 			case 0:
-				reportSender();
+				sendReport();
+				break;
 				
 			case 1:
+				break;
 				
 				
 			case 2:
+				break;
 				
 		}
 		
 	}
 	
-	public void reportSender(){
+	public void sendReport(){
 		
+		 //   String choice = Activator.getDefault().getPreferenceStore().getString("CHOICE");
+		 //   System.out.println(choice);
 		if(Activator.getDefault().getPreferenceStore()
 				.getBoolean("Jira"))
 		{
@@ -75,10 +80,10 @@ public class ErrorReporter {
 		}
 		
 		else
+			
 		{
-			//TODO email jira
+			//TODO email and jira
 		}
-		
 		
 	}
 

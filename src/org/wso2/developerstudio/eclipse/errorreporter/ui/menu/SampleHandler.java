@@ -63,9 +63,6 @@ public class SampleHandler extends AbstractHandler {
 		// "ErrorReporterTool",
 		// "Hello, Eclipse world");
 
-		Preferences pr=new Preferences("org.wso2.developerstudio.eclipse.errorreporter");
-		pr.setPreferenceValue("hello", "world");
-		System.out.println(pr.getPreferenceKey("hello"));
 		
 //		RemoteJiraConnector jira=new RemoteJiraConnector();
 //		try {
@@ -79,9 +76,6 @@ public class SampleHandler extends AbstractHandler {
 //		}
 		
 
-				    // RadioGroupFieldEditor can get access
-				 //   String choice = Activator.getDefault().getPreferenceStore().getString("CHOICE");
-				 //   System.out.println(choice);
 
 		
 //		Shell shell = new Shell();

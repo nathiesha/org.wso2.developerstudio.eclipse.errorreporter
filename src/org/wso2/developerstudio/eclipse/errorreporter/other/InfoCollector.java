@@ -23,11 +23,11 @@ import org.eclipse.core.runtime.IStatus;
 import org.wso2.developerstudio.eclipse.errorreporter.Activator;
 
 public class InfoCollector {
-	
+
 	IStatus status;
 	String plugin;
-	
-	//error information
+
+	// error information
 	private String pluginId;
 	private String pluginVersion;//
 	private int code;
@@ -56,11 +56,11 @@ public class InfoCollector {
 	private Bundles bundleArray[] = new Bundles[10];
 
 	public InfoCollector(IStatus status, String plugin) {
-		
-		this.plugin=plugin;
-		this.status=status;
+
+		this.plugin = plugin;
+		this.status = status;
 	}
-	
+
 	public void getErrorInfo() {
 		pluginId = plugin;
 		severity = status.getSeverity();
@@ -99,31 +99,24 @@ public class InfoCollector {
 
 		// =plugin.Activator.getDefault().getBundle().getVersion().toString();
 	}
-	
-	public void getUserInfo()
-	{
-		
-		name = Activator.getDefault().getPreferenceStore()
-		        .getString("NAME");
-	    
-		email = Activator.getDefault().getPreferenceStore()
-		        .getString("EMAIL");
+
+	public void getUserInfo() {
+
+		name = Activator.getDefault().getPreferenceStore().getString("NAME");
+
+		email = Activator.getDefault().getPreferenceStore().getString("EMAIL");
 
 	}
-	
-	
-	public IStatus[] getMultiStatus(IStatus status)
-	{
 
-		if(status.isMultiStatus())
-		{
-			IStatus multiStatusArray[]=status.getChildren();
+	public IStatus[] getMultiStatus(IStatus status) {
+
+		if (status.isMultiStatus()) {
+			IStatus multiStatusArray[] = status.getChildren();
 			return multiStatusArray;
-			
-		}
-		
-		else
+
+		} else {
 			return null;
+		}
 	}
 
 	public String getPluginId() {
