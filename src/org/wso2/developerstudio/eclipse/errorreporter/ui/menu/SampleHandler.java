@@ -16,29 +16,25 @@
 
 package org.wso2.developerstudio.eclipse.errorreporter.ui.menu;
 
-import java.io.IOException;
 
-//import java.io.IOException;
-//
-//import org.apache.http.client.ClientProtocolException;
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
+import org.wso2.developerstudio.eclipse.errorreporter.other.RemoteJiraConnector;
+
 
 //this is a sample class
 
 //only used for testing
 //no relevance to dev studio error reporter plug-in
 
-import org.eclipse.core.commands.AbstractHandler;
-import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
-import org.wso2.developerstudio.eclipse.errorreporter.other.JiraConnector;
-import org.wso2.developerstudio.eclipse.errorreporter.other.RemoteJiraConnector;
+
 //import org.wso2.developerstudio.eclipse.errorreporter.other.RemoteJiraConnector;
 //import org.eclipse.jface.dialogs.MessageDialog;
 //import org.wso2.developerstudio.eclipse.errorreporter.Activator;
 ////import org.eclipse.ui.IWorkbenchWindow;
 ////import org.eclipse.ui.handlers.HandlerUtil;
 //import org.wso2.developerstudio.eclipse.errorreporter.ui.dialog.ErrorNotifyDialog;
-import org.wso2.developerstudio.eclipse.errorreporter.ui.prefs.Preferences;
 //import org.eclipse.swt.widgets.Shell;
 //import org.eclipse.ui.handlers.HandlerUtil;
 
@@ -95,8 +91,11 @@ public class SampleHandler extends AbstractHandler {
 //		}
 //		return null;
 		
-		JiraConnector j=new JiraConnector();
-		j.connect();
-		return null;
+		RemoteJiraConnector jv=new RemoteJiraConnector();
+		System.out.println("createdClient");
+		@SuppressWarnings("static-access")
+		String response=jv.excutePost("","");
+		System.out.println(response);
+		return event;
 	}
 }
