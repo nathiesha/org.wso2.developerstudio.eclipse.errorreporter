@@ -33,8 +33,8 @@ public class RemoteJiraConnector {
 	public void Post() throws ClientProtocolException, IOException {
 
 		client2 = new DefaultHttpClient();
-		HttpPost post = new HttpPost("https://<JIRA_HOST>/rest/api/2/issue/");
-		StringEntity input = new StringEntity("");
+		HttpPost post = new HttpPost("https://wso2.org/rest/api/2/issue/");
+		StringEntity input = new StringEntity("{\"fields\":{\"project\":{\"key\":\"JIRA\"},\"summary\":\"Test Ticket\",\"description\":\"This is a test CR\", \"reporter\": {\"name\": \"prasad\"},\"issuetype\":{\"name\":\"Defect\"},\"versions\":[{\"name\":\"1.0\"}],\"customfield_10692\":{\"value\":\"Stability\"},\"customfield_10430\":{\"value\":\"Stability\"},\"customfield_10005\":{\"value\":\"Blocker\"},\"components\":[{\"name\":\"TEST\"}]}}");
 		post.setEntity(input);
 		HttpResponse response = client2.execute(post);
 		BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));

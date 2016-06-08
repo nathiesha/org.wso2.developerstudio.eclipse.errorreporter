@@ -16,6 +16,8 @@
 
 package org.wso2.developerstudio.eclipse.errorreporter.ui.menu;
 
+import java.io.IOException;
+
 //import java.io.IOException;
 //
 //import org.apache.http.client.ClientProtocolException;
@@ -28,6 +30,8 @@ package org.wso2.developerstudio.eclipse.errorreporter.ui.menu;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.wso2.developerstudio.eclipse.errorreporter.other.JiraConnector;
+import org.wso2.developerstudio.eclipse.errorreporter.other.RemoteJiraConnector;
 //import org.wso2.developerstudio.eclipse.errorreporter.other.RemoteJiraConnector;
 //import org.eclipse.jface.dialogs.MessageDialog;
 //import org.wso2.developerstudio.eclipse.errorreporter.Activator;
@@ -82,6 +86,17 @@ public class SampleHandler extends AbstractHandler {
 //		ErrorNotifyDialog dialog = new ErrorNotifyDialog(shell);
 //		dialog.open();
 
+//		RemoteJiraConnector j=new RemoteJiraConnector();
+//		try {
+//			j.Post();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		return null;
+		
+		JiraConnector j=new JiraConnector();
+		j.connect();
 		return null;
 	}
 }
