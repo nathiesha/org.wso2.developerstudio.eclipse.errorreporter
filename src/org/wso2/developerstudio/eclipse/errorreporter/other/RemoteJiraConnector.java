@@ -25,6 +25,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import org.apache.commons.codec.binary.Base64;
+import org.json.simple.JSONObject;
 
 /**
  * @author Nathie
@@ -35,28 +36,28 @@ public class RemoteJiraConnector {
 	/**
 	 * 
 	 */
+	HttpURLConnection connection;
+	String urlParameters;
+	
 	public RemoteJiraConnector() {
-		// TODO Auto-generated constructor stub
+		
 	}
 	
-	public static String excutePost(String targetURL, String urlParameters) {
-		  HttpURLConnection connection = null;  
-		  urlParameters="{\"fields\": {\"project\":{ \"key\": \"TOOLS\"},\"summary\": \"GSOC ERROR REPORTER TEST.\",\"description\": \"Creating of an issue through Developer Studio using the REST API\",\"issuetype\": {\"name\": \"Bug\"}}}";	
-		  System.out.println("1");
+	public String excutePost(String targetURL, JSONObject issue) {
+		
+		  urlParameters=issue.toString();	
+		  
 		  try {
 			  
 		    //Create connection
-		    URL url = new URL("https://wso2.org/jira/rest/api/2/issue");
+		    URL url = new URL(targetURL);
 		    connection = (HttpURLConnection)url.openConnection();
-			System.out.println("2");
 			String userCredentials = "nathieshamaddage@gmail.com:Dinanatz<3";
 			String basicAuth = "Basic " + new String(new Base64().encode(userCredentials.getBytes()));
-			System.out.println("3");
 			connection.setRequestProperty ("Authorization", basicAuth);
 		    connection.setRequestMethod("POST");
 		    connection.setRequestProperty("Content-Type", 
 		        "application/json");
-		    System.out.println("4");
 		    connection.setRequestProperty("Content-Length", 
 		        Integer.toString(urlParameters.getBytes().length));
 		    connection.setRequestProperty("Content-Language", "en-US");  
@@ -65,7 +66,6 @@ public class RemoteJiraConnector {
 		    connection.setDoOutput(true);
 
 		    //Send request
-			System.out.println("5");
 
 		    DataOutputStream wr = new DataOutputStream (
 		        connection.getOutputStream());
@@ -73,7 +73,6 @@ public class RemoteJiraConnector {
 		    wr.close();
 
 		    //Get Response  
-			System.out.println("6");
 		    InputStream is ;
 
 			if (connection.getResponseCode() >= 400) {
@@ -101,5 +100,20 @@ public class RemoteJiraConnector {
 		    }
 		  }
 		}
+	
+	
+	 private String getAuth(String username, String password) {
+	        try {
+	            String s = username + ":" + password;
+	            byte[] byteArray = s.getBytes();
+	            String auth;
+	            auth = Base64.encodeBase64String(byteArray);
+
+	            return auth;
+	        } catch (Exception ignore) {
+	            return "";
+	        }
+	    }
+
 
 }

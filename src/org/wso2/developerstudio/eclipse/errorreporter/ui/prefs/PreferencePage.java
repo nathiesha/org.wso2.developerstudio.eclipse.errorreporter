@@ -60,6 +60,10 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 	        new String[][] { { "&Report the error in Jira", "Jira" },
 	            { "&Report the error in Jira and send an email", "Email" } }, getFieldEditorParent()));
 	    
+		addField(new StringFieldEditor("USERNAME", "Username:",
+		        getFieldEditorParent()));
+		addField(new StringFieldEditor("PASSWORD", "Password:",
+		        getFieldEditorParent()));
 
 	  }
 

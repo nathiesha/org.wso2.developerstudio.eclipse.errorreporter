@@ -21,6 +21,7 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.wso2.developerstudio.eclipse.errorreporter.other.RemoteJiraConnector;
+import org.wso2.developerstudio.eclipse.errorreporter.other.ReportGenerator;
 
 
 //this is a sample class
@@ -91,11 +92,15 @@ public class SampleHandler extends AbstractHandler {
 //		}
 //		return null;
 		
-		RemoteJiraConnector jv=new RemoteJiraConnector();
-		System.out.println("createdClient");
-		@SuppressWarnings("static-access")
-		String response=jv.excutePost("","");
-		System.out.println(response);
+//		RemoteJiraConnector jv=new RemoteJiraConnector();
+//		System.out.println("createdClient");
+//		@SuppressWarnings("static-access")
+//		String response=jv.excutePost("","");
+//		System.out.println(response);
+		
+//		ReportGenerator rg=new ReportGenerator();
+//		rg.createIssue(null, null, null, null);
+
 		return event;
 	}
 }

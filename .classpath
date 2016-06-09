@@ -17,5 +17,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/jira-rest-java-client-core-2.0.0-m19.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/atlassian-util-concurrent-0.0.12.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/atlassian-util-concurrent-2.4.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/json-simple.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
