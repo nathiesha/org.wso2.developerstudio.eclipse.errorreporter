@@ -18,5 +18,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/atlassian-util-concurrent-0.0.12.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/atlassian-util-concurrent-2.4.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/json-simple.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/java-mail-1.4.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/com.sun.net.ssl.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

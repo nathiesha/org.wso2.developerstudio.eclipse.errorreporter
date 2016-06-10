@@ -39,7 +39,7 @@ public class ErrorReporter {
 	public void reportError() {
 		InfoCollector errInfoCollector = new InfoCollector(status, plugin);
 		collectErrorInfo(errInfoCollector);
-		input= openErrorDialog();
+		//input= openErrorDialog();
 		
 		switch(input)
 		{

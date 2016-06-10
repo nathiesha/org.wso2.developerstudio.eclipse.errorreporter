@@ -23,7 +23,9 @@ Bundle-ClassPath: .,
  lib/jira-rest-java-client-core-2.0.0-m19.jar,
  lib/atlassian-util-concurrent-0.0.12.jar,
  lib/atlassian-util-concurrent-2.4.1.jar,
- lib/json-simple.jar
+ lib/json-simple.jar,
+ lib/java-mail-1.4.4.jar,
+ lib/com.sun.net.ssl.jar
 Export-Package: org.wso2.developerstudio.eclipse.errorreporter,
  org.wso2.developerstudio.eclipse.errorreporter.other,
  org.wso2.developerstudio.eclipse.errorreporter.startup,

@@ -52,7 +52,7 @@ public class RemoteJiraConnector {
 		    //Create connection
 		    URL url = new URL(targetURL);
 		    connection = (HttpURLConnection)url.openConnection();
-			String userCredentials = "nathieshamaddage@gmail.com:Dinanatz<3";
+			String userCredentials = "nathieshamaddage@gmail.com:userDev123";
 			String basicAuth = "Basic " + new String(new Base64().encode(userCredentials.getBytes()));
 			connection.setRequestProperty ("Authorization", basicAuth);
 		    connection.setRequestMethod("POST");
