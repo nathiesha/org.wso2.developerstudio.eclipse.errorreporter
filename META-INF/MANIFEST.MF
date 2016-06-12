@@ -32,3 +32,4 @@ Export-Package: org.wso2.developerstudio.eclipse.errorreporter,
  org.wso2.developerstudio.eclipse.errorreporter.ui.dialog,
  org.wso2.developerstudio.eclipse.errorreporter.ui.menu,
  org.wso2.developerstudio.eclipse.errorreporter.ui.prefs
+Import-Package: org.wso2.developerstudio.eclipse.errorreporter.other

@@ -26,6 +26,7 @@ public class InfoCollector {
 
 	IStatus status;
 	String plugin;
+	private String[][] errorInformation;
 
 	// error information
 	private String pluginId;
@@ -59,9 +60,53 @@ public class InfoCollector {
 
 		this.plugin = plugin;
 		this.status = status;
+		errorInformation=new String[6][2];
 	}
 
+	
+	public String[][] getInformation(){
+		
+		getErrorInfo();
+		getSystemInfo();
+		getUserInfo();
+		
+		errorInformation[0][0]="pluginId";
+		errorInformation[0][1]=pluginId;
+		
+		errorInformation[1][0]="pluginVersion";
+		errorInformation[1][0]=pluginVersion;
+		
+		errorInformation[2][0]="code";
+		errorInformation[2][0]=Integer.toString(code);
+		
+		errorInformation[3][0]="severity";
+		errorInformation[3][0]= Integer.toString(severity);
+		
+		errorInformation[4][0]="message";
+		errorInformation[4][0]= message;
+		
+		errorInformation[5][0]="Exception";
+		errorInformation[5][0]= exception;
+		
+//		errorInformation[6][0]="";
+//		errorInformation[6][0]="";
+//		
+//		errorInformation[7][0]="";
+//		errorInformation[7][0]="";
+//		
+//		errorInformation[8][0]="";
+//		errorInformation[8][0]="";
+//		
+//		errorInformation[9][0]="";
+//		errorInformation[9][0]="";
+		
+		return errorInformation;
+		
+	}
+
+	
 	public void getErrorInfo() {
+		
 		pluginId = plugin;
 		severity = status.getSeverity();
 		message = status.getMessage();
@@ -72,6 +117,8 @@ public class InfoCollector {
 		PrintWriter pw = new PrintWriter(sw);
 		e.printStackTrace(pw);
 		exception = sw.toString();
+		
+		
 	}
 
 	public void getSystemInfo() {
@@ -103,7 +150,6 @@ public class InfoCollector {
 	public void getUserInfo() {
 
 		name = Activator.getDefault().getPreferenceStore().getString("NAME");
-
 		email = Activator.getDefault().getPreferenceStore().getString("EMAIL");
 
 	}

@@ -17,12 +17,15 @@
 package org.wso2.developerstudio.eclipse.errorreporter.ui.menu;
 
 
+import java.io.IOException;
+
 import javax.mail.MessagingException;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.wso2.developerstudio.eclipse.errorreporter.other.EmailSender;
+import org.wso2.developerstudio.eclipse.errorreporter.other.InfoCollector;
 import org.wso2.developerstudio.eclipse.errorreporter.other.RemoteJiraConnector;
 import org.wso2.developerstudio.eclipse.errorreporter.other.ReportGenerator;
 
@@ -104,10 +107,26 @@ public class SampleHandler extends AbstractHandler {
 //		ReportGenerator rg=new ReportGenerator();
 //		rg.createIssue(null, null, null, null);
 		
-		EmailSender es=new EmailSender();
+//		EmailSender es=new EmailSender();
+//		try {
+//			es.Send("", "", "nathieshamaddage@gmail.com", "", "Error Reporting", " This is a sample email. Trying to send an error report to test the dev studio error reporting plugin");
+//		} catch (MessagingException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		String[][] ui=new String[2][2];
+		ui[0][0]="name";
+		ui[0][1]="nathiesha";
+		ui[1][0]="age";
+		ui[1][1]="23";
+		
+//		InfoCollector ic=new InfoCollector(status, plugin)
+//		ReportGenerator rg=new ReportGenerator(ic.getInformation());
+//		
+		ReportGenerator rg=new ReportGenerator(ui);
 		try {
-			es.Send("nathieshamaddage", "dinanatz", "nathieshamaddage@gmail.com", "", "Error Reporting", "Hello how are you. This is a sample email I am trying to send to test the dev studio error plugin");
-		} catch (MessagingException e) {
+			rg.createReport();
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
