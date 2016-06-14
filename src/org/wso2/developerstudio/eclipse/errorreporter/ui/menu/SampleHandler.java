@@ -120,6 +120,7 @@ public class SampleHandler extends AbstractHandler {
 		ui[1][0]="age";
 		ui[1][1]="23";
 		
+
 //		InfoCollector ic=new InfoCollector(status, plugin)
 //		ReportGenerator rg=new ReportGenerator(ic.getInformation());
 //		

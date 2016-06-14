@@ -32,9 +32,9 @@ public class ReportGenerator {
 	
 //	String[][] systemInformation;
 //	String[][] userInformation;
-	String[][] errorInformation;
+	ErrorInformation errorInformation;
 	
-	public ReportGenerator(String[][] errorInformation	) {		
+	public ReportGenerator(ErrorInformation errorInformation	) {		
 		super();
 		this.errorInformation=errorInformation;
 	}
@@ -89,17 +89,17 @@ public class ReportGenerator {
 
 //		    Iterator<String[][]> itS = arrayFile.iterator();
 		    
-		    int length=errorInformation.length;
-
-		    for(int i=0;i<length;i++)
-		    {
-		        //String[][] sf = itS.next();
-		        fw.write("| "+String.format("%-6s", errorInformation[i][0])+" | "+String.format("%-30s", errorInformation[i][1])+" |\n");
-//		        fw.write((itS.hasNext())
-//		                ?"|--------|-------------------------------|-------------|\n"
-//		                :"+--------+-------------------------------+-------------+\n");
-
-		    }
+//		    int length=errorInformation.length;
+//
+//		    for(int i=0;i<length;i++)
+//		    {
+//		        //String[][] sf = itS.next();
+//		        fw.write("| "+String.format("%-6s", errorInformation[i][0])+" | "+String.format("%-30s", errorInformation[i][1])+" |\n");
+////		        fw.write((itS.hasNext())
+////		                ?"|--------|-------------------------------|-------------|\n"
+////		                :"+--------+-------------------------------+-------------+\n");
+//
+//		    }
 		    
 		    fw.close();
 	}

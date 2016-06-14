@@ -32,9 +32,6 @@ public class Startup implements IStartup {
 		// TODO devStudio plugin names should be included here
 		// devStudioPluginName.getDefault().getLog().addLogListener(listener);
 
-		// temporary print statement to test the method
-		System.out.println("This is to test early start up method");
-
 	}
 
 }

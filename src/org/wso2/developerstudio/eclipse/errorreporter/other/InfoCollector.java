@@ -26,134 +26,66 @@ public class InfoCollector {
 
 	IStatus status;
 	String plugin;
-	private String[][] errorInformation;
-
-	// error information
-	private String pluginId;
-	private String pluginVersion;//
-	private int code;
-	private int severity;
-	private String message;
-	private String fingerprint;//
-	private Exception e;
-	private String exception;
-	private String anoId;
-
-	// user information
-	private String name;
-	private String email;
-	private String comment;
-	private String severity2;
-
-	// system information
-	private String eclipseBuildId;
-	private String eclipseProduct;
-	private String JavaRuntimeVersion;
-	private String osgiWs;
-	private String osgiOs;
-	private String osgiOsVersion;
-	private String osgiArch;
-
-	private Bundles bundleArray[] = new Bundles[10];
+	private ErrorInformation errorInformation;
 
 	public InfoCollector(IStatus status, String plugin) {
 
 		this.plugin = plugin;
 		this.status = status;
-		errorInformation=new String[6][2];
+		// errorInformation=new ErrorInformation();
 	}
 
-	
-	public String[][] getInformation(){
-		
+	public ErrorInformation getInformation() {
+
 		getErrorInfo();
 		getSystemInfo();
 		getUserInfo();
-		
-		errorInformation[0][0]="pluginId";
-		errorInformation[0][1]=pluginId;
-		
-		errorInformation[1][0]="pluginVersion";
-		errorInformation[1][0]=pluginVersion;
-		
-		errorInformation[2][0]="code";
-		errorInformation[2][0]=Integer.toString(code);
-		
-		errorInformation[3][0]="severity";
-		errorInformation[3][0]= Integer.toString(severity);
-		
-		errorInformation[4][0]="message";
-		errorInformation[4][0]= message;
-		
-		errorInformation[5][0]="Exception";
-		errorInformation[5][0]= exception;
-		
-//		errorInformation[6][0]="";
-//		errorInformation[6][0]="";
-//		
-//		errorInformation[7][0]="";
-//		errorInformation[7][0]="";
-//		
-//		errorInformation[8][0]="";
-//		errorInformation[8][0]="";
-//		
-//		errorInformation[9][0]="";
-//		errorInformation[9][0]="";
-		
+
 		return errorInformation;
-		
+
 	}
 
-	
+	// collect the information regarding the exception
 	public void getErrorInfo() {
-		
-		pluginId = plugin;
-		severity = status.getSeverity();
-		message = status.getMessage();
-		code = status.getCode();
 
-		e = (Exception) status.getException();
+		errorInformation.setPluginId(plugin);
+		errorInformation.setSeverity(status.getSeverity());
+		errorInformation.setMessage(status.getMessage());
+		errorInformation.setCode(status.getCode());
+
+		errorInformation.setException((Exception) status.getException());
+
+		// to convert the exception to string format
 		StringWriter sw = new StringWriter();
 		PrintWriter pw = new PrintWriter(sw);
-		e.printStackTrace(pw);
-		exception = sw.toString();
-		
-		
+		errorInformation.getException().printStackTrace(pw);
+		errorInformation.setExceptionS(sw.toString());
+
 	}
 
+	// collect information regarding the environment
 	public void getSystemInfo() {
 
-		eclipseBuildId = System.getProperty("eclipse.buildId");
-		eclipseProduct = System.getProperty("eclipse.product");
-		JavaRuntimeVersion = System.getProperty("java.runtime.version");
-		osgiWs = System.getProperty("osgi.ws");
-		osgiOs = System.getProperty("os.name");
-		osgiOsVersion = System.getProperty("os.version");
-		osgiArch = System.getProperty("osgi.arch");
-
-		System.out.println(eclipseBuildId);
-		System.out.println(eclipseProduct);
-		System.out.println(JavaRuntimeVersion);
-		System.out.println(osgiWs);
-		System.out.println(osgiOs);
-		System.out.println(osgiOsVersion);
-		System.out.println(osgiArch);
-		System.out.println(code);
-		System.out.println(message);
-		System.out.println(exception);
-		System.out.println(pluginId);
-		System.out.println(severity);
+		errorInformation.setEclipseBuildId(System.getProperty("eclipse.buildId"));
+		errorInformation.setEclipseProduct(System.getProperty("eclipse.product"));
+		errorInformation.setJavaRuntimeVersion(System.getProperty("java.runtime.version"));
+		errorInformation.setOsgiWs(System.getProperty("osgi.ws"));
+		errorInformation.setOsgiOs(System.getProperty("os.name"));
+		errorInformation.setOsgiOsVersion(System.getProperty("os.version"));
+		errorInformation.setOsgiArch(System.getProperty("osgi.arch"));
 
 		// =plugin.Activator.getDefault().getBundle().getVersion().toString();
 	}
 
+	// collect the user set values
 	public void getUserInfo() {
 
-		name = Activator.getDefault().getPreferenceStore().getString("NAME");
-		email = Activator.getDefault().getPreferenceStore().getString("EMAIL");
+		errorInformation.setName(Activator.getDefault().getPreferenceStore().getString("NAME"));
+		errorInformation.setEmail(Activator.getDefault().getPreferenceStore().getString("EMAIL"));
 
 	}
 
+	// collect multi status information if available
 	public IStatus[] getMultiStatus(IStatus status) {
 
 		if (status.isMultiStatus()) {
@@ -163,166 +95,6 @@ public class InfoCollector {
 		} else {
 			return null;
 		}
-	}
-
-	public String getPluginId() {
-		return pluginId;
-	}
-
-	public void setPluginId(String pluginId) {
-		this.pluginId = pluginId;
-	}
-
-	public String getPluginVersion() {
-		return pluginVersion;
-	}
-
-	public void setPluginVersion(String pluginVersion) {
-		this.pluginVersion = pluginVersion;
-	}
-
-	public int getCode() {
-		return code;
-	}
-
-	public void setCode(int code) {
-		this.code = code;
-	}
-
-	public int getSeverity() {
-		return severity;
-	}
-
-	public void setSeverity(int severity) {
-		this.severity = severity;
-	}
-
-	public String getMessage() {
-		return message;
-	}
-
-	public void setMessage(String message) {
-		this.message = message;
-	}
-
-	public String getFingerprint() {
-		return fingerprint;
-	}
-
-	public void setFingerprint(String fingerprint) {
-		this.fingerprint = fingerprint;
-	}
-
-	public String getAnoId() {
-		return anoId;
-	}
-
-	public void setAnoId(String anoId) {
-		this.anoId = anoId;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public String getComment() {
-		return comment;
-	}
-
-	public void setComment(String comment) {
-		this.comment = comment;
-	}
-
-	public String getEclipseBuildId() {
-		return eclipseBuildId;
-	}
-
-	public void setEclipseBuildId(String eclipseBuildId) {
-		this.eclipseBuildId = eclipseBuildId;
-	}
-
-	public String getEclipseProduct() {
-		return eclipseProduct;
-	}
-
-	public void setEclipseProduct(String eclipseProduct) {
-		this.eclipseProduct = eclipseProduct;
-	}
-
-	public String getJavaRuntimeVersion() {
-		return JavaRuntimeVersion;
-	}
-
-	public void setJavaRuntimeVersion(String javaRuntimeVersion) {
-		JavaRuntimeVersion = javaRuntimeVersion;
-	}
-
-	public String getOsgiWs() {
-		return osgiWs;
-	}
-
-	public void setOsgiWs(String osgiWs) {
-		this.osgiWs = osgiWs;
-	}
-
-	public String getOsgiOs() {
-		return osgiOs;
-	}
-
-	public void setOsgiOs(String osgiOs) {
-		this.osgiOs = osgiOs;
-	}
-
-	public String getOsgiOsVersion() {
-		return osgiOsVersion;
-	}
-
-	public void setOsgiOsVersion(String osgiOsVersion) {
-		this.osgiOsVersion = osgiOsVersion;
-	}
-
-	public String getOsgiArch() {
-		return osgiArch;
-	}
-
-	public void setOsgiArch(String osgiArch) {
-		this.osgiArch = osgiArch;
-	}
-
-	public String getSeverity2() {
-		return severity2;
-	}
-
-	public void setSeverity2(String severity2) {
-		this.severity2 = severity2;
-	}
-
-	public Bundles[] getBundleArray() {
-		return bundleArray;
-	}
-
-	public void setBundleArray(Bundles[] bundleArray) {
-		this.bundleArray = bundleArray;
-	}
-
-	public Exception getException() {
-		return e;
-	}
-
-	public void setException(Exception exception) {
-		this.e = exception;
 	}
 
 }

@@ -24,11 +24,12 @@ import org.eclipse.swt.widgets.Shell;
 import org.wso2.developerstudio.eclipse.errorreporter.Activator;
 import org.wso2.developerstudio.eclipse.errorreporter.ui.dialog.ErrorNotifyDialog;
 
+//this class handles the complete process of sending the error report 
 public class ErrorReporter {
 	
 	private IStatus status;
 	private String plugin;
-	private int input;
+	private int input;//to get user input from dialog
 
 	public ErrorReporter(IStatus status, String plugin) {
 		this.status = status;
@@ -36,9 +37,12 @@ public class ErrorReporter {
 
 	}
 	
+	//this method reports the error to the Developer Studio user
 	public void reportError() {
-		InfoCollector errInfoCollector = new InfoCollector(status, plugin);
-		collectErrorInfo(errInfoCollector);
+		
+		//create the infocollector object
+		InfoCollector errorInfoCollector = new InfoCollector(status, plugin);
+		errorInfoCollector.getInformation();
 		//input= openErrorDialog();
 		
 		switch(input)
@@ -95,14 +99,8 @@ public class ErrorReporter {
 
 	}
 
-	public void collectErrorInfo( InfoCollector errInfoCollector) {
-		errInfoCollector.getErrorInfo();
-		errInfoCollector.getSystemInfo();
-		errInfoCollector.getUserInfo();
-		errInfoCollector.getMultiStatus(status);	
 
-	}
-
+	//getters and setters
 	public String getPlugin() {
 		return plugin;
 	}

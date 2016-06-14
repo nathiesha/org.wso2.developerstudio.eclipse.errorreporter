@@ -19,6 +19,7 @@ package org.wso2.developerstudio.eclipse.errorreporter.startup;
 import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IStatus;
 import org.wso2.developerstudio.eclipse.errorreporter.other.ErrorReporter;
+//import org.eclipse.equinox.p2.query.*;;
 
 public class LogListener implements ILogListener {
 
@@ -30,16 +31,15 @@ public class LogListener implements ILogListener {
 		this.loggedStatus = status;
 
 		// method to check whether the error belongs to dev studio
-		// here the dev studio plugin name shoud be included
-		if (loggedStatus.getSeverity() == IStatus.ERROR && plugin.equals("org.eclipse.core.runtime")) {
+		if (loggedStatus.getSeverity() == IStatus.ERROR && plugin.contains("org.wso2.developerstudio")) {
 
 			// create error reporter
 			ErrorReporter errReporter = new ErrorReporter(status, plugin);
 			errReporter.reportError();
 
-			// temp to test the logging method
-			System.out.println("testing-" + loggedStatus.getMessage());
 		}
+
+		// QueryUtil.createIUQuery("org.wso2.developerstudio.eclipse");
 
 	}
 

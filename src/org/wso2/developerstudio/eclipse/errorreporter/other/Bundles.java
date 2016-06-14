@@ -19,7 +19,7 @@ package org.wso2.developerstudio.eclipse.errorreporter.other;
 public class Bundles {
 
 	private String name;
-	private String bunClass;
+	private String bundleClass;
 
 	public String getName() {
 		return name;
@@ -30,11 +30,11 @@ public class Bundles {
 	}
 
 	public String getBunClass() {
-		return bunClass;
+		return bundleClass;
 	}
 
 	public void setBunClass(String bunClass) {
-		this.bunClass = bunClass;
+		this.bundleClass = bunClass;
 	}
 
 }
