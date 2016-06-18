@@ -51,6 +51,10 @@ public class ErrorInformation {
 
 		private Bundles bundleArray[] = new Bundles[10];
 		
+		public ErrorInformation() {
+			// TODO Auto-generated constructor stub
+		}
+		
 		//getters and setters
 		public String getPluginId() {
 			return pluginId;

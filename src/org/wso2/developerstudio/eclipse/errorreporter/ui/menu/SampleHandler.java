@@ -18,16 +18,24 @@ package org.wso2.developerstudio.eclipse.errorreporter.ui.menu;
 
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.mail.MessagingException;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.swt.widgets.Shell;
 import org.wso2.developerstudio.eclipse.errorreporter.other.EmailSender;
+import org.wso2.developerstudio.eclipse.errorreporter.other.ErrorReporter;
 import org.wso2.developerstudio.eclipse.errorreporter.other.InfoCollector;
 import org.wso2.developerstudio.eclipse.errorreporter.other.RemoteJiraConnector;
 import org.wso2.developerstudio.eclipse.errorreporter.other.ReportGenerator;
+import org.wso2.developerstudio.eclipse.errorreporter.ui.dialog.ErrorDialogChild;
 
 
 //this is a sample class
@@ -85,7 +93,7 @@ public class SampleHandler extends AbstractHandler {
 
 
 		
-//		Shell shell = new Shell();
+		Shell shell = new Shell();
 //		ErrorNotifyDialog dialog = new ErrorNotifyDialog(shell);
 //		dialog.open();
 
@@ -114,24 +122,63 @@ public class SampleHandler extends AbstractHandler {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
-		String[][] ui=new String[2][2];
-		ui[0][0]="name";
-		ui[0][1]="nathiesha";
-		ui[1][0]="age";
-		ui[1][1]="23";
+//		String[][] ui=new String[2][2];
+//		ui[0][0]="name";
+//		ui[0][1]="nathiesha";
+//		ui[1][0]="age";
+//		ui[1][1]="23";
+//		
+//
+////		InfoCollector ic=new InfoCollector(status, plugin)
+////		ReportGenerator rg=new ReportGenerator(ic.getInformation());
+////		
+//		
+//		ReportGenerator rg=new ReportGenerator(ui);
+//		try {
+//			rg.createReport();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		
 
-//		InfoCollector ic=new InfoCollector(status, plugin)
-//		ReportGenerator rg=new ReportGenerator(ic.getInformation());
-//		
-		ReportGenerator rg=new ReportGenerator(ui);
+//		int input;
+//		IStatus i = null;
+//		ErrorReporter er=new ErrorReporter(i, "");
+//		input=er.openErrorDialog();
+//		System.out.println(input);
+		
+		
+		
 		try {
-			rg.createReport();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+		      String s = null;
+		      System.out.println(s.length());
+		    } catch (NullPointerException e) {
+		      // build the error message and include the current stack trace
+		      MultiStatus status = createMultiStatus(e.getLocalizedMessage(), e);
+		      // show error dialog
+		      InfoCollector ic=new InfoCollector(status, "plugin");
+		      
+		      ErrorDialogChild.openError(shell, "Error", "This is an error", ic.getInformation(),status);
+		    }
 		return event;
 	}
+	
+	
+	private static MultiStatus createMultiStatus(String msg, Throwable t) {
+
+	    List<Status> childStatuses = new ArrayList<>();
+	    StackTraceElement[] stackTraces = Thread.currentThread().getStackTrace();
+
+	     for (StackTraceElement stackTrace: stackTraces) {
+	      Status status = new Status(IStatus.ERROR,
+	          "com.example.e4.rcp.todo", stackTrace.toString());
+	      childStatuses.add(status);
+	    }
+
+	    MultiStatus ms = new MultiStatus("com.example.e4.rcp.todo",
+	        IStatus.ERROR, childStatuses.toArray(new Status[] {}),
+	        t.toString(), t);
+	    return ms;
+	  }
 }

@@ -103,8 +103,4 @@ public class ReportGenerator {
 		    
 		    fw.close();
 	}
-
 }
-
-
-

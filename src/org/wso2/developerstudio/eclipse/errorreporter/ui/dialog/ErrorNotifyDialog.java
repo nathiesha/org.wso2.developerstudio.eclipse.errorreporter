@@ -27,18 +27,15 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 
 public class ErrorNotifyDialog extends Dialog {
+
 	int value;
 
 	public ErrorNotifyDialog(Shell parent) {
 		super(parent);
 	}
 
+	public int openErrorDialog() {
 
-	public ErrorNotifyDialog(Shell parent, int style) {
-		super(parent, style);
-	}
-
-	public int open() {
 		Shell parent = getParent();
 		final Shell shell = new Shell(parent, SWT.TITLE | SWT.BORDER | SWT.APPLICATION_MODAL | SWT.CLOSE);
 		shell.setText("A problem was detected");
@@ -74,7 +71,7 @@ public class ErrorNotifyDialog extends Dialog {
 		buttonDontSend.addListener(SWT.Selection, new Listener() {
 			@Override
 			public void handleEvent(Event event) {
-				value=2;
+				value = 2;
 				shell.dispose();
 			}
 		});

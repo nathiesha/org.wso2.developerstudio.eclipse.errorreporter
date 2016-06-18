@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.widgets.Shell;
 import org.wso2.developerstudio.eclipse.errorreporter.Activator;
+import org.wso2.developerstudio.eclipse.errorreporter.ui.dialog.ErrorDialogChild;
 import org.wso2.developerstudio.eclipse.errorreporter.ui.dialog.ErrorNotifyDialog;
 
 //this class handles the complete process of sending the error report 
@@ -43,7 +44,7 @@ public class ErrorReporter {
 		//create the infocollector object
 		InfoCollector errorInfoCollector = new InfoCollector(status, plugin);
 		errorInfoCollector.getInformation();
-		//input= openErrorDialog();
+		input= openErrorDialog();
 		
 		switch(input)
 		{
@@ -56,8 +57,7 @@ public class ErrorReporter {
 				
 				
 			case 2:
-				break;
-				
+				break;				
 		}
 		
 	}
@@ -92,10 +92,12 @@ public class ErrorReporter {
 	}
 
 
+	//open up the error dialog box and get user input
 	public int openErrorDialog() {
 		Shell shell = new Shell();
-		ErrorNotifyDialog dialog = new ErrorNotifyDialog(shell);
-		return dialog.open();
+		//ErrorDialogS dialog = new ErrorDialogS(shell);
+		return 11;
+				//dialog.openErrorDialog();
 
 	}
 

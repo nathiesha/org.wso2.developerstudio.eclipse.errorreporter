@@ -26,13 +26,13 @@ public class InfoCollector {
 
 	IStatus status;
 	String plugin;
-	private ErrorInformation errorInformation;
+	ErrorInformation errorInformation;
 
 	public InfoCollector(IStatus status, String plugin) {
 
 		this.plugin = plugin;
 		this.status = status;
-		// errorInformation=new ErrorInformation();
+		errorInformation=new ErrorInformation();
 	}
 
 	public ErrorInformation getInformation() {
