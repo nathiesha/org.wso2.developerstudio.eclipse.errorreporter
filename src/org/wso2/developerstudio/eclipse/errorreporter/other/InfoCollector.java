@@ -105,7 +105,6 @@ public class InfoCollector {
 		}
 		
 		errorInformation.setMultiStatus(message.toString());
-		System.out.println("MultiStatus----"+errorInformation.getMultiStatus());
 	}
 
 	// check if multi status information if available

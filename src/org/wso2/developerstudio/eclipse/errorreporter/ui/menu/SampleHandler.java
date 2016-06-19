@@ -160,7 +160,14 @@ public class SampleHandler extends AbstractHandler {
 		      // show error dialog
 		      InfoCollector ic=new InfoCollector(status, "plugin");
 		      ErrorInformation ei=ic.getInformation();
-		      System.out.println(ei.getMessage()+" "+ei.getCode()+" "+ei.getComment()+" "+ei.getEclipseBuildId()+" "+ei.getExceptionS()+" "+ei.getEmail()+" "+ei.getOsgiArch());
+		      ReportGenerator r=new ReportGenerator(ei);
+		      try {
+				r.storeReport(ei);
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		     // System.out.println(ei.getMessage()+" "+ei.getCode()+" "+ei.getComment()+" "+ei.getEclipseBuildId()+" "+ei.getExceptionS()+" "+ei.getEmail()+" "+ei.getOsgiArch());
 		      ErrorDialogChild.openError(shell, "Error", "This is an error", ic.getInformation(),status);
 		    }
 		return event;

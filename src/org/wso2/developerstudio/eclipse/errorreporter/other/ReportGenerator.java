@@ -14,27 +14,58 @@
 * limitations under the License.
 */
 
-
 package org.wso2.developerstudio.eclipse.errorreporter.other;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Platform;
 import org.json.simple.JSONObject;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
 /**
  * @author Nathie
  *
  */
 public class ReportGenerator {
 	
-//	String[][] systemInformation;
-//	String[][] userInformation;
 	ErrorInformation errorInformation;
 	
-	public ReportGenerator(ErrorInformation errorInformation	) {		
+	//Error Report Contents
+	private static final String INTRODUCTION = "The following report will be sent to Jira:\n\n";	
+	
+	private static final String STATUS = "\n--STATUS--\n";
+	private static final String PLUGIN_ID = "\nPlugin ID: ";
+	private static final String PLUGIN_VERSION = "\nPlugin Version: ";
+	private static final String CODE = "\nCode: ";
+	private static final String SEVERITY = "\nSeverity: ";
+	private static final String MESSAGE = "\nMessage: ";
+	private static final String EXCEPTION = "\nException: ";
+	private static final String MULTI_STATUS_INFORMATION = "\n\nMulti status: ";
+	
+	private static final String REPORT = "\n\n--REPORT--\n";	
+	private static final String ECLIPSE_BUILD_ID = "\nEclipse Build ID: ";
+	private static final String ECLIPSE_PRODUCT = "\nEclipse Product: ";
+	private static final String JAVA_RUNTIME_VERSION = "\nJava Runtime Version: ";
+	private static final String OSGIWS = "\nOsgiWS: ";
+	private static final String OSGI_OS = "\nOsgiOS: ";
+	private static final String OSGI_OS_VERSION = "\nOsgiOS Version: ";
+	private static final String OSGI_ARCH = "\nOsgiArch: ";
+	
+	private static final String REPORT_SENDER = "\n\n--REPORT SENDER DETAILS--\n";	
+	private static final String NAME = "\nName: ";
+	private static final String EMAIL = "\nEmail: ";
+	private static final String COMMENT = "\nComment: ";
+	private static final String SEVERITY_USER = "\nSeverity: ";
+	
+
+
+	
+	public ReportGenerator(ErrorInformation errorInformation) {		
 		super();
 		this.errorInformation=errorInformation;
 	}
@@ -57,50 +88,77 @@ public class ReportGenerator {
         return issue;
     }
 	
-	public void createReport() throws IOException
+	public void storeReport(ErrorInformation errorInformation) throws IOException
 	{
-		String path="F:\\eclipseProjects\\org.wso2.developerstudio.eclipse.errorreporter\\in.txt";
-        File file = new File(path);
-
-           // if file doesnt exists, then create it
-           if (!file.exists()) {
-               file.createNewFile();
-           }
+		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+		String fileName = timeStamp+".txt";
 		
-//           ArrayList<String[][]> arrayFile = new ArrayList<String[][]>(); 
-//		    arrayFile.add( "Ramesh Tendulkar", "2008-12-31");
-//		    arrayFile.add("John Machleyn", "2008-12-31");
+		//temporary storage
+		Bundle bundle = FrameworkUtil.getBundle(getClass());
+		IPath stateLoc = Platform.getStateLocation(bundle);
+		
+        File tempFolder = new File(stateLoc.toString());
+        File reportFolder = new File(tempFolder, "ErrorReports");
+        
+        if (!reportFolder.exists()) {
+        	
+        		reportFolder.mkdir();
+        }
+        
+		File reportTemp = new File(reportFolder, fileName);
+		FileWriter fw = new FileWriter(reportTemp);
+		writeReport(errorInformation, fw);
+		fw.close();
+		
+		//persistent storage in User Directory
+		String userDirLocation=System.getProperty("user.dir");
+		
+		File persistentFolder = new File(userDirLocation);
+        File errorReportsFolder = new File(persistentFolder, "ErrorReports");
+        
+        if (!errorReportsFolder.exists()) {
+        	
+        	errorReportsFolder.mkdir();
+        }
+    
+		File reportPersistent = new File(errorReportsFolder, fileName);
+	    FileWriter fw2 = new FileWriter(reportPersistent);
+	    writeReport(errorInformation, fw2);
+	    fw.close();
 
-
-//		    FileReader fr = new FileReader("in.txt");
-//		    BufferedReader br =new BufferedReader(fr); 
-//		    String s;
-//		    while((s = br.readLine()) != null) { 
-//		        String[] spS = s.split("|")[1].split("+"); 
-//		        arrayFile.add(new StackFile(spS[0],spS[1] ,spS[2]));
-//		        } 
-//		        fr.close(); 
-
-		    FileWriter fw = new FileWriter(file);
-
-//		    fw.write("+--------+-------------------------------+-------------+\n");
-//		    fw.write("| ID     | Name                          | Date        |\n");
-//		    fw.write("+--------+-------------------------------+-------------+\n");
-
-//		    Iterator<String[][]> itS = arrayFile.iterator();
+	}
+	
+	private void writeReport(ErrorInformation errorInformation,FileWriter fw)
+	{
+		
+	    try {
+			fw.write(INTRODUCTION);
+		    fw.write(STATUS);
+		    fw.write(PLUGIN_ID+errorInformation.getPluginId());
+		    fw.write(PLUGIN_VERSION+errorInformation.getPluginVersion());
+		    fw.write(CODE+errorInformation.getCode());
+		    fw.write(SEVERITY+errorInformation.getSeverity());
+		    fw.write(MESSAGE+errorInformation.getMessage());
+		    fw.write(EXCEPTION+errorInformation.getExceptionS());
+		    fw.write(MULTI_STATUS_INFORMATION+errorInformation.getMultiStatus());
+		    fw.write(REPORT);
+		    fw.write(ECLIPSE_BUILD_ID+errorInformation.getEclipseBuildId());
+		    fw.write(ECLIPSE_PRODUCT+errorInformation.getEclipseProduct());
+		    fw.write(JAVA_RUNTIME_VERSION+errorInformation.getJavaRuntimeVersion());
+		    fw.write(OSGIWS+errorInformation.getOsgiWs());
+		    fw.write(OSGI_OS+errorInformation.getOsgiOs());
+		    fw.write(OSGI_OS_VERSION+errorInformation.getOsgiOsVersion());
+		    fw.write(OSGI_ARCH+errorInformation.getOsgiArch());
+		    fw.write(REPORT_SENDER);
+		    fw.write(NAME+errorInformation.getName());
+		    fw.write(EMAIL+errorInformation.getEmail());
+		    fw.write(COMMENT+errorInformation.getComment());
+		    fw.write(SEVERITY_USER+errorInformation.getSeverity2());
 		    
-//		    int length=errorInformation.length;
-//
-//		    for(int i=0;i<length;i++)
-//		    {
-//		        //String[][] sf = itS.next();
-//		        fw.write("| "+String.format("%-6s", errorInformation[i][0])+" | "+String.format("%-30s", errorInformation[i][1])+" |\n");
-////		        fw.write((itS.hasNext())
-////		                ?"|--------|-------------------------------|-------------|\n"
-////		                :"+--------+-------------------------------+-------------+\n");
-//
-//		    }
-		    
-		    fw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 }
