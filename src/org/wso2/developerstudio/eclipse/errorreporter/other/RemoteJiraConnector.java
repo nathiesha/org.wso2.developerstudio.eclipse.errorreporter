@@ -102,7 +102,8 @@ public class RemoteJiraConnector {
 		}
 	
 	
-	 private String getAuth(String username, String password) {
+	 @SuppressWarnings("unused")
+	private String getAuth(String username, String password) {
 	        try {
 	            String s = username + ":" + password;
 	            byte[] byteArray = s.getBytes();

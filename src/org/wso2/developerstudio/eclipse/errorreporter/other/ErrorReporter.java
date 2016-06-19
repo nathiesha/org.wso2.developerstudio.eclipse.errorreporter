@@ -16,14 +16,13 @@
 
 package org.wso2.developerstudio.eclipse.errorreporter.other;
 
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.swt.widgets.Shell;
 import org.wso2.developerstudio.eclipse.errorreporter.Activator;
-import org.wso2.developerstudio.eclipse.errorreporter.ui.dialog.ErrorDialogChild;
-import org.wso2.developerstudio.eclipse.errorreporter.ui.dialog.ErrorNotifyDialog;
+
 
 //this class handles the complete process of sending the error report 
 public class ErrorReporter {
@@ -41,9 +40,11 @@ public class ErrorReporter {
 	//this method reports the error to the Developer Studio user
 	public void reportError() {
 		
-		//create the infocollector object
 		InfoCollector errorInfoCollector = new InfoCollector(status, plugin);
-		errorInfoCollector.getInformation();
+		ErrorInformation errorInfo=errorInfoCollector.getInformation();
+		ReportGenerator reportGen=new ReportGenerator(errorInfo);
+		reportGen.storeReport(errorInfo);
+
 		input= openErrorDialog();
 		
 		switch(input)
@@ -94,7 +95,7 @@ public class ErrorReporter {
 
 	//open up the error dialog box and get user input
 	public int openErrorDialog() {
-		Shell shell = new Shell();
+		//Shell shell = new Shell();
 		//ErrorDialogS dialog = new ErrorDialogS(shell);
 		return 11;
 				//dialog.openErrorDialog();

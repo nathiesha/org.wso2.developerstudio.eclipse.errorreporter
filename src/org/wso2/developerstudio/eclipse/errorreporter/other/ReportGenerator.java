@@ -88,7 +88,7 @@ public class ReportGenerator {
         return issue;
     }
 	
-	public void storeReport(ErrorInformation errorInformation) throws IOException
+	public File storeReport(ErrorInformation errorInformation) 
 	{
 		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
 		String fileName = timeStamp+".txt";
@@ -106,9 +106,16 @@ public class ReportGenerator {
         }
         
 		File reportTemp = new File(reportFolder, fileName);
-		FileWriter fw = new FileWriter(reportTemp);
-		writeReport(errorInformation, fw);
-		fw.close();
+		FileWriter fw;
+		try {
+			fw = new FileWriter(reportTemp);
+			writeReport(errorInformation, fw);
+			fw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		
 		//persistent storage in User Directory
 		String userDirLocation=System.getProperty("user.dir");
@@ -122,9 +129,19 @@ public class ReportGenerator {
         }
     
 		File reportPersistent = new File(errorReportsFolder, fileName);
-	    FileWriter fw2 = new FileWriter(reportPersistent);
-	    writeReport(errorInformation, fw2);
-	    fw.close();
+	    FileWriter fw2;
+		try {
+			fw2 = new FileWriter(reportPersistent);
+		    writeReport(errorInformation, fw2);
+		    fw2.close();
+		    
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	    
+		return reportPersistent;
 
 	}
 	

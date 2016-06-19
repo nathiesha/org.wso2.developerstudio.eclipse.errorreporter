@@ -29,6 +29,7 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.widgets.Shell;
 import org.wso2.developerstudio.eclipse.errorreporter.other.EmailSender;
 import org.wso2.developerstudio.eclipse.errorreporter.other.ErrorInformation;
@@ -36,7 +37,7 @@ import org.wso2.developerstudio.eclipse.errorreporter.other.ErrorReporter;
 import org.wso2.developerstudio.eclipse.errorreporter.other.InfoCollector;
 import org.wso2.developerstudio.eclipse.errorreporter.other.RemoteJiraConnector;
 import org.wso2.developerstudio.eclipse.errorreporter.other.ReportGenerator;
-import org.wso2.developerstudio.eclipse.errorreporter.ui.dialog.ErrorDialogChild;
+import org.wso2.developerstudio.eclipse.errorreporter.ui.dialog.ErrorNotificationDialog;
 
 
 //this is a sample class
@@ -161,14 +162,10 @@ public class SampleHandler extends AbstractHandler {
 		      InfoCollector ic=new InfoCollector(status, "plugin");
 		      ErrorInformation ei=ic.getInformation();
 		      ReportGenerator r=new ReportGenerator(ei);
-		      try {
-				r.storeReport(ei);
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+		      r.storeReport(ei);
 		     // System.out.println(ei.getMessage()+" "+ei.getCode()+" "+ei.getComment()+" "+ei.getEclipseBuildId()+" "+ei.getExceptionS()+" "+ei.getEmail()+" "+ei.getOsgiArch());
-		      ErrorDialogChild.openError(shell, "Error", "This is an error", ic.getInformation(),status);
+		      int i=ErrorNotificationDialog.openError(shell, "A problem was detected", "An unexpected error occured. Please press send to report the error to the development team", ic.getInformation(),status);
+
 		    }
 		return event;
 	}
