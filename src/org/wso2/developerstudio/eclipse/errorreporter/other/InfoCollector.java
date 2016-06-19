@@ -19,6 +19,7 @@ package org.wso2.developerstudio.eclipse.errorreporter.other;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+
 import org.eclipse.core.runtime.IStatus;
 import org.wso2.developerstudio.eclipse.errorreporter.Activator;
 
@@ -40,13 +41,15 @@ public class InfoCollector {
 		getErrorInfo();
 		getSystemInfo();
 		getUserInfo();
+		getMultiStatusInfo();
 
 		return errorInformation;
 
 	}
 
+	
 	// collect the information regarding the exception
-	public void getErrorInfo() {
+	private void getErrorInfo() {
 
 		errorInformation.setPluginId(plugin);
 		errorInformation.setSeverity(status.getSeverity());
@@ -64,7 +67,7 @@ public class InfoCollector {
 	}
 
 	// collect information regarding the environment
-	public void getSystemInfo() {
+	private void getSystemInfo() {
 
 		errorInformation.setEclipseBuildId(System.getProperty("eclipse.buildId"));
 		errorInformation.setEclipseProduct(System.getProperty("eclipse.product"));
@@ -78,23 +81,70 @@ public class InfoCollector {
 	}
 
 	// collect the user set values
-	public void getUserInfo() {
+	private void getUserInfo() {
 
 		errorInformation.setName(Activator.getDefault().getPreferenceStore().getString("NAME"));
 		errorInformation.setEmail(Activator.getDefault().getPreferenceStore().getString("EMAIL"));
 
 	}
 
-	// collect multi status information if available
-	public IStatus[] getMultiStatus(IStatus status) {
+	//collect information regarding the multistatus
+	private void getMultiStatusInfo() {
+		
+		StringBuilder message = new StringBuilder();
+		
+		if(isMultiStatus(status))
+		{
+			message=extractMultiStatusInfo(status,0);
+
+		}
+		
+		else
+		{
+			message.append("The exception does not contain any multi status information");
+		}
+		
+		errorInformation.setMultiStatus(message.toString());
+		System.out.println("MultiStatus----"+errorInformation.getMultiStatus());
+	}
+
+	// check if multi status information if available
+	private boolean isMultiStatus(IStatus status) {
 
 		if (status.isMultiStatus()) {
-			IStatus multiStatusArray[] = status.getChildren();
-			return multiStatusArray;
+
+			return true;
 
 		} else {
-			return null;
+			return false;
 		}
 	}
+	
+	//Extract multi status info
+	private StringBuilder extractMultiStatusInfo( final IStatus status, final int level )
+	{
+	    final StringBuilder message = new StringBuilder();
+	    if ( status == null )
+	    {
+	        return message;
+	    }
+	    message.append( "\n" );
+	    for ( int nestingLevel = 0; nestingLevel < level; ++nestingLevel )
+	    {
+	        message.append( ' ' );
+	    }
+	    
+	    message.append( status.getMessage() );
+	    if ( status.isMultiStatus() )
+	    {
+	        for ( final IStatus child : status.getChildren() )
+	        {
+	            message.append( extractMultiStatusInfo( child, level + 1 ) );
+	        }
+	    }
+	    return message;
+	}
+	
+
 
 }

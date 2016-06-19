@@ -134,19 +134,7 @@ public class ErrorDialogChild extends IconAndMessageDialog {
 	 *            per <code>IStatus.matches</code>
 	 * @see org.eclipse.core.runtime.IStatus#matches(int)
 	 */
-	public ErrorDialogChild(Shell parentShell, String dialogTitle, String message,
-			IStatus status, int displayMask) {
-		super(parentShell);
-		this.title = dialogTitle == null ? JFaceResources
-				.getString("Problem_Occurred") : //$NON-NLS-1$
-				dialogTitle;
-		this.message = message == null ? status.getMessage()
-				: JFaceResources
-						.format(
-								"Reason", new Object[] { message, status.getMessage() }); //$NON-NLS-1$
-		this.statusI = status;
-		this.displayMask = displayMask;
-	}
+
 	
 	public ErrorDialogChild(Shell parentShell, String dialogTitle, String message,
 			ErrorInformation status, int displayMask,IStatus statusI) {
@@ -176,7 +164,7 @@ public class ErrorDialogChild extends IconAndMessageDialog {
 			// was the details button pressed?
 			toggleDetailsArea();
 		} else {
-			super.buttonPressed(id);
+		//	super.buttonPressed(id);
 		}
 	}
 
@@ -190,6 +178,8 @@ public class ErrorDialogChild extends IconAndMessageDialog {
 	protected void createButtonsForButtonBar(Composite parent) {
 		// create OK and Details buttons
 		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL,
+				true);
+		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL,
 				true);
 		createDetailsButton(parent);
 	}
@@ -435,8 +425,20 @@ public class ErrorDialogChild extends IconAndMessageDialog {
 	 * @see #listContentExists()
 	 */
 	private void populateList(List listToPopulate) {
-		populateList(listToPopulate, statusI, 0,
+		addReportInfo(listToPopulate,status);
+		populateList(listToPopulate, statusI, 2,
 				shouldIncludeTopLevelErrorInDetails);
+	}
+
+	private void addReportInfo(List listToPopulate, ErrorInformation status2) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("Info-----------------------------------------------------");
+		java.util.List<String> lines = readLines(sb.toString());
+		for (Iterator<String> iterator = lines.iterator(); iterator.hasNext();) {
+			String line = iterator.next();
+			listToPopulate.add(line);
+		}
+		
 	}
 
 	/**
@@ -519,7 +521,7 @@ public class ErrorDialogChild extends IconAndMessageDialog {
 			// Only print the exception message if it is not contained in the
 			// parent message
 			if (message == null || message.indexOf(eStatus.getMessage()) == -1) {
-				//populateList(listToPopulate, eStatus, nesting, true);
+				populateList(listToPopulate, eStatus, nesting, true);
 			}
 		}
 
@@ -696,7 +698,7 @@ public class ErrorDialogChild extends IconAndMessageDialog {
 			clipboard.dispose();
 		}
 		StringBuffer statusBuffer = new StringBuffer();
-		//populateCopyBuffer(status, statusBuffer, 0);
+		populateCopyBuffer(statusI, statusBuffer, 0);
 		clipboard = new Clipboard(list.getDisplay());
 		clipboard.setContents(new Object[] { statusBuffer.toString() },
 				new Transfer[] { TextTransfer.getInstance() });
@@ -772,7 +774,7 @@ public class ErrorDialogChild extends IconAndMessageDialog {
 		}
 	}
 
-	int getColumnCount() {
+	private int getColumnCount() {
 		if (Policy.getErrorSupportProvider() == null)
 			return 2;
 		return 3;

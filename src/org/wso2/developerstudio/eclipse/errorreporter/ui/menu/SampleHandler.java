@@ -31,6 +31,7 @@ import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.swt.widgets.Shell;
 import org.wso2.developerstudio.eclipse.errorreporter.other.EmailSender;
+import org.wso2.developerstudio.eclipse.errorreporter.other.ErrorInformation;
 import org.wso2.developerstudio.eclipse.errorreporter.other.ErrorReporter;
 import org.wso2.developerstudio.eclipse.errorreporter.other.InfoCollector;
 import org.wso2.developerstudio.eclipse.errorreporter.other.RemoteJiraConnector;
@@ -158,7 +159,8 @@ public class SampleHandler extends AbstractHandler {
 		      MultiStatus status = createMultiStatus(e.getLocalizedMessage(), e);
 		      // show error dialog
 		      InfoCollector ic=new InfoCollector(status, "plugin");
-		      
+		      ErrorInformation ei=ic.getInformation();
+		      System.out.println(ei.getMessage()+" "+ei.getCode()+" "+ei.getComment()+" "+ei.getEclipseBuildId()+" "+ei.getExceptionS()+" "+ei.getEmail()+" "+ei.getOsgiArch());
 		      ErrorDialogChild.openError(shell, "Error", "This is an error", ic.getInformation(),status);
 		    }
 		return event;

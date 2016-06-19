@@ -48,6 +48,9 @@ public class ErrorInformation {
 		private String osgiOs;
 		private String osgiOsVersion;
 		private String osgiArch;
+		
+		//multi status information
+		private String multiStatus;
 
 		private Bundles bundleArray[] = new Bundles[10];
 		
@@ -222,6 +225,14 @@ public class ErrorInformation {
 
 		public void setExceptionS(String exception) {
 			this.exception = exception;
+		}
+
+		public String getMultiStatus() {
+			return multiStatus;
+		}
+
+		public void setMultiStatus(String multiStatus) {
+			this.multiStatus = multiStatus;
 		}
 
 	
