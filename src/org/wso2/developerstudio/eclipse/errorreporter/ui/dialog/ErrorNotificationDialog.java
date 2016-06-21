@@ -22,6 +22,7 @@ package org.wso2.developerstudio.eclipse.errorreporter.ui.dialog;
  *
  */
 import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -30,7 +31,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
@@ -51,7 +51,6 @@ import org.wso2.developerstudio.eclipse.errorreporter.other.ErrorInformation;
 
 public class ErrorNotificationDialog extends ErrorDialog {
 
-	private static final boolean shouldIncludeTopLevelErrorInDetails = false;
 	private static final Object NESTING_INDENT = " ";
 	private List list;
 	private boolean listCreated = false;
@@ -130,14 +129,14 @@ public class ErrorNotificationDialog extends ErrorDialog {
 	
 
 	public static int openError(Shell parent, String dialogTitle,
-			String message, ErrorInformation status,Status statusI) {
+			String message, ErrorInformation status,IStatus statusI) {
 		return openError(parent, dialogTitle, message, status, IStatus.OK
 				| IStatus.INFO | IStatus.WARNING | IStatus.ERROR, statusI);
 	}
 
 	
 	public static int openError(Shell parentShell, String title,
-			String message, ErrorInformation status, int displayMask,Status statusI) {
+			String message, ErrorInformation status, int displayMask,IStatus statusI) {
 		ErrorNotificationDialog dialog = new ErrorNotificationDialog(parentShell, title, message,
 				status, displayMask,statusI);
 		return dialog.open();
@@ -177,13 +176,15 @@ public class ErrorNotificationDialog extends ErrorDialog {
 	private void populateList(List listToPopulate) {
 		
 		addReportInfo(listToPopulate,status);
-		populateList(listToPopulate, statusI, 0,
-				shouldIncludeTopLevelErrorInDetails);
 	}
 
 	private void addReportInfo(List listToPopulate, ErrorInformation status2) {
 		StringBuffer sb = new StringBuffer();
-		sb.append("Info-----------------------------------------------------");
+		try {
+			sb.append(readFile("G:\\c users\\Desktop\\eclipseMars\\ErrorReports\\20160619_190336.txt"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		java.util.List<String> lines = readLines(sb.toString());
 		for (Iterator<String> iterator = lines.iterator(); iterator.hasNext();) {
 			String line = iterator.next();
@@ -192,66 +193,23 @@ public class ErrorNotificationDialog extends ErrorDialog {
 		
 	}
 	
-	private void populateList(List listToPopulate,IStatus statusI,
-			int nesting, boolean includeStatus) {
+	String readFile(String fileName) throws IOException {
+	    BufferedReader br = new BufferedReader(new FileReader(fileName));
+	    try {
+	        StringBuilder sb = new StringBuilder();
+	        String line = br.readLine();
 
-		if (statusI.equals(null)) {
-			return;
-		}
-
-		Throwable t = statusI.getException();
-		boolean incrementNesting = false;
-
-		if (includeStatus) {
-			StringBuffer sb = new StringBuffer();
-			for (int i = 0; i < nesting; i++) {
-				sb.append(NESTING_INDENT);
-			}
-			String message = statusI.getMessage();
-			sb.append(message);
-			java.util.List<String> lines = readLines(sb.toString());
-			for (Iterator<String> iterator = lines.iterator(); iterator.hasNext();) {
-				String line = iterator.next();
-				listToPopulate.add(line);
-			}
-			incrementNesting = true;
-		}
-		if (!(t instanceof CoreException) && t != null) {
-			// Include low-level exception message
-			StringBuffer sb = new StringBuffer();
-			for (int i = 0; i < nesting; i++) {
-				sb.append(NESTING_INDENT);
-			}
-			String message = t.getLocalizedMessage();
-			if (message == null) {
-				message = t.toString();
-			}
-
-			sb.append(message);
-			listToPopulate.add(sb.toString());
-			incrementNesting = true;
-		}
-
-		if (incrementNesting) {
-			nesting++;
-		}
-
-		// Look for a nested core exception
-		if (t instanceof CoreException) {
-			CoreException ce = (CoreException) t;
-			IStatus eStatus = ce.getStatus();
-			// Only print the exception message if it is not contained in the
-			// parent message
-			if (message == null || message.indexOf(eStatus.getMessage()) == -1) {
-				populateList(listToPopulate, eStatus, nesting, true);
-			}
-		}
-
-		// Look for child status
-		IStatus[] children = statusI.getChildren();
-		for (int i = 0; i < children.length; i++) {
-			populateList(listToPopulate, children[i], nesting, true);
-		}
+	        while (line != null) {
+	            sb.append(line);
+	            sb.append("\n");
+	            line = br.readLine();
+	        }
+	        
+	        return sb.toString();
+	        
+	    } finally {
+	        br.close();
+	    }
 	}
 
 

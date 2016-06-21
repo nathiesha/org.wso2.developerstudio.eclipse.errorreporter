@@ -88,7 +88,7 @@ public class ReportGenerator {
         return issue;
     }
 	
-	public File storeReport(ErrorInformation errorInformation) 
+	public String storeReport(ErrorInformation errorInformation) 
 	{
 		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
 		String fileName = timeStamp+".txt";
@@ -141,7 +141,7 @@ public class ReportGenerator {
 		}
 
 	    
-		return reportPersistent;
+		return reportPersistent.getPath();
 
 	}
 	

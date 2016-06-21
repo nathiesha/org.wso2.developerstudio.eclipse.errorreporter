@@ -17,11 +17,20 @@
 package org.wso2.developerstudio.eclipse.errorreporter.other;
 
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.AddressException;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.swt.widgets.Shell;
 import org.wso2.developerstudio.eclipse.errorreporter.Activator;
+import org.wso2.developerstudio.eclipse.errorreporter.ui.dialog.ErrorNotificationDialog;
 
 
 //this class handles the complete process of sending the error report 
@@ -43,27 +52,32 @@ public class ErrorReporter {
 		InfoCollector errorInfoCollector = new InfoCollector(status, plugin);
 		ErrorInformation errorInfo=errorInfoCollector.getInformation();
 		ReportGenerator reportGen=new ReportGenerator(errorInfo);
-		reportGen.storeReport(errorInfo);
+		String filePath=reportGen.storeReport(errorInfo);
+		input=openErrorDialog(errorInfo);
 
-		input= openErrorDialog();
 		
 		switch(input)
 		{
 			case 0:
-				sendReport();
+			try {
+				sendReport(filePath);
+			} catch (AddressException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (MessagingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 				break;
 				
 			case 1:
 				break;
-				
-				
-			case 2:
-				break;				
+					
 		}
 		
 	}
 	
-	public void sendReport(){
+	public void sendReport(String filePath) throws AddressException, MessagingException{
 		
 		 //   String choice = Activator.getDefault().getPreferenceStore().getString("CHOICE");
 		 //   System.out.println(choice);
@@ -71,35 +85,82 @@ public class ErrorReporter {
 				.getBoolean("Jira"))
 		{
 			
-		    Job reporterJob = new Job("Report the Developer Studio Error") {
-				@Override
-				protected IStatus run(IProgressMonitor monitor) {
-					// TODO send report to jira only
-					return Status.OK_STATUS;
-				}
-		     };
-		     
-		     reporterJob.setUser(true);
-		     reporterJob.schedule();
+			sendJira();
 			
 		}
 		
 		else
 			
 		{
-			//TODO email and jira
+			sendJira();
+			try {
+				sendEmail(filePath);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 		}
+		
+	}
+	
+	public void sendJira()
+	{
+		Job reporterJob = new Job("Report the Developer Studio Error") {
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {
+				// TODO send report to jira only
+				return Status.OK_STATUS;
+			}
+	     };
+	     
+	     reporterJob.setUser(true);
+	     reporterJob.schedule();		
+		
+	}
+	
+	public void sendEmail(String filePath) throws IOException, AddressException, MessagingException
+	{
+		EmailSender emailS=new EmailSender();
+		String username=Activator.getDefault().getPreferenceStore().getString("USERNAME");
+		String password=Activator.getDefault().getPreferenceStore().getString("PASSWORD");
+		String recipientEmail="";
+		String ccEmail=""; 
+		String title="Developer Studio Error Report";
+		String message;
+
+			message = readFile(filePath);
+			emailS.Send(username,password,recipientEmail,ccEmail,title,message);
+
 		
 	}
 
 
-	//open up the error dialog box and get user input
-	public int openErrorDialog() {
-		//Shell shell = new Shell();
-		//ErrorDialogS dialog = new ErrorDialogS(shell);
-		return 11;
-				//dialog.openErrorDialog();
+	String readFile(String fileName) throws IOException {
+	    BufferedReader br = new BufferedReader(new FileReader(fileName));
+	    try {
+	        StringBuilder sb = new StringBuilder();
+	        String line = br.readLine();
 
+	        while (line != null) {
+	            sb.append(line);
+	            sb.append("\n");
+	            line = br.readLine();
+	        }
+	        
+	        return sb.toString();
+	        
+	    } finally {
+	        br.close();
+	    }
+	}
+	
+	//open up the error dialog box and get user input
+	public int openErrorDialog(ErrorInformation errorInfo) {
+		Shell shell = new Shell();
+		String dialogTitle="A problem was detected";
+		String message= "An unexpected error occured. Please press send to report the error to the development team";
+		return ErrorNotificationDialog.openError(shell, dialogTitle, message, errorInfo, status);
 	}
 
 
@@ -116,7 +177,7 @@ public class ErrorReporter {
 		return status;
 	}
 
-	public void setStatus(IStatus status) {
+	public void setStatus(Status status) {
 		this.status = status;
 	}
 
