@@ -23,7 +23,11 @@ import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.RadioGroupFieldEditor;
 //import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
-
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.wso2.developerstudio.eclipse.errorreporter.Activator;
@@ -44,26 +48,49 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 //	    addField(new DirectoryFieldEditor("PATH", "&Directory preference:",
 //	        getFieldEditorParent()));
 		  
+		  //Group con2 = new Group(getFieldEditorParent(), SWT.SHADOW_OUT);
+		  Composite top = new Composite(getFieldEditorParent(), SWT.LEFT);
+		  
+			// Sets the layout data for the top composite's 
+			// place in its parent's layout.
+		  
+		  GridData data=new GridData(GridData.FILL_HORIZONTAL);
+		  top.setLayoutData(data);
+
+			// Sets the layout for the top composite's 
+			// children to populate.
+		  top.setLayout(new GridLayout());
+		  
+		  data.horizontalAlignment = GridData.FILL;
+		  data.grabExcessHorizontalSpace = true;
+		  Group con = new Group(top, SWT.SHADOW_OUT);
+		  Group ano = new Group(top, SWT.SHADOW_OUT);
+		  Group sop = new Group(top, SWT.SHADOW_OUT);
+		  
+		  con.setText("Conact Information");
+		  ano.setText("Anonymization Options");
+		  sop.setText("Sending Options");
+		  
 		  
 		addField(new StringFieldEditor("NAME", "Name:",
-			        getFieldEditorParent()));
+			        con));
 		addField(new StringFieldEditor("EMAIL", "Email:",
-			        getFieldEditorParent()));
+			        con));
 		  
 		addField(new BooleanFieldEditor("ANOPACK",
-			        "&Anonymize package, class and method names", getFieldEditorParent()));
+			        "&Anonymize package, class and method names", ano));
 	    addField(new BooleanFieldEditor("ANOLOG",
-	        "&Anonymize error log messages", getFieldEditorParent()));
+	        "&Anonymize error log messages", ano));
 	    
 	    addField(new RadioGroupFieldEditor("SENDOPTIONS",
 	        "Select the sending preferences", 1,
 	        new String[][] { { "&Report the error in Jira", "Jira" },
-	            { "&Report the error in Jira and send an email", "Email" } }, getFieldEditorParent()));
+	            { "&Report the error in Jira and send an email", "Email" } }, sop));
 	    
 		addField(new StringFieldEditor("USERNAME", "Username:",
-		        getFieldEditorParent()));
+		        sop));
 		addField(new StringFieldEditor("PASSWORD", "Password:",
-		        getFieldEditorParent()));
+		        sop));
 
 	  }
 
