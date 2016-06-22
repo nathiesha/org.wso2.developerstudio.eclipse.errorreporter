@@ -20,7 +20,6 @@ package org.wso2.developerstudio.eclipse.errorreporter.ui.prefs;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 //import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.RadioGroupFieldEditor;
 //import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
@@ -76,6 +75,8 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 	//Jira user credentials
 	private static final String JIRA_URL="JIRA_URL";
 	private static final String JIRA_URL_S="Remote Jira URL:";
+	private static final String PROJECT_KEY="PROJECT_KEY";
+	private static final String PROJECT_KEY_S="Project Key:";
 	private static final String JIRA_USERNAME="JIRA_USERNAME";
 	private static final String JIRA_USERNAME_S="Username:";
 	private static final String JIRA_PASSWORD="JIRA_PASSWORD";
@@ -150,6 +151,8 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 		
 		addField(new StringFieldEditor(JIRA_URL,JIRA_URL_S ,
 				juc));
+		addField(new StringFieldEditor(PROJECT_KEY,PROJECT_KEY_S ,
+				juc));
 		addField(new StringFieldEditor(JIRA_USERNAME,JIRA_USERNAME_S ,
 		        juc));
 		addField(new StringFieldEditor(JIRA_PASSWORD,JIRA_PASSWORD_S ,
@@ -168,7 +171,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 	  
 
 	  public void initializeDefaultPreferences() {
-	    IPreferenceStore store = Activator.getDefault().getPreferenceStore();
+	    //IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 		 // store.setDefault(NAME, "hello");
 	  }
 	  

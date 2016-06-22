@@ -46,6 +46,7 @@ public class ErrorReporter {
 	private JSONObject json;
 	
 	private static final String TARGET_URL="https://wso2.org/jira/rest/api/2/issue";
+	private static final String TITLE="Developer Studio Error Report";
 
 	
 	public ErrorReporter(IStatus status) {
@@ -158,11 +159,13 @@ public class ErrorReporter {
 	
 	public void sendJira()
 	{
-				System.out.println("Sending Jira");
+
 				json=reportGenerator.createIssue();
 				System.out.println(json.toString());
 				RemoteJiraConnector jiraCon= new RemoteJiraConnector();
-				String userCredentials = "nathieshamaddage@gmail.com:userDev123";
+				String username=Activator.getDefault().getPreferenceStore().getString("JIRA_USERNAME");
+				String password=Activator.getDefault().getPreferenceStore().getString("JIRA_PASSWORD");
+				String userCredentials = username+":"+password;
 				String response=jiraCon.excutePost(TARGET_URL, json,userCredentials);
 				System.out.println(response);
 						
@@ -171,16 +174,14 @@ public class ErrorReporter {
 	
 	public void sendEmail(String filePath) throws IOException, AddressException, MessagingException
 	{
-		EmailSender emailS=new EmailSender();
-		String username=Activator.getDefault().getPreferenceStore().getString("USERNAME");
-		String password=Activator.getDefault().getPreferenceStore().getString("PASSWORD");
-		String recipientEmail="";
-		String ccEmail=""; 
-		String title="Developer Studio Error Report";
-		String message;
 
-			message = readFile(filePath);
-			emailS.Send(username,password,recipientEmail,ccEmail,title,message);
+		String username=Activator.getDefault().getPreferenceStore().getString("GMAIL USERNAME");
+		String password=Activator.getDefault().getPreferenceStore().getString("GMAIL PASSWORD");
+		String recipientEmail=Activator.getDefault().getPreferenceStore().getString("REC EMAIL");;
+		String message=readFile(filePath);
+		
+		EmailSender emailS=new EmailSender(username, password, recipientEmail, TITLE, message);
+		emailS.Send();
 
 		
 	}

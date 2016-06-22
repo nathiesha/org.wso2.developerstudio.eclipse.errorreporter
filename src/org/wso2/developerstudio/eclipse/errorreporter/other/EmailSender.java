@@ -31,13 +31,28 @@ import javax.mail.internet.MimeMessage;
 
 public class EmailSender {
 
+
+
 	private Properties props;
 	private Session session;
+	private String username;
+	private String password;
+	private String recEmail;
+	private String title;
+	private String message;
+	
+	public EmailSender(String username, String password, String recEmail, String title, String message) {
+		super();
+		this.username = username;
+		this.password = password;
+		this.recEmail = recEmail;
+		this.title = title;
+		this.message = message;
+	}
 
 	private static final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
 
-	public void Send(final String username, final String password, String recipientEmail, String ccEmail, String title,
-			String message) throws AddressException, MessagingException {
+	public void Send() throws AddressException, MessagingException {
 		Security.addProvider(new Provider());
 
 		// Get a Properties object
@@ -59,11 +74,9 @@ public class EmailSender {
 		// -- Set the FROM and TO fields --
 		msg.setFrom(new InternetAddress());
 		//
-		msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse("nathieshamaddage@gmail.com", false));
+		msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recEmail, false));
 
-		if (ccEmail.length() > 0) {
-			msg.setRecipients(Message.RecipientType.CC, InternetAddress.parse(ccEmail, false));
-		}
+
 
 		msg.setSubject(title);
 		msg.setText(message, "utf-8");
@@ -71,7 +84,7 @@ public class EmailSender {
 
 		SMTPTransport t = (SMTPTransport) session.getTransport("smtps");
 
-		t.connect("smtp.gmail.com", "devstudiouser@gmail.com", "userdev123");
+		t.connect("smtp.gmail.com", username, password);
 		t.sendMessage(msg, msg.getAllRecipients());
 		t.close();
 	}

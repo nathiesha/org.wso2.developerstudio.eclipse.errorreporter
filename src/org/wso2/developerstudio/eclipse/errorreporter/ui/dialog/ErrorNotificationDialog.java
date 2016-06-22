@@ -60,6 +60,7 @@ public class ErrorNotificationDialog extends ErrorDialog {
 
 	private Button detailsButton;
 	private Clipboard clipboard;
+	private BufferedReader br;
 
 
 	public ErrorNotificationDialog(Shell parentShell, 
@@ -179,7 +180,7 @@ public class ErrorNotificationDialog extends ErrorDialog {
 	}
 
 	private String readFile(String fileName) throws IOException {
-		BufferedReader br = new BufferedReader(new FileReader(fileName));
+		br = new BufferedReader(new FileReader(fileName));
 
 			StringBuilder sb = new StringBuilder();
 			String line = br.readLine();

@@ -39,12 +39,12 @@ public class RemoteJiraConnector {
 
 	public  String excutePost(String targetURL, JSONObject issue,String userCredentials) {
 
-		  urlParameters="{\"fields\": {\"project\":{ \"key\": \"TOOLS\"},\"summary\": \"GSOC ERROR REPORTER TEST.\",\"description\": \"Creating of an issue through Developer Studio using the REST API\",\"issuetype\": {\"name\": \"Bug\"}}}";	
-		  String targetURL1="https://wso2.org/jira/rest/api/2/issue";
+		  urlParameters=issue.toString();
+		  //urlParameters="{\"fields\": {\"project\":{ \"key\": \"TOOLS\"},\"summary\": \"GSOC ERROR REPORTER TEST.\",\"description\": \"Creating of an issue through Developer Studio using the REST API\",\"issuetype\": {\"name\": \"Bug\"}}}";	
 		  try {
 			  
 		    //Create connection
-		    URL url = new URL(targetURL1);
+		    URL url = new URL(targetURL);
 		    connection = (HttpURLConnection)url.openConnection();
 			String basicAuth = "Basic " + new String(new Base64().encode(userCredentials.getBytes()));
 			connection.setRequestProperty ("Authorization", basicAuth);
@@ -95,8 +95,8 @@ public class RemoteJiraConnector {
 		  }
 		}
 
-	@SuppressWarnings("unused")
-	private String getAuth(String username, String password) {
+
+	public String getAuth(String username, String password) {
 		try {
 			String s = username + ":" + password;
 			byte[] byteArray = s.getBytes();

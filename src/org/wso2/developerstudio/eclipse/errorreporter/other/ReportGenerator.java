@@ -82,9 +82,15 @@ public class ReportGenerator {
 		json = new JSONObject();
 		String summary="Testing error reporting tool-GSoC Project-" +errorInformation.getMessage();
 		String description=writeString();
+		
+		JSONObject js = new JSONObject();
+		js.put("key", PROJECT_KEY);
+		
+		JSONObject js2 = new JSONObject();
+		js2.put("name", iSSUE_TYPE_NAME);
 
-		json.put(PROJECT, new JSONObject().put("key", PROJECT_KEY));
-		json.put(ISSUE_TYPE, new JSONObject().put("name", iSSUE_TYPE_NAME.toString()));
+		json.put(PROJECT, js);
+		json.put(ISSUE_TYPE,js2);
 		json.put(SUMMARY, summary);
 		json.put(DESCRIPTION, description);
 

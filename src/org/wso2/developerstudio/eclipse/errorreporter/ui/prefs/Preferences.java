@@ -18,6 +18,7 @@ package org.wso2.developerstudio.eclipse.errorreporter.ui.prefs;
 
 
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
+import org.osgi.service.prefs.BackingStoreException;
 
 
 public class Preferences {
@@ -31,17 +32,13 @@ public class Preferences {
 	}
 	
 	
-	public void setPreferenceValue(String key, String value) {
+	public void setPreferenceValue(String key, String value) throws BackingStoreException {
 		
 		sub1.put(key, value);
-		try {
+
 		  // forces the application to save the preferences
 		  preferences.flush();
 
-		  } catch (org.osgi.service.prefs.BackingStoreException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 	
 
