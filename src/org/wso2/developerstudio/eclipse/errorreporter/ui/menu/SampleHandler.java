@@ -17,11 +17,9 @@
 package org.wso2.developerstudio.eclipse.errorreporter.ui.menu;
 
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.mail.MessagingException;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -29,17 +27,8 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.swt.widgets.Shell;
-import org.osgi.service.log.LogEntry;
-import org.osgi.service.log.LogListener;
-import org.wso2.developerstudio.eclipse.errorreporter.other.EmailSender;
-import org.wso2.developerstudio.eclipse.errorreporter.other.ErrorInformation;
 import org.wso2.developerstudio.eclipse.errorreporter.other.ErrorReporter;
-import org.wso2.developerstudio.eclipse.errorreporter.other.InfoCollector;
-import org.wso2.developerstudio.eclipse.errorreporter.other.RemoteJiraConnector;
-import org.wso2.developerstudio.eclipse.errorreporter.other.ReportGenerator;
-import org.wso2.developerstudio.eclipse.errorreporter.ui.dialog.ErrorNotificationDialog;
+
 
 
 //this is a sample class
@@ -74,8 +63,6 @@ public class SampleHandler extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 
-	
-		Shell shell = new Shell();
 	
 		try {
 		      String s = null;

@@ -20,6 +20,7 @@ package org.wso2.developerstudio.eclipse.errorreporter.ui.prefs;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 //import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.RadioGroupFieldEditor;
 //import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
@@ -32,11 +33,53 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.wso2.developerstudio.eclipse.errorreporter.Activator;
 
-/**
- * @author Nathie
- *
- */
+
 public class PreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
+	
+	private static final String DESCRIPTION="Set default sending option for Developer Studio Error Reporting tool";
+	
+	//group labels
+	private static final String CONTACT_INFO_GROUP="Conact Information";
+	private static final String ANO_OPTIONS_GROUP="Anonymization Options";
+	private static final String SEND_OPTIONS_GROUP="Sending Options";
+	private static final String GMAIL_USER_CRED="Gmail User Credentials";
+	private static final String JIRA_USER_CRED="Jira User Credentials";
+	
+	//contact information strings
+	private static final String NAME="NAME";
+	private static final String EMAIL_USER="EMAIL";
+	private static final String NAME_S="Name:";
+	private static final String EMAIL_USER_S="Email:";
+	
+	//annonymize options strings
+	private static final String ANO_PACK="ANOPACK";
+	private static final String ANO_PACK_S="&Anonymize package, class and method names";
+	private static final String ANO_LOG="ANOLOG";
+	private static final String ANO_LOG_S="&Anonymize error log messages";
+	
+	//send options Strings
+	private static final String SEND_OPTIONS="SENDOPTIONS";
+	private static final String SEND_OPTIONS_S="Select the sending preferences";
+	private static final String JIRA="Jira";
+	private static final String JIRA_S="&Report the error in Jira";
+	private static final String EMAIL="Email";
+	private static final String EMAIL_S="&Report the error in Jira and send an email";
+	
+	//Gmail user credentials
+	private static final String GMAIL_USERNAME="GMAIL USERNAME";
+	private static final String GMAIL_USERNAME_S="Gmail Username:";
+	private static final String GMAIL_PASSWORD="GMAIL PASSWORD";
+	private static final String GMAIL_PASSWORD_S="Password:";
+	private static final String REC_EMAIL="REC EMAIL";
+	private static final String REC_EMAIL_S="Recipient Email Address:";
+	
+	//Jira user credentials
+	private static final String JIRA_URL="JIRA_URL";
+	private static final String JIRA_URL_S="Remote Jira URL:";
+	private static final String JIRA_USERNAME="JIRA_USERNAME";
+	private static final String JIRA_USERNAME_S="Username:";
+	private static final String JIRA_PASSWORD="JIRA_PASSWORD";
+	private static final String JIRA_PASSWORD_S="Password:";
 
 
 	public PreferencePage()  {
@@ -45,10 +88,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 	  }
 
 	  public void createFieldEditors() {
-//	    addField(new DirectoryFieldEditor("PATH", "&Directory preference:",
-//	        getFieldEditorParent()));
-		  
-		  //Group con2 = new Group(getFieldEditorParent(), SWT.SHADOW_OUT);
+
 		  Composite top = new Composite(getFieldEditorParent(), SWT.LEFT);
 		  
 			// Sets the layout data for the top composite's 
@@ -66,37 +106,72 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 		  Group con = new Group(top, SWT.SHADOW_OUT);
 		  Group ano = new Group(top, SWT.SHADOW_OUT);
 		  Group sop = new Group(top, SWT.SHADOW_OUT);
+		  Group guc = new Group(top, SWT.SHADOW_OUT);
+		  Group juc = new Group(top, SWT.SHADOW_OUT);
 		  
-		  con.setText("Conact Information");
-		  ano.setText("Anonymization Options");
-		  sop.setText("Sending Options");
+		  //set text to groups
+		  con.setText(CONTACT_INFO_GROUP);
+		  ano.setText(ANO_OPTIONS_GROUP);
+		  sop.setText(SEND_OPTIONS_GROUP);
+		  guc.setText(GMAIL_USER_CRED);
+		  juc.setText(JIRA_USER_CRED);
 		  
 		  
-		addField(new StringFieldEditor("NAME", "Name:",
+		addField(new StringFieldEditor(NAME, NAME_S,
 			        con));
-		addField(new StringFieldEditor("EMAIL", "Email:",
+		addField(new StringFieldEditor(EMAIL_USER,EMAIL_USER_S ,
 			        con));
+		
+		
 		  
-		addField(new BooleanFieldEditor("ANOPACK",
-			        "&Anonymize package, class and method names", ano));
-	    addField(new BooleanFieldEditor("ANOLOG",
-	        "&Anonymize error log messages", ano));
+		addField(new BooleanFieldEditor(ANO_PACK,
+			        ANO_PACK_S, ano));
+	    addField(new BooleanFieldEditor(ANO_LOG,
+	    			ANO_LOG_S, ano));
 	    
-	    addField(new RadioGroupFieldEditor("SENDOPTIONS",
-	        "Select the sending preferences", 1,
-	        new String[][] { { "&Report the error in Jira", "Jira" },
-	            { "&Report the error in Jira and send an email", "Email" } }, sop));
 	    
-		addField(new StringFieldEditor("USERNAME", "Username:",
-		        sop));
-		addField(new StringFieldEditor("PASSWORD", "Password:",
-		        sop));
+	    
+	    
+	    addField(new RadioGroupFieldEditor(SEND_OPTIONS,
+	        SEND_OPTIONS_S, 1,
+	        new String[][] { { JIRA_S, JIRA },
+	            { EMAIL_S, EMAIL } }, sop));
+	    
+	    
+	    
+	    
+		addField(new StringFieldEditor(GMAIL_USERNAME,GMAIL_USERNAME_S ,
+		        guc));
+		addField(new StringFieldEditor(GMAIL_PASSWORD,GMAIL_PASSWORD_S ,
+				guc));
+		addField(new StringFieldEditor(REC_EMAIL,REC_EMAIL_S ,
+				guc));
+		
+		
+		addField(new StringFieldEditor(JIRA_URL,JIRA_URL_S ,
+				juc));
+		addField(new StringFieldEditor(JIRA_USERNAME,JIRA_USERNAME_S ,
+		        juc));
+		addField(new StringFieldEditor(JIRA_PASSWORD,JIRA_PASSWORD_S ,
+				juc));
+
+		
+		
 
 	  }
 
 	  @Override
 	  public void init(IWorkbench workbench) {
 	    setPreferenceStore(Activator.getDefault().getPreferenceStore());
-	    setDescription("Set default sending option for Developer Studio Error Reporting tool");
+	    setDescription(DESCRIPTION);
 	  }
+	  
+
+	  public void initializeDefaultPreferences() {
+	    IPreferenceStore store = Activator.getDefault().getPreferenceStore();
+		 // store.setDefault(NAME, "hello");
+	  }
+	  
+
+
 	} 

@@ -162,7 +162,7 @@ public class ErrorReporter {
 				json=reportGenerator.createIssue();
 				System.out.println(json.toString());
 				RemoteJiraConnector jiraCon= new RemoteJiraConnector();
-				String userCredentials = "";
+				String userCredentials = "nathieshamaddage@gmail.com:userDev123";
 				String response=jiraCon.excutePost(TARGET_URL, json,userCredentials);
 				System.out.println(response);
 						
