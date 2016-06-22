@@ -19,23 +19,24 @@ package org.wso2.developerstudio.eclipse.errorreporter.other;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.Version;
 import org.wso2.developerstudio.eclipse.errorreporter.Activator;
 
 public class InfoCollector {
 
-	IStatus status;
-	String plugin;
-	ErrorInformation errorInformation;
+	private IStatus status;
+	private ErrorInformation errorInformation;
 
-	public InfoCollector(IStatus status, String plugin) {
+	public InfoCollector(IStatus status) {
 
-		this.plugin = plugin;
 		this.status = status;
-		errorInformation=new ErrorInformation();
+		errorInformation = new ErrorInformation();
 	}
 
+	// get all the information regarding the error
 	public ErrorInformation getInformation() {
 
 		getErrorInfo();
@@ -47,11 +48,16 @@ public class InfoCollector {
 
 	}
 
-	
 	// collect the information regarding the exception
 	private void getErrorInfo() {
 
-		errorInformation.setPluginId(plugin);
+		errorInformation.setPluginId(status.getPlugin());
+		//TODO exception might occur here
+		//status.getPlugin()
+		Bundle bundle = Platform.getBundle("com.google.gson");
+		Version version = bundle.getVersion();
+		errorInformation.setPluginVersion(version.toString());
+		
 		errorInformation.setSeverity(status.getSeverity());
 		errorInformation.setMessage(status.getMessage());
 		errorInformation.setCode(status.getCode());
@@ -88,22 +94,20 @@ public class InfoCollector {
 
 	}
 
-	//collect information regarding the multistatus
+	// collect information regarding the multistatus
 	private void getMultiStatusInfo() {
-		
+
 		StringBuilder message = new StringBuilder();
-		
-		if(isMultiStatus(status))
-		{
-			message=extractMultiStatusInfo(status,0);
+
+		if (isMultiStatus(status)) {
+			message = extractMultiStatusInfo(status, 0);
 
 		}
-		
-		else
-		{
+
+		else {
 			message.append("The exception does not contain any multi status information");
 		}
-		
+
 		errorInformation.setMultiStatus(message.toString());
 	}
 
@@ -118,32 +122,42 @@ public class InfoCollector {
 			return false;
 		}
 	}
-	
-	//Extract multi status info
-	private StringBuilder extractMultiStatusInfo( final IStatus status, final int level )
-	{
-	    final StringBuilder message = new StringBuilder();
-	    if ( status == null )
-	    {
-	        return message;
-	    }
-	    message.append( "\n" );
-	    for ( int nestingLevel = 0; nestingLevel < level; ++nestingLevel )
-	    {
-	        message.append( ' ' );
-	    }
-	    
-	    message.append( status.getMessage() );
-	    if ( status.isMultiStatus() )
-	    {
-	        for ( final IStatus child : status.getChildren() )
-	        {
-	            message.append( extractMultiStatusInfo( child, level + 1 ) );
-	        }
-	    }
-	    return message;
-	}
-	
 
+	// Extract multi status info
+	private StringBuilder extractMultiStatusInfo(IStatus status, int level) {
+		final StringBuilder message = new StringBuilder();
+		if (status == null) {
+			return message;
+		}
+		message.append("\n");
+		for (int nestingLevel = 0; nestingLevel < level; ++nestingLevel) {
+			message.append(' ');
+		}
+
+		message.append(status.getMessage());
+		if (status.isMultiStatus()) {
+			for (final IStatus child : status.getChildren()) {
+				message.append(extractMultiStatusInfo(child, level + 1));
+			}
+		}
+		return message;
+	}
+
+	// getters and setters
+	public IStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(IStatus status) {
+		this.status = status;
+	}
+
+	public ErrorInformation getErrorInformation() {
+		return errorInformation;
+	}
+
+	public void setErrorInformation(ErrorInformation errorInformation) {
+		this.errorInformation = errorInformation;
+	}
 
 }

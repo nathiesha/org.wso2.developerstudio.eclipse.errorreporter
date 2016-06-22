@@ -21,11 +21,13 @@ import org.eclipse.ui.IStartup;
 
 public class Startup implements IStartup {
 
+	private LogListener listener;
+
 	@Override
 	public void earlyStartup() {
 
 		// attach a listener to the eclipse error log
-		LogListener listener = new LogListener();
+		listener = new LogListener();
 		Platform.addLogListener(listener);
 
 		// attach a listener to the dev studio plug-in error log

@@ -29,6 +29,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.widgets.Shell;
+import org.json.simple.JSONObject;
 import org.wso2.developerstudio.eclipse.errorreporter.Activator;
 import org.wso2.developerstudio.eclipse.errorreporter.ui.dialog.ErrorNotificationDialog;
 
@@ -37,26 +38,46 @@ import org.wso2.developerstudio.eclipse.errorreporter.ui.dialog.ErrorNotificatio
 public class ErrorReporter {
 	
 	private IStatus status;
-	private String plugin;
-	private int input;//to get user input from dialog
+	private int userResponse;//to get user input from dialog
+	private InfoCollector errorInfoCollector;
+	private ErrorInformation errorInformation;
+	private ReportGenerator reportGenerator;
+	private String filePath;
+	private JSONObject json;
+	
+	private static final String TARGET_URL="https://wso2.org/jira/rest/api/2/issue";
 
-	public ErrorReporter(IStatus status, String plugin) {
+	
+	public ErrorReporter(IStatus status) {
 		this.status = status;
-		this.plugin = plugin;
 
 	}
 	
 	//this method reports the error to the Developer Studio user
-	public void reportError() {
+	//takes necessary action based on the user response
+	public void reportError(){
 		
-		InfoCollector errorInfoCollector = new InfoCollector(status, plugin);
-		ErrorInformation errorInfo=errorInfoCollector.getInformation();
-		ReportGenerator reportGen=new ReportGenerator(errorInfo);
-		String filePath=reportGen.storeReport(errorInfo);
-		input=openErrorDialog(errorInfo);
+		//create an InfoCollector
+		//get error information and assign it to errorInformation object
+		errorInfoCollector = new InfoCollector(status);
+		errorInformation=errorInfoCollector.getInformation();
+		
+		//create reportGenerator object
+		//store the error report and user space
+		reportGenerator=new ReportGenerator(errorInformation);
+		try {
+			filePath=reportGenerator.storeReport();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 
 		
-		switch(input)
+		userResponse=openErrorDialog();
+
+		
+		switch(userResponse)
 		{
 			case 0:
 			try {
@@ -65,6 +86,9 @@ public class ErrorReporter {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (MessagingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -77,28 +101,56 @@ public class ErrorReporter {
 		
 	}
 	
-	public void sendReport(String filePath) throws AddressException, MessagingException{
+	//open up the error dialog box and get user input
+		public int openErrorDialog() {
+			Shell shell = new Shell();
+			ErrorNotificationDialog errDialog=new ErrorNotificationDialog(shell, filePath, status);
+			return errDialog.open();
+		}
+	
+	public void sendReport(final String filePath) throws AddressException, MessagingException, IOException{
 		
-		 //   String choice = Activator.getDefault().getPreferenceStore().getString("CHOICE");
-		 //   System.out.println(choice);
 		if(Activator.getDefault().getPreferenceStore()
 				.getBoolean("Jira"))
 		{
 			
-			sendJira();
+			Job reporterJob = new Job("Reporting the Developer Studio Error") {
+				@Override
+				protected IStatus run(IProgressMonitor monitor) {
+						sendJira();
+						return Status.OK_STATUS;
+				}
+		     };
+		     
+		     reporterJob.setUser(true);
+		     reporterJob.schedule();
 			
 		}
+			
+		
 		
 		else
 			
-		{
-			sendJira();
-			try {
-				sendEmail(filePath);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		{	
+			Job reporterJob = new Job("Reporting the Developer Studio Error") {
+				@Override
+				protected IStatus run(IProgressMonitor monitor) {
+
+
+							try {
+								sendJira();
+								sendEmail(filePath);
+							} catch (IOException | MessagingException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+					
+							return Status.OK_STATUS;
+				}
+		     };
+		     
+		     reporterJob.setUser(true);
+		     reporterJob.schedule();
 			
 		}
 		
@@ -106,16 +158,13 @@ public class ErrorReporter {
 	
 	public void sendJira()
 	{
-		Job reporterJob = new Job("Report the Developer Studio Error") {
-			@Override
-			protected IStatus run(IProgressMonitor monitor) {
-				// TODO send report to jira only
-				return Status.OK_STATUS;
-			}
-	     };
-	     
-	     reporterJob.setUser(true);
-	     reporterJob.schedule();		
+				System.out.println("Sending Jira");
+				json=reportGenerator.createIssue();
+				System.out.println(json.toString());
+				RemoteJiraConnector jiraCon= new RemoteJiraConnector();
+				String userCredentials = "nathieshamaddage@gmail.com:userDev123";
+				jiraCon.excutePost(TARGET_URL, json,userCredentials);
+						
 		
 	}
 	
@@ -155,23 +204,9 @@ public class ErrorReporter {
 	    }
 	}
 	
-	//open up the error dialog box and get user input
-	public int openErrorDialog(ErrorInformation errorInfo) {
-		Shell shell = new Shell();
-		String dialogTitle="A problem was detected";
-		String message= "An unexpected error occured. Please press send to report the error to the development team";
-		return ErrorNotificationDialog.openError(shell, dialogTitle, message, errorInfo, status);
-	}
+	
 
 
-	//getters and setters
-	public String getPlugin() {
-		return plugin;
-	}
-
-	public void setPlugin(String plugin) {
-		this.plugin = plugin;
-	}
 
 	public IStatus getStatus() {
 		return status;

@@ -17,10 +17,6 @@
 
 package org.wso2.developerstudio.eclipse.errorreporter.other;
 
-/**
- * @author Nathie
- *
- */
 public class ErrorInformation {
 
 	// error information
@@ -29,7 +25,6 @@ public class ErrorInformation {
 		private int code;
 		private int severity;
 		private String message;
-		private String fingerprint;//
 		private Exception e;
 		private String exception;
 		private String anoId;
@@ -38,7 +33,7 @@ public class ErrorInformation {
 		private String name;
 		private String email;
 		private String comment;
-		private String severity2;
+		private String severityUser;
 
 		// system information
 		private String eclipseBuildId;
@@ -99,13 +94,6 @@ public class ErrorInformation {
 			this.message = message;
 		}
 
-		public String getFingerprint() {
-			return fingerprint;
-		}
-
-		public void setFingerprint(String fingerprint) {
-			this.fingerprint = fingerprint;
-		}
 
 		public String getAnoId() {
 			return anoId;
@@ -196,11 +184,11 @@ public class ErrorInformation {
 		}
 
 		public String getSeverity2() {
-			return severity2;
+			return severityUser;
 		}
 
 		public void setSeverity2(String severity2) {
-			this.severity2 = severity2;
+			this.severityUser = severity2;
 		}
 
 		public Bundles[] getBundleArray() {

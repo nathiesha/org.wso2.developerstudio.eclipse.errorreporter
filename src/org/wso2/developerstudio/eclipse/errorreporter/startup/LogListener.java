@@ -33,9 +33,9 @@ public class LogListener implements ILogListener {
 		// method to check whether the error belongs to dev studio
 		if (loggedStatus.getSeverity() == IStatus.ERROR && plugin.contains("org.wso2.developerstudio")) {
 
-			// create error reporter
-			ErrorReporter errReporter = new ErrorReporter(status, plugin);
-			errReporter.reportError();
+			// create error reporter object
+			ErrorReporter errorReporter = new ErrorReporter(status);
+			errorReporter.reportError();
 
 		}
 

@@ -31,6 +31,8 @@ import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.widgets.Shell;
+import org.osgi.service.log.LogEntry;
+import org.osgi.service.log.LogListener;
 import org.wso2.developerstudio.eclipse.errorreporter.other.EmailSender;
 import org.wso2.developerstudio.eclipse.errorreporter.other.ErrorInformation;
 import org.wso2.developerstudio.eclipse.errorreporter.other.ErrorReporter;
@@ -68,103 +70,27 @@ public class SampleHandler extends AbstractHandler {
 	public SampleHandler() {
 	}
 
-	/**
-	 * the command has been executed, so extract extract the needed information
-	 * from the application context.
-	 */
+
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		//IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
-		// MessageDialog.openInformation(
-		// window.getShell(),
-		// "ErrorReporterTool",
-		// "Hello, Eclipse world");
-
-		
-//		RemoteJiraConnector jira=new RemoteJiraConnector();
-//		try {
-//			jira.get();
-//		} catch (ClientProtocolException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		
-
-
-		
+	
 		Shell shell = new Shell();
-//		ErrorNotifyDialog dialog = new ErrorNotifyDialog(shell);
-//		dialog.open();
-
-//		RemoteJiraConnector j=new RemoteJiraConnector();
-//		try {
-//			j.Post();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		return null;
-		
-//		RemoteJiraConnector jv=new RemoteJiraConnector();
-//		System.out.println("createdClient");
-//		@SuppressWarnings("static-access")
-//		String response=jv.excutePost("","");
-//		System.out.println(response);
-		
-//		ReportGenerator rg=new ReportGenerator();
-//		rg.createIssue(null, null, null, null);
-		
-//		EmailSender es=new EmailSender();
-//		try {
-//			es.Send("", "", "nathieshamaddage@gmail.com", "", "Error Reporting", " This is a sample email. Trying to send an error report to test the dev studio error reporting plugin");
-//		} catch (MessagingException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		String[][] ui=new String[2][2];
-//		ui[0][0]="name";
-//		ui[0][1]="nathiesha";
-//		ui[1][0]="age";
-//		ui[1][1]="23";
-//		
-//
-////		InfoCollector ic=new InfoCollector(status, plugin)
-////		ReportGenerator rg=new ReportGenerator(ic.getInformation());
-////		
-//		
-//		ReportGenerator rg=new ReportGenerator(ui);
-//		try {
-//			rg.createReport();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		
-
-//		int input;
-//		IStatus i = null;
-//		ErrorReporter er=new ErrorReporter(i, "");
-//		input=er.openErrorDialog();
-//		System.out.println(input);
-		
-		
-		
+	
 		try {
 		      String s = null;
 		      System.out.println(s.length());
 		    } catch (NullPointerException e) {
 		      // build the error message and include the current stack trace
 		      MultiStatus status = createMultiStatus(e.getLocalizedMessage(), e);
+		      ErrorReporter er=new ErrorReporter(status);
+		      er.reportError();
 		      // show error dialog
-		      InfoCollector ic=new InfoCollector(status, "plugin");
-		      ErrorInformation ei=ic.getInformation();
-		      ReportGenerator r=new ReportGenerator(ei);
-		      r.storeReport(ei);
-		     // System.out.println(ei.getMessage()+" "+ei.getCode()+" "+ei.getComment()+" "+ei.getEclipseBuildId()+" "+ei.getExceptionS()+" "+ei.getEmail()+" "+ei.getOsgiArch());
-		      int i=ErrorNotificationDialog.openError(shell, "A problem was detected", "An unexpected error occured. Please press send to report the error to the development team", ic.getInformation(),status);
+//		      InfoCollector ic=new InfoCollector(status);
+//		      ErrorInformation ei=ic.getInformation();
+//		      ReportGenerator r=new ReportGenerator(ei);
+//		      r.storeReport(ei);
+//		     // System.out.println(ei.getMessage()+" "+ei.getCode()+" "+ei.getComment()+" "+ei.getEclipseBuildId()+" "+ei.getExceptionS()+" "+ei.getEmail()+" "+ei.getOsgiArch());
+//		      int i=ErrorNotificationDialog.openError(shell, "A problem was detected", "An unexpected error occured. Please press send to report the error to the development team", ic.getInformation(),status);
 
 		    }
 		return event;
@@ -178,11 +104,11 @@ public class SampleHandler extends AbstractHandler {
 
 	     for (StackTraceElement stackTrace: stackTraces) {
 	      Status status = new Status(IStatus.ERROR,
-	          "com.example.e4.rcp.todo", stackTrace.toString());
+	          "org.wso2.developerstudio.eclipse", stackTrace.toString());
 	      childStatuses.add(status);
 	    }
 
-	    MultiStatus ms = new MultiStatus("com.example.e4.rcp.todo",
+	    MultiStatus ms = new MultiStatus("org.wso2.developerstudio.eclipse",
 	        IStatus.ERROR, childStatuses.toArray(new Status[] {}),
 	        t.toString(), t);
 	    return ms;

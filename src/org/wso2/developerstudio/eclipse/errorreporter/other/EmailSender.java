@@ -30,18 +30,20 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-/**
- * @author Nathie
- *
- */
+
 public class EmailSender {
+	
+	private Properties props;
+	private Session session;
+	
+    private static final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
 
 	 public void Send(final String username, final String password, String recipientEmail, String ccEmail, String title, String message) throws AddressException, MessagingException {
 	        Security.addProvider(new Provider());
-	        final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
+
 
 	        // Get a Properties object
-	        Properties props = System.getProperties();
+	        props = System.getProperties();
 	        props.setProperty("mail.smtps.host", "smtp.gmail.com");
 	        props.setProperty("mail.smtp.socketFactory.class", SSL_FACTORY);
 	        props.setProperty("mail.smtp.socketFactory.fallback", "false");
@@ -49,23 +51,16 @@ public class EmailSender {
 	        props.setProperty("mail.smtp.socketFactory.port", "465");
 	        props.setProperty("mail.smtps.auth", "true");
 
-	        /*
-	        If set to false, the QUIT command is sent and the connection is immediately closed. If set 
-	        to true (the default), causes the transport to wait for the response to the QUIT command.
 
-	        ref :   http://java.sun.com/products/javamail/javadocs/com/sun/mail/smtp/package-summary.html
-	                http://forum.java.sun.com/thread.jspa?threadID=5205249
-	                smtpsend.java - demo program from javamail
-	        */
 	        props.put("mail.smtps.quitwait", "false");
 
-	        Session session = Session.getInstance(props, null);
+	        session = Session.getInstance(props, null);
 
 	        // -- Create a new message --
 	        final MimeMessage msg = new MimeMessage(session);
 
 	        // -- Set the FROM and TO fields --
-	        msg.setFrom(new InternetAddress("devstudiouser@gmail.com"));
+	        msg.setFrom(new InternetAddress());
 	        // 
 	        msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse("nathieshamaddage@gmail.com", false));
 

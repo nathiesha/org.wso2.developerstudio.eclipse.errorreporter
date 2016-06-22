@@ -1,26 +1,22 @@
 /*
-* Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 
 package org.wso2.developerstudio.eclipse.errorreporter.ui.dialog;
 
-/**
- * @author Nathie
- *
- */
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -46,68 +42,52 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
-import org.wso2.developerstudio.eclipse.errorreporter.other.ErrorInformation;
+
 
 
 public class ErrorNotificationDialog extends ErrorDialog {
 
-	private static final Object NESTING_INDENT = " ";
+	private static final String NESTING_INDENT = " ";
+	private static final String DIALOG_TITLE="A problem was detected";
+	private static final String DIALOG_MESSAGE= "An unexpected error occured. Please press send to report the error to the development team";
+	private static final int DISPLAY_MASK = 0xFFFF;
+
+	private String filePath;
+	private IStatus status;
+
 	private List list;
 	private boolean listCreated = false;
-	private ErrorInformation status;
-	private IStatus statusI;
+
 	private Button detailsButton;
 	private Clipboard clipboard;
-	private int displayMask = 0xFFFF;
-	private String title;
-	//private int value=0;
-	
-	public ErrorNotificationDialog(Shell parentShell, String dialogTitle, String message,
-			ErrorInformation status, int displayMask,IStatus statusI) {
-		super(parentShell, message, message, statusI, displayMask);
-		this.title = dialogTitle == null ? JFaceResources
-				.getString("A problem was detected!") : //$NON-NLS-1$
-				dialogTitle;
-		this.message = message == null ? status.getMessage()
-				: JFaceResources
-						.format(
-								"An unexpected error occured. Please press OK to report the error to the development team\n\n", new Object[] { message, status.getMessage() }); //$NON-NLS-1$
-		this.status = status;
-		this.displayMask = displayMask;
-		this.statusI=statusI;
+
+
+	public ErrorNotificationDialog(Shell parentShell, 
+			String filePath,IStatus status) {
+		super(parentShell, DIALOG_TITLE, DIALOG_MESSAGE, status, DISPLAY_MASK);
+
+		this.filePath = filePath;
+		this.status=status;
 
 	}
-	
+
+
 	@Override
 	protected void configureShell(Shell shell) {
 		super.configureShell(shell);
-		shell.setText(title);
-	}
-	
-	@Override
-	protected void buttonPressed(int id) {
-		if (id == IDialogConstants.DETAILS_ID) {
-			// was the details button pressed?
-			toggleDetailsArea();
-		} else {
-			buttonPress(id);
-		}
+		shell.setText(DIALOG_TITLE);
 	}
 
-	private void buttonPress(int id) {
-		if(id==IDialogConstants.CANCEL_ID)
-		{
-			setReturnCode(CANCEL);
-			close();
-		}
-		
-		if(id==IDialogConstants.OK_ID)
-		{
-			setReturnCode(OK);
-			close();
-		}
+
+	@Override
+	public int open() {
+
+		super.open();
+		return getReturnCode();
+
 	}
-	
+
+
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
 		// create OK CANCEL and Details buttons
@@ -115,32 +95,10 @@ public class ErrorNotificationDialog extends ErrorDialog {
 				true);
 		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL,
 				true);
-		createDetailsButton(parent);
-	}
-	
-
-	@Override
-	protected void createDetailsButton(Composite parent) {
-		if (shouldShowDetailsButton()) {
-			detailsButton = createButton(parent, IDialogConstants.DETAILS_ID,
-					IDialogConstants.SHOW_DETAILS_LABEL, false);
-		}
-	}
-	
-
-	public static int openError(Shell parent, String dialogTitle,
-			String message, ErrorInformation status,IStatus statusI) {
-		return openError(parent, dialogTitle, message, status, IStatus.OK
-				| IStatus.INFO | IStatus.WARNING | IStatus.ERROR, statusI);
+		detailsButton = createButton(parent, IDialogConstants.DETAILS_ID,
+				IDialogConstants.SHOW_DETAILS_LABEL, false);
 	}
 
-	
-	public static int openError(Shell parentShell, String title,
-			String message, ErrorInformation status, int displayMask,IStatus statusI) {
-		ErrorNotificationDialog dialog = new ErrorNotificationDialog(parentShell, title, message,
-				status, displayMask,statusI);
-		return dialog.open();
-	}
 
 	@Override
 	protected List createDropDownList(Composite parent) {
@@ -148,7 +106,12 @@ public class ErrorNotificationDialog extends ErrorDialog {
 		list = new List(parent, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL
 				| SWT.MULTI);
 		// fill the list
-		populateList(list);
+		try {
+			addReportInfo(list,filePath);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		GridData data = new GridData(GridData.HORIZONTAL_ALIGN_FILL
 				| GridData.GRAB_HORIZONTAL | GridData.VERTICAL_ALIGN_FILL
 				| GridData.GRAB_VERTICAL);
@@ -173,58 +136,74 @@ public class ErrorNotificationDialog extends ErrorDialog {
 		return list;
 	}
 
-	private void populateList(List listToPopulate) {
-		
-		addReportInfo(listToPopulate,status);
+
+	@Override
+	protected void buttonPressed(int id) {
+		if (id == IDialogConstants.DETAILS_ID) {
+			// was the details button pressed?
+			toggleDetailsArea();
+		} else {
+			buttonPress(id);
+		}
 	}
 
-	private void addReportInfo(List listToPopulate, ErrorInformation status2) {
-		StringBuffer sb = new StringBuffer();
-		try {
-			sb.append(readFile("G:\\c users\\Desktop\\eclipseMars\\ErrorReports\\20160619_190336.txt"));
-		} catch (IOException e) {
-			e.printStackTrace();
+
+	private void buttonPress(int id) {
+		if(id==IDialogConstants.CANCEL_ID)
+		{
+			setReturnCode(CANCEL);
+			close();
 		}
+
+		if(id==IDialogConstants.OK_ID)
+		{
+			setReturnCode(OK);
+			close();
+		}
+	}
+
+
+
+
+	private void addReportInfo(List listToPopulate, String fileName) throws IOException {
+
+		StringBuffer sb = new StringBuffer();
+		sb.append(readFile(fileName));
+
 		java.util.List<String> lines = readLines(sb.toString());
 		for (Iterator<String> iterator = lines.iterator(); iterator.hasNext();) {
 			String line = iterator.next();
 			listToPopulate.add(line);
 		}
-		
-	}
-	
-	String readFile(String fileName) throws IOException {
-	    BufferedReader br = new BufferedReader(new FileReader(fileName));
-	    try {
-	        StringBuilder sb = new StringBuilder();
-	        String line = br.readLine();
 
-	        while (line != null) {
-	            sb.append(line);
-	            sb.append("\n");
-	            line = br.readLine();
-	        }
-	        
-	        return sb.toString();
-	        
-	    } finally {
-	        br.close();
-	    }
+	}
+
+	private String readFile(String fileName) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader(fileName));
+
+			StringBuilder sb = new StringBuilder();
+			String line = br.readLine();
+
+			while (line != null) {
+				sb.append(line);
+				sb.append("\n");
+				line = br.readLine();}
+
+			return sb.toString();
+
 	}
 
 
-	private static java.util.List<String> readLines(final String s) {
+	private  java.util.List<String> readLines(final String s) throws IOException {
 		java.util.List<String> lines = new ArrayList<String>();
 		BufferedReader reader = new BufferedReader(new StringReader(s));
 		String line;
-		try {
+
 			while ((line = reader.readLine()) != null) {
 				if (line.length() > 0)
 					lines.add(line);
 			}
-		} catch (IOException e) {
-			// shouldn't get this
-		}
+
 		return lines;
 	}
 
@@ -250,29 +229,29 @@ public class ErrorNotificationDialog extends ErrorDialog {
 			getShell().setSize(new Point(windowSize.x, windowSize.y + (diffY)));
 		}
 	}
-	
+
 
 	private void copyToClipboard() {
 		if (clipboard != null) {
 			clipboard.dispose();
 		}
 		StringBuffer statusBuffer = new StringBuffer();
-		populateCopyBuffer(statusI, statusBuffer, 0);
+		populateCopyBuffer(status, statusBuffer, 0);
 		clipboard = new Clipboard(list.getDisplay());
 		clipboard.setContents(new Object[] { statusBuffer.toString() },
 				new Transfer[] { TextTransfer.getInstance() });
 	}
-	
+
 	private void populateCopyBuffer(IStatus buildingStatus,
 			StringBuffer buffer, int nesting) {
-		if (!buildingStatus.matches(displayMask)) {
+		if (!buildingStatus.matches(DISPLAY_MASK)) {
 			return;
 		}
 		for (int i = 0; i < nesting; i++) {
 			buffer.append(NESTING_INDENT);
 		}
 		buffer.append(buildingStatus.getMessage());
-		buffer.append("\n"); //$NON-NLS-1$
+		buffer.append("\n");
 
 		// Look for a nested core exception
 		Throwable t = buildingStatus.getException();
@@ -289,7 +268,7 @@ public class ErrorNotificationDialog extends ErrorDialog {
 				message = t.toString();
 			}
 			buffer.append(message);
-			buffer.append("\n"); //$NON-NLS-1$
+			buffer.append("\n");
 		}
 
 		IStatus[] children = buildingStatus.getChildren();
@@ -297,14 +276,7 @@ public class ErrorNotificationDialog extends ErrorDialog {
 			populateCopyBuffer(children[i], buffer, nesting + 1);
 		}
 	}
-	
-	@Override
-	public int open() {
-		
-			super.open();
-			return getReturnCode();
 
-	}
 
 
 }
