@@ -35,60 +35,65 @@ public class RemoteJiraConnector {
 
 	}
 
-	public String excutePost(String targetURL, JSONObject issue, String userCredentials) {
 
-		urlParameters = issue.toString();
 
-		try {
+	public  String excutePost(String targetURL, JSONObject issue,String userCredentials) {
 
-			// Create connection
-			URL url = new URL(targetURL);
-			connection = (HttpURLConnection) url.openConnection();
+		  urlParameters="{\"fields\": {\"project\":{ \"key\": \"TOOLS\"},\"summary\": \"GSOC ERROR REPORTER TEST.\",\"description\": \"Creating of an issue through Developer Studio using the REST API\",\"issuetype\": {\"name\": \"Bug\"}}}";	
+		  String targetURL1="https://wso2.org/jira/rest/api/2/issue";
+		  try {
+			  
+		    //Create connection
+		    URL url = new URL(targetURL1);
+		    connection = (HttpURLConnection)url.openConnection();
 			String basicAuth = "Basic " + new String(new Base64().encode(userCredentials.getBytes()));
-			connection.setRequestProperty("Authorization", basicAuth);
-			connection.setRequestMethod("POST");
-			connection.setRequestProperty("Content-Type", "application/json");
-			connection.setRequestProperty("Content-Length", Integer.toString(urlParameters.getBytes().length));
-			connection.setRequestProperty("Content-Language", "en-US");
+			connection.setRequestProperty ("Authorization", basicAuth);
+		    connection.setRequestMethod("POST");
+		    connection.setRequestProperty("Content-Type", 
+		        "application/json");
+		    connection.setRequestProperty("Content-Length", 
+		        Integer.toString(urlParameters.getBytes().length));
+		    connection.setRequestProperty("Content-Language", "en-US");  
 
-			connection.setUseCaches(false);
-			connection.setDoOutput(true);
+		    connection.setUseCaches(false);
+		    connection.setDoOutput(true);
 
-			// Send request
+		    //Send request
 
-			DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-			wr.writeBytes(urlParameters);
-			wr.close();
 
-			// Get Response
-			InputStream is;
+		    DataOutputStream wr = new DataOutputStream (
+		        connection.getOutputStream());
+		    wr.writeBytes(urlParameters);
+		    wr.close();
+
+		    //Get Response  
+		    InputStream is ;
 
 			if (connection.getResponseCode() >= 400) {
-				is = connection.getErrorStream();
+			    is = connection.getErrorStream();
 			} else {
-				is = connection.getInputStream();
+			    is = connection.getInputStream();
 			}
-
-			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-			StringBuilder response = new StringBuilder(); // or StringBuffer if
-			// not Java 5+
-			String line;
-
-			while ((line = rd.readLine()) != null) {
-				response.append(line);
-				response.append('\r');
-			}
-			rd.close();
-			return response.toString();
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		} finally {
-			if (connection != null) {
-				connection.disconnect();
-			}
+			
+		    BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+		    StringBuilder response = new StringBuilder(); // or StringBuffer if not Java 5+ 
+		    String line;
+		    
+		    while((line = rd.readLine()) != null) {
+		      response.append(line);
+		      response.append('\r');
+		    }
+		    rd.close();
+		    return response.toString();
+		  } catch (Exception e) {
+		    e.printStackTrace();
+		    return null;
+		  } finally {
+		    if(connection != null) {
+		      connection.disconnect(); 
+		    }
+		  }
 		}
-	}
 
 	@SuppressWarnings("unused")
 	private String getAuth(String username, String password) {

@@ -24,6 +24,7 @@ import org.wso2.developerstudio.eclipse.errorreporter.other.ErrorReporter;
 public class LogListener implements ILogListener {
 
 	private IStatus loggedStatus;
+	ErrorReporter errorReporter;
 
 	@Override
 	public void logging(IStatus status, String plugin) {
@@ -34,7 +35,7 @@ public class LogListener implements ILogListener {
 		if (loggedStatus.getSeverity() == IStatus.ERROR && plugin.contains("org.wso2.developerstudio")) {
 
 			// create error reporter object
-			ErrorReporter errorReporter = new ErrorReporter(status);
+			errorReporter = new ErrorReporter(status);
 			errorReporter.reportError();
 
 		}

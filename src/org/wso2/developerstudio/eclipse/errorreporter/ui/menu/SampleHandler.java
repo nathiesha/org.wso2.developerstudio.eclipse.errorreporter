@@ -73,6 +73,7 @@ public class SampleHandler extends AbstractHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
+
 	
 		Shell shell = new Shell();
 	
@@ -84,13 +85,7 @@ public class SampleHandler extends AbstractHandler {
 		      MultiStatus status = createMultiStatus(e.getLocalizedMessage(), e);
 		      ErrorReporter er=new ErrorReporter(status);
 		      er.reportError();
-		      // show error dialog
-//		      InfoCollector ic=new InfoCollector(status);
-//		      ErrorInformation ei=ic.getInformation();
-//		      ReportGenerator r=new ReportGenerator(ei);
-//		      r.storeReport(ei);
-//		     // System.out.println(ei.getMessage()+" "+ei.getCode()+" "+ei.getComment()+" "+ei.getEclipseBuildId()+" "+ei.getExceptionS()+" "+ei.getEmail()+" "+ei.getOsgiArch());
-//		      int i=ErrorNotificationDialog.openError(shell, "A problem was detected", "An unexpected error occured. Please press send to report the error to the development team", ic.getInformation(),status);
+		      
 
 		    }
 		return event;
