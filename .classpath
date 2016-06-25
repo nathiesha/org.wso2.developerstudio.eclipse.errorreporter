@@ -4,22 +4,9 @@
 	<classpathentry exported="true" kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-codec-1.9.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/commons-logging-1.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/fluent-hc-4.5.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/httpclient-4.5.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/httpclient-cache-4.5.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/httpclient-win-4.5.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/httpcore-4.4.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/httpmime-4.5.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jna-4.1.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jna-platform-4.1.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jira-rest-java-client-0.2-m1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jira-rest-java-client-core-2.0.0-m19.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/atlassian-util-concurrent-0.0.12.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/atlassian-util-concurrent-2.4.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/json-simple.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/java-mail-1.4.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/com.sun.net.ssl.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/org.eclipse.equinox.p2.metadata_2.1.0.v20110510.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/com.sun.net.ssl.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

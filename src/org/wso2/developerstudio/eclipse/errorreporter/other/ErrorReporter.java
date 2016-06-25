@@ -72,18 +72,18 @@ public class ErrorReporter {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-
 		
 		userResponse=openErrorDialog();
-
 		
 		switch(userResponse)
 		{
 			case 0:
 			try {
+				
 				sendReport(filePath);
-			} catch (AddressException e) {
+			} catch (AddressException e) 
+			
+			{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (MessagingException e) {
@@ -118,7 +118,7 @@ public class ErrorReporter {
 			Job reporterJob = new Job("Reporting the Developer Studio Error") {
 				@Override
 				protected IStatus run(IProgressMonitor monitor) {
-						sendJira();
+						//sendJira();
 						return Status.OK_STATUS;
 				}
 		     };
@@ -139,7 +139,7 @@ public class ErrorReporter {
 
 
 							try {
-								sendJira();
+								//sendJira();
 								sendEmail(filePath);
 							} catch (IOException | MessagingException e) {
 								// TODO Auto-generated catch block
