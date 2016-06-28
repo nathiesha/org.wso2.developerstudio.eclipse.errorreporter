@@ -27,7 +27,9 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.swt.widgets.Shell;
 import org.wso2.developerstudio.eclipse.errorreporter.other.ErrorReporter;
+import org.wso2.developerstudio.eclipse.errorreporter.ui.dialog.UserInputDialog;
 
 
 
@@ -64,17 +66,21 @@ public class SampleHandler extends AbstractHandler {
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 
 	
-		try {
-		      String s = null;
-		      System.out.println(s.length());
-		    } catch (NullPointerException e) {
-		      // build the error message and include the current stack trace
-		      MultiStatus status = createMultiStatus(e.getLocalizedMessage(), e);
-		      ErrorReporter er=new ErrorReporter(status);
-		      er.reportError();
-		      
-
-		    }
+//		try {
+//		      String s = null;
+//		      System.out.println(s.length());
+//		    } catch (NullPointerException e) {
+//		      // build the error message and include the current stack trace
+//		      MultiStatus status = createMultiStatus(e.getLocalizedMessage(), e);
+//		      ErrorReporter er=new ErrorReporter(status);
+//		      er.reportError();
+//		      
+//
+//		    }
+		
+		Shell parentShell = new Shell();
+		UserInputDialog ui=new UserInputDialog(parentShell);
+	
 		return event;
 	}
 	

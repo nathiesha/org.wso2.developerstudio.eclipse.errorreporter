@@ -34,6 +34,12 @@ public class UserInputDialog extends TitleAreaDialog {
 
 	private String NameStr;
 	private String EmailStr;
+	
+	private Text gmailUsername;
+	private Text gmailPassword;
+
+	private String gmailUsernameStr;
+	private String gmailPasswordStr;
 
 	public UserInputDialog(Shell parentShell) {
 		super(parentShell);
@@ -58,6 +64,7 @@ public class UserInputDialog extends TitleAreaDialog {
 
 		createName(container);
 		createEmail(container);
+		createPassword(container);
 
 		return area;
 	}
@@ -76,7 +83,7 @@ public class UserInputDialog extends TitleAreaDialog {
 
 	private void createEmail(Composite container) {
 		Label lbtLastName = new Label(container, SWT.NONE);
-		lbtLastName.setText("Email");
+		lbtLastName.setText("Gmail");
 
 		GridData dataLastName = new GridData();
 		dataLastName.grabExcessHorizontalSpace = true;
@@ -85,6 +92,17 @@ public class UserInputDialog extends TitleAreaDialog {
 		email.setLayoutData(dataLastName);
 	}
 
+	
+	private void createPassword(Composite container) {
+		Label lbtPassword = new Label(container, SWT.NONE);
+		lbtPassword.setText("Gmail password");
+
+		GridData dataPassword = new GridData();
+		dataPassword.grabExcessHorizontalSpace = true;
+		dataPassword.horizontalAlignment = GridData.FILL;
+		gmailPassword = new Text(container, SWT.BORDER);
+		gmailPassword.setLayoutData(dataPassword);
+	}
 	@Override
 	protected boolean isResizable() {
 		return true;
@@ -95,6 +113,7 @@ public class UserInputDialog extends TitleAreaDialog {
 	private void saveInput() {
 		NameStr = name.getText();
 		EmailStr = email.getText();
+		gmailPasswordStr=gmailPassword.getText();
 
 	}
 
