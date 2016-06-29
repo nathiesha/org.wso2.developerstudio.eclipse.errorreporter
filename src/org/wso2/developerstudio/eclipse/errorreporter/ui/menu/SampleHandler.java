@@ -77,10 +77,14 @@ public class SampleHandler extends AbstractHandler {
 //		      
 //
 //		    }
+		System.out.println("tst");
+		
+		
 		
 		Shell parentShell = new Shell();
 		UserInputDialog ui=new UserInputDialog(parentShell);
-	
+		ui.create();
+		ui.open();
 		return event;
 	}
 	

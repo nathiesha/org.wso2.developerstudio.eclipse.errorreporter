@@ -21,6 +21,7 @@ import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -30,16 +31,21 @@ import org.eclipse.swt.widgets.Text;
 public class UserInputDialog extends TitleAreaDialog {
 
 	private Text name;
-	private Text email;
-
 	private String NameStr;
+	
+	private Text email;
 	private String EmailStr;
 	
-	private Text gmailUsername;
 	private Text gmailPassword;
-
-	private String gmailUsernameStr;
 	private String gmailPasswordStr;
+	
+	private Text jiraUsername;
+	private String jiraUsernameStr;
+
+	private Text jiraPassword;
+
+
+
 
 	public UserInputDialog(Shell parentShell) {
 		super(parentShell);
@@ -65,9 +71,20 @@ public class UserInputDialog extends TitleAreaDialog {
 		createName(container);
 		createEmail(container);
 		createPassword(container);
+		createJiraUsername(container);
+		createJiraPassword(container);
+		
+		Composite container2 = new Composite(area, SWT.NONE);
+		container2.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		GridLayout layout2 = new GridLayout(1, false);
+		container2.setLayout(layout2);
+		
+		createSendingOptions(container2);
+		createAnoOptions(container2);
 
 		return area;
 	}
+	
 
 	private void createName(Composite container) {
 		Label lbtFirstName = new Label(container, SWT.NONE);
@@ -102,6 +119,70 @@ public class UserInputDialog extends TitleAreaDialog {
 		dataPassword.horizontalAlignment = GridData.FILL;
 		gmailPassword = new Text(container, SWT.BORDER);
 		gmailPassword.setLayoutData(dataPassword);
+	}
+	
+	private void createJiraUsername(Composite container) {
+		Label lbtPassword = new Label(container, SWT.NONE);
+		lbtPassword.setText("Jira Username");
+
+		GridData dataJiraUsername = new GridData();
+		dataJiraUsername.grabExcessHorizontalSpace = true;
+		dataJiraUsername.horizontalAlignment = GridData.FILL;
+		jiraUsername = new Text(container, SWT.BORDER);
+		jiraUsername.setLayoutData(dataJiraUsername);
+	}
+	
+	private void createJiraPassword(Composite container) {
+		Label lbtPassword = new Label(container, SWT.NONE);
+		lbtPassword.setText("Jira Password");
+
+		GridData dataJiraPassword = new GridData();
+		dataJiraPassword.grabExcessHorizontalSpace = true;
+		dataJiraPassword.horizontalAlignment = GridData.FILL;
+		jiraPassword = new Text(container, SWT.BORDER);
+		jiraPassword.setLayoutData(dataJiraPassword);
+	
+
+	}
+	
+	private void createSendingOptions(Composite container) {
+
+		
+		Label lbtPassword = new Label(container, SWT.NONE);
+		lbtPassword.setText("Select Sending options");
+
+
+
+	    Button[] radios = new Button[3];
+
+	    radios[0] = new Button(container, SWT.RADIO);
+	    radios[0].setSelection(true);
+	    radios[0].setText("Create an issue in Jira");
+
+
+	    radios[1] = new Button(container, SWT.RADIO);
+	    radios[1].setText("Create an issue in Jira and send an email");
+
+
+	    
+	}
+	
+	
+	private void createAnoOptions(Composite container) {
+
+		
+		Label lbtPassword = new Label(container, SWT.NONE);
+		lbtPassword.setText("Select Anonymizing options");
+	    
+	    Button[] radios2 = new Button[3];
+
+	    radios2[0] = new Button(container, SWT.CHECK);
+	    radios2[0].setText("Anonymize package, class and method names");
+	    
+	    radios2[1] = new Button(container, SWT.CHECK);
+	    radios2[1].setText("Anonymize error log");
+
+	    
 	}
 	@Override
 	protected boolean isResizable() {
