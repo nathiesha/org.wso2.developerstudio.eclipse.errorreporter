@@ -24,6 +24,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
@@ -147,11 +148,12 @@ public class UserInputDialog extends TitleAreaDialog {
 	
 	private void createSendingOptions(Composite container) {
 
+//	    Group group = new Group(this, SWT.SHADOW_ETCHED_IN);
+//	    group.setText("Group Label");
+
 		
 		Label lbtPassword = new Label(container, SWT.NONE);
 		lbtPassword.setText("Select Sending options");
-
-
 
 	    Button[] radios = new Button[3];
 
