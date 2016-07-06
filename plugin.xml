@@ -72,5 +72,12 @@
             name="Developer Studio Error Reporting">
       </page>
    </extension>
+    <extension
+    	point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.wso2.developerstudio.eclipse.errorreporter.ui.prefs.PreferenceInitializer">
+      </initializer>
+  </extension>
+   
 
 </plugin>

@@ -45,23 +45,23 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 	private static final String JIRA_USER_CRED="Jira User Credentials";
 	
 	//contact information strings
-	private static final String NAME="NAME";
+	public static final String NAME="NAME";
 	private static final String EMAIL_USER="EMAIL";
 	private static final String NAME_S="Name:";
 	private static final String EMAIL_USER_S="Email:";
 	
 	//annonymize options strings
-	private static final String ANO_PACK="ANOPACK";
+	public static final String ANO_PACK="ANOPACK";
 	private static final String ANO_PACK_S="&Anonymize package, class and method names";
-	private static final String ANO_LOG="ANOLOG";
+	public static final String ANO_LOG="ANOLOG";
 	private static final String ANO_LOG_S="&Anonymize error log messages";
 	
 	//send options Strings
-	private static final String SEND_OPTIONS="SENDOPTIONS";
+	public static final String SEND_OPTIONS="SENDOPTIONS";
 	private static final String SEND_OPTIONS_S="Select the sending preferences";
-	private static final String JIRA="Jira";
+	public static final String JIRA="Jira";
 	private static final String JIRA_S="&Report the error in Jira";
-	private static final String EMAIL="Email";
+	public static final String EMAIL="Email";
 	private static final String EMAIL_S="&Report the error in Jira and send an email";
 	
 	//Gmail user credentials
@@ -73,9 +73,9 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 	private static final String REC_EMAIL_S="Recipient Email Address:";
 	
 	//Jira user credentials
-	private static final String JIRA_URL="JIRA_URL";
+	public static final String JIRA_URL="JIRA_URL";
 	private static final String JIRA_URL_S="Remote Jira URL:";
-	private static final String PROJECT_KEY="PROJECT_KEY";
+	public static final String PROJECT_KEY="PROJECT_KEY";
 	private static final String PROJECT_KEY_S="Project Key:";
 	private static final String JIRA_USERNAME="JIRA_USERNAME";
 	private static final String JIRA_USERNAME_S="Username:";
@@ -169,11 +169,6 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 	    setDescription(DESCRIPTION);
 	  }
 	  
-
-	  public void initializeDefaultPreferences() {
-	    //IPreferenceStore store = Activator.getDefault().getPreferenceStore();
-		 // store.setDefault(NAME, "hello");
-	  }
 	  
 
 
