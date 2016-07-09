@@ -42,7 +42,8 @@ public class ErrorReporter {
 	private InfoCollector errorInfoCollector;
 	private ErrorInformation errorInformation;
 	private ReportGenerator reportGenerator;
-	private String filePath;
+	private String errorMessage;
+	private String jiraId;
 	private JSONObject json;
 	
 	private static final String TARGET_URL="https://wso2.org/jira/rest/api/2/issue";
@@ -66,13 +67,7 @@ public class ErrorReporter {
 		//create reportGenerator object
 		//store the error report and user space
 		reportGenerator=new ReportGenerator(errorInformation);
-		try {
-			filePath=reportGenerator.storeReport();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+
 		userResponse=openErrorDialog();
 		
 		switch(userResponse)
@@ -80,7 +75,7 @@ public class ErrorReporter {
 			case 0:
 			try {
 				
-				sendReport(filePath);
+				sendReport();
 			} catch (AddressException e) 
 			
 			{
@@ -105,11 +100,11 @@ public class ErrorReporter {
 	//open up the error dialog box and get user input
 		public int openErrorDialog() {
 			Shell shell = new Shell();
-			ErrorNotificationDialog errDialog=new ErrorNotificationDialog(shell, filePath, status);
+			ErrorNotificationDialog errDialog=new ErrorNotificationDialog(shell, errorMessage, status);
 			return errDialog.open();
 		}
 	
-	public void sendReport(final String filePath) throws AddressException, MessagingException, IOException{
+	public void sendReport() throws AddressException, MessagingException, IOException{
 		
 		if(Activator.getDefault().getPreferenceStore()
 				.getBoolean("Jira"))
@@ -139,8 +134,8 @@ public class ErrorReporter {
 
 
 							try {
-								//sendJira();
-								sendEmail(filePath);
+								jiraId=sendJira();
+								sendEmail();
 							} catch (IOException | MessagingException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
@@ -155,30 +150,39 @@ public class ErrorReporter {
 			
 		}
 		
+		try {
+			
+			reportGenerator.storeReport(jiraId);
+		} catch (IOException e) {
+
+			e.printStackTrace();
+		}
+		
+		
 	}
 	
-	public void sendJira()
+	public String sendJira()
 	{
 
 				json=reportGenerator.createIssue();
-				System.out.println(json.toString());
 				RemoteJiraConnector jiraCon= new RemoteJiraConnector();
 				String username=Activator.getDefault().getPreferenceStore().getString("JIRA_USERNAME");
 				String password=Activator.getDefault().getPreferenceStore().getString("JIRA_PASSWORD");
 				String userCredentials = username+":"+password;
 				String response=jiraCon.excutePost(TARGET_URL, json,userCredentials);
-				System.out.println(response);
+				return (response);
 						
 		
 	}
 	
-	public void sendEmail(String filePath) throws IOException, AddressException, MessagingException
+	public void sendEmail() throws IOException, AddressException, MessagingException
 	{
 
 		String username=Activator.getDefault().getPreferenceStore().getString("GMAIL USERNAME");
 		String password=Activator.getDefault().getPreferenceStore().getString("GMAIL PASSWORD");
 		String recipientEmail=Activator.getDefault().getPreferenceStore().getString("REC EMAIL");;
-		String message=readFile(filePath);
+		String message=reportGenerator.writeString();
+			//readFile(filePath);
 		
 		EmailSender emailS=new EmailSender(username, password, recipientEmail, TITLE, message);
 		emailS.Send();

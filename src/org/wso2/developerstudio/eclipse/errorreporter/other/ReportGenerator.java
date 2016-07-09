@@ -19,8 +19,10 @@ package org.wso2.developerstudio.eclipse.errorreporter.other;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
@@ -33,8 +35,13 @@ public class ReportGenerator {
 	private ErrorInformation errorInformation;
 	private JSONObject json;
 	private String filePath;
+	private String errorMessage;
 
 	// Error Report Contents
+	private static final String DATE = "\nDate: ";
+	private static final String ID = "\nIssueId: ";
+	private static final String ISSUE_STATUS = "\nStatus: ";
+	
 	private static final String INTRODUCTION = "The following report will be sent to Jira:\n\n";
 
 	private static final String STATUS = "\n--STATUS--\n";
@@ -71,6 +78,7 @@ public class ReportGenerator {
 	private static final String iSSUE_TYPE_NAME = "Bug";
 
 
+
 	public ReportGenerator(ErrorInformation errorInformation) {
 		super();
 		this.errorInformation = errorInformation;
@@ -101,9 +109,10 @@ public class ReportGenerator {
 	}
 	
 	
-	private String writeString(){
+	public String writeString(){
 		
 		StringBuilder sb = new StringBuilder();
+
 
 		sb.append(INTRODUCTION);
 		sb.append(STATUS);
@@ -133,9 +142,9 @@ public class ReportGenerator {
 	}
 
 	// store the errorReport and return its location
-	public String storeReport() throws IOException {
-		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
-		String fileName = timeStamp + ".txt";
+	public String storeReport(String fileId) throws IOException {
+
+		String fileName = fileId + ".txt";
 
 		// temporary storage
 		Bundle bundle = FrameworkUtil.getBundle(getClass());
@@ -177,7 +186,16 @@ public class ReportGenerator {
 
 	private void writeReport(FileWriter fw) throws IOException {
 
-		fw.write(INTRODUCTION);
+		// = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		Date date = new Date();
+		String timeStamp=(dateFormat.format(date)); //2014/08/06 15:59:48
+		
+		
+		fw.write(ID);
+		fw.write(DATE+ timeStamp);
+		fw.write(EXCEPTION + errorInformation.getExceptionS());
+		fw.write(ISSUE_STATUS);
 		fw.write(STATUS);
 		fw.write(PLUGIN_ID + errorInformation.getPluginId());
 		fw.write(PLUGIN_VERSION + errorInformation.getPluginVersion());

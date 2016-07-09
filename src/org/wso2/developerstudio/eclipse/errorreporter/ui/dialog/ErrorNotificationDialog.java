@@ -52,7 +52,7 @@ public class ErrorNotificationDialog extends ErrorDialog {
 	private static final String DIALOG_MESSAGE= "An unexpected error occured. Please press send to report the error to the development team";
 	private static final int DISPLAY_MASK = 0xFFFF;
 
-	private String filePath;
+	private String errorMessage;
 	private IStatus status;
 
 	private List list;
@@ -64,10 +64,10 @@ public class ErrorNotificationDialog extends ErrorDialog {
 
 
 	public ErrorNotificationDialog(Shell parentShell, 
-			String filePath,IStatus status) {
+			String errorMessage,IStatus status) {
 		super(parentShell, DIALOG_TITLE, DIALOG_MESSAGE, status, DISPLAY_MASK);
 
-		this.filePath = filePath;
+		this.errorMessage = errorMessage;
 		this.status=status;
 
 	}
@@ -108,7 +108,7 @@ public class ErrorNotificationDialog extends ErrorDialog {
 				| SWT.MULTI);
 		// fill the list
 		try {
-			addReportInfo(list,filePath);
+			addReportInfo(list,errorMessage);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -166,10 +166,10 @@ public class ErrorNotificationDialog extends ErrorDialog {
 
 
 
-	private void addReportInfo(List listToPopulate, String fileName) throws IOException {
+	private void addReportInfo(List listToPopulate, String errorMessage) throws IOException {
 
 		StringBuffer sb = new StringBuffer();
-		sb.append(readFile(fileName));
+		sb.append(errorMessage);
 
 		java.util.List<String> lines = readLines(sb.toString());
 		for (Iterator<String> iterator = lines.iterator(); iterator.hasNext();) {

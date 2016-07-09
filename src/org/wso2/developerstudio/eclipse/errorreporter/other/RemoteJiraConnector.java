@@ -85,10 +85,13 @@ public class RemoteJiraConnector {
 		    }
 		    rd.close();
 		    return response.toString();
-		  } catch (Exception e) {
+		  } 
+		  catch (Exception e) {
 		    e.printStackTrace();
 		    return null;
-		  } finally {
+		    
+		  } 
+		  finally {
 		    if(connection != null) {
 		      connection.disconnect(); 
 		    }
