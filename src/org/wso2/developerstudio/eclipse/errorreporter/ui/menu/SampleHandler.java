@@ -38,8 +38,8 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.wso2.developerstudio.eclipse.errorreporter.other.ErrorReporter;
+import org.wso2.developerstudio.eclipse.errorreporter.other.ReportArchive;
 import org.wso2.developerstudio.eclipse.errorreporter.ui.dialog.TableClass;
-import org.wso2.developerstudio.eclipse.errorreporter.ui.dialog.TestDialog;
 import org.wso2.developerstudio.eclipse.errorreporter.ui.dialog.UserInputDialog;
 
 
@@ -93,7 +93,7 @@ public class SampleHandler extends AbstractHandler {
 //		
 		
 		Shell parentShell = new Shell();
-		TableClass ui=new TableClass(parentShell);
+		ReportArchive ui=new ReportArchive(parentShell);
 		ui.create();
 		ui.open();
 
@@ -159,20 +159,20 @@ public class SampleHandler extends AbstractHandler {
 	}
 	
 	
-	private static MultiStatus createMultiStatus(String msg, Throwable t) {
-
-	    List<Status> childStatuses = new ArrayList<>();
-	    StackTraceElement[] stackTraces = Thread.currentThread().getStackTrace();
-
-	     for (StackTraceElement stackTrace: stackTraces) {
-	      Status status = new Status(IStatus.ERROR,
-	          "org.wso2.developerstudio.eclipse", stackTrace.toString());
-	      childStatuses.add(status);
-	    }
-
-	    MultiStatus ms = new MultiStatus("org.wso2.developerstudio.eclipse",
-	        IStatus.ERROR, childStatuses.toArray(new Status[] {}),
-	        t.toString(), t);
-	    return ms;
-	  }
+//	private static MultiStatus createMultiStatus(String msg, Throwable t) {
+//
+//	    List<Status> childStatuses = new ArrayList<>();
+//	    StackTraceElement[] stackTraces = Thread.currentThread().getStackTrace();
+//
+//	     for (StackTraceElement stackTrace: stackTraces) {
+//	      Status status = new Status(IStatus.ERROR,
+//	          "org.wso2.developerstudio.eclipse", stackTrace.toString());
+//	      childStatuses.add(status);
+//	    }
+//
+//	    MultiStatus ms = new MultiStatus("org.wso2.developerstudio.eclipse",
+//	        IStatus.ERROR, childStatuses.toArray(new Status[] {}),
+//	        t.toString(), t);
+//	    return ms;
+//	  }
 }

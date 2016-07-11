@@ -18,7 +18,7 @@
 package org.wso2.developerstudio.eclipse.errorreporter.ui.dialog;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
+//import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -60,7 +60,7 @@ public class ErrorNotificationDialog extends ErrorDialog {
 
 	private Button detailsButton;
 	private Clipboard clipboard;
-	private BufferedReader br;
+	//private BufferedReader br;
 
 
 	public ErrorNotificationDialog(Shell parentShell, 
@@ -179,20 +179,20 @@ public class ErrorNotificationDialog extends ErrorDialog {
 
 	}
 
-	private String readFile(String fileName) throws IOException {
-		br = new BufferedReader(new FileReader(fileName));
-
-			StringBuilder sb = new StringBuilder();
-			String line = br.readLine();
-
-			while (line != null) {
-				sb.append(line);
-				sb.append("\n");
-				line = br.readLine();}
-
-			return sb.toString();
-
-	}
+//	private String readFile(String fileName) throws IOException {
+//		br = new BufferedReader(new FileReader(fileName));
+//
+//			StringBuilder sb = new StringBuilder();
+//			String line = br.readLine();
+//
+//			while (line != null) {
+//				sb.append(line);
+//				sb.append("\n");
+//				line = br.readLine();}
+//
+//			return sb.toString();
+//
+//	}
 
 
 	private  java.util.List<String> readLines(final String s) throws IOException {

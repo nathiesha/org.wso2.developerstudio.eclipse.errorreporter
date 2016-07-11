@@ -21,7 +21,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 import org.eclipse.core.runtime.IPath;
@@ -35,7 +34,7 @@ public class ReportGenerator {
 	private ErrorInformation errorInformation;
 	private JSONObject json;
 	private String filePath;
-	private String errorMessage;
+
 
 	// Error Report Contents
 	private static final String DATE = "\nDate: ";

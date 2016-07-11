@@ -24,7 +24,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Group;
+//import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
@@ -41,7 +41,7 @@ public class UserInputDialog extends TitleAreaDialog {
 	private String gmailPasswordStr;
 	
 	private Text jiraUsername;
-	private String jiraUsernameStr;
+	//private String jiraUsernameStr;
 
 	private Text jiraPassword;
 
@@ -212,5 +212,61 @@ public class UserInputDialog extends TitleAreaDialog {
 
 	public String getEmail() {
 		return EmailStr;
+	}
+
+	public String getNameStr() {
+		return NameStr;
+	}
+
+	public void setNameStr(String nameStr) {
+		NameStr = nameStr;
+	}
+
+	public String getEmailStr() {
+		return EmailStr;
+	}
+
+	public void setEmailStr(String emailStr) {
+		EmailStr = emailStr;
+	}
+
+	public Text getGmailPassword() {
+		return gmailPassword;
+	}
+
+	public void setGmailPassword(Text gmailPassword) {
+		this.gmailPassword = gmailPassword;
+	}
+
+	public String getGmailPasswordStr() {
+		return gmailPasswordStr;
+	}
+
+	public void setGmailPasswordStr(String gmailPasswordStr) {
+		this.gmailPasswordStr = gmailPasswordStr;
+	}
+
+	public Text getJiraUsername() {
+		return jiraUsername;
+	}
+
+	public void setJiraUsername(Text jiraUsername) {
+		this.jiraUsername = jiraUsername;
+	}
+
+	public Text getJiraPassword() {
+		return jiraPassword;
+	}
+
+	public void setJiraPassword(Text jiraPassword) {
+		this.jiraPassword = jiraPassword;
+	}
+
+	public void setName(Text name) {
+		this.name = name;
+	}
+
+	public void setEmail(Text email) {
+		this.email = email;
 	}
 }

@@ -18,28 +18,159 @@
 package org.wso2.developerstudio.eclipse.errorreporter.other;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+
+import org.eclipse.jface.dialogs.TitleAreaDialog;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Text;
 
 /**
  * @author Nathie
  *
  */
-public class ReportArchive {
+public class ReportArchive extends TitleAreaDialog {
 	
-	String readFile(String fileName) throws IOException {
+	String id;
+	String dateTime;
+	String error;
+	String status;
+	
+	public ReportArchive(Shell parentShell) {
+		super(parentShell);
+	}
+
+	@Override
+	public void create() {
+		super.create();
+		setTitle("Error Report Archive");
+//		setMessage(
+//				"Thank you for enabling Developer studio automated error reporting tool. Please eneter your contact details.",
+//				IMessageProvider.INFORMATION);
+	}
+
+	@Override
+	protected Control createDialogArea(Composite parent) {
+		Composite area = (Composite) super.createDialogArea(parent);
+		Composite container = new Composite(area, SWT.NONE);
+		container.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		GridLayout layout = new GridLayout(1, false);
+		container.setLayout(layout);
+
+		createTable(container);
+		
+//		Composite container2 = new Composite(area, SWT.NONE);
+//		container2.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+//		GridLayout layout2 = new GridLayout(1, false);
+//		container2.setLayout(layout2);
+		
+
+
+		   
+
+		return area;
+	}
+
+	private void createTable(Composite container) {
+
+		    
+		 Table table = new Table(container, SWT.BORDER | SWT.V_SCROLL
+			        | SWT.H_SCROLL);
+			    table.setHeaderVisible(true);
+			    String[] titles = { "Error Report ID", "ID", "Date & Time", "Error","Status" };
+			    
+				 final Text text = new Text(container, SWT.BORDER);
+				    text.setBounds(25, 240, 220, 250);
+				    
+				    Menu contextMenu = new Menu(table);
+				    table.setMenu(contextMenu);
+				    MenuItem mItem1 = new MenuItem(contextMenu, SWT.None);
+				    mItem1.setText("Menu Item Test.");
+
+			    for (int loopIndex = 0; loopIndex < titles.length; loopIndex++) {
+			      TableColumn column = new TableColumn(table, SWT.NULL);
+			      column.setText(titles[loopIndex]);
+			    }
+
+				File folder = new File(System.getProperty("user.dir"),"ErrorReports");
+				File[] listOfFiles = folder.listFiles();
+				
+				int fileNo=listOfFiles.length;
+				int counter=0;
+
+				    for (int i = 0; i <fileNo ; i++) {
+				      if (listOfFiles[i].isFile()) {
+				        System.out.println("File " + listOfFiles[i].getName());
+				        counter++;
+
+				    }
+				    
+				    
+			    for (int loopIndex = 0; loopIndex <counter ; loopIndex++) {
+			      TableItem item = new TableItem(table, SWT.NULL);
+			      item.setText("Item " + loopIndex);
+			      item.setText(0, listOfFiles[loopIndex].getName());
+			      
+			      try {
+					readFile(listOfFiles[loopIndex].getPath());
+				      item.setText(1, id);
+				      item.setText(3, error);
+				      item.setText(2, dateTime);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+			    }
+
+			    for (int loopIndex = 0; loopIndex < titles.length; loopIndex++) {
+			      table.getColumn(loopIndex).pack();
+			    }
+
+			    table.setBounds(25, 25, 220, 200);
+
+			    table.addListener(SWT.MouseDown, new Listener() {
+			      public void handleEvent(Event event) {
+			          text.setText("You selected " + event.item);
+			        
+			      }
+			    });
+		
+	}
+                                              
+
+	}
+	
+	private void readFile(String fileName) throws IOException {
 	    BufferedReader br = new BufferedReader(new FileReader(fileName));
 	    try {
-	        StringBuilder sb = new StringBuilder();
-	        String line = br.readLine();
 
-	        while (line != null) {
-	            sb.append(line);
-	            sb.append("\n");
-	            line = br.readLine();
-	        }
 	        
-	        return sb.toString();
+	        String line = br.readLine();
+	        id=line.substring(9);
+
+	        line = br.readLine();
+	        dateTime=line.substring(6);
+
+	        line = br.readLine();
+	        error=line.substring(11);
+	        
+	        line = br.readLine();
+	        status=line.substring(8);
+	        
 	        
 	    } finally {
 	        br.close();
