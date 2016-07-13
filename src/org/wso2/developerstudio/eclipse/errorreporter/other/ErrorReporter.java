@@ -70,30 +70,30 @@ public class ErrorReporter {
 
 		userResponse=openErrorDialog();
 		
-		switch(userResponse)
-		{
-			case 0:
-			try {
-				
-				sendReport();
-			} catch (AddressException e) 
-			
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (MessagingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-				break;
-				
-			case 1:
-				break;
-					
-		}
+//		switch(userResponse)
+//		{
+//			case 0:
+//			try {
+//				
+//				sendReport();
+//			} catch (AddressException e) 
+//			
+//			{
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			} catch (MessagingException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//				break;
+//				
+//			case 1:
+//				break;
+//					
+//		}
 		
 	}
 	

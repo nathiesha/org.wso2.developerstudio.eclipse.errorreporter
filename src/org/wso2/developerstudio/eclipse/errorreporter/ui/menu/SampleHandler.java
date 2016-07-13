@@ -77,25 +77,25 @@ public class SampleHandler extends AbstractHandler {
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 
 	
-//		try {
-//		      String s = null;
-//		      System.out.println(s.length());
-//		    } catch (NullPointerException e) {
-//		      // build the error message and include the current stack trace
-//		      MultiStatus status = createMultiStatus(e.getLocalizedMessage(), e);
-//		      ErrorReporter er=new ErrorReporter(status);
-//		      er.reportError();
-//		      
-//
-//		    }
+		try {
+		      String s = null;
+		      System.out.println(s.length());
+		    } catch (NullPointerException e) {
+		      // build the error message and include the current stack trace
+		      MultiStatus status = createMultiStatus(e.getLocalizedMessage(), e);
+		      ErrorReporter er=new ErrorReporter(status);
+		      er.reportError();
+		      
+
+		    }
 //		System.out.println("tst");
 //		
 //		
 		
-		Shell parentShell = new Shell();
-		ReportArchive ui=new ReportArchive(parentShell);
-		ui.create();
-		ui.open();
+//		Shell parentShell = new Shell();
+//		ReportArchive ui=new ReportArchive(parentShell);
+//		ui.create();
+//		ui.open();
 
 //		
 //	    Display display = new Display();
@@ -159,20 +159,20 @@ public class SampleHandler extends AbstractHandler {
 	}
 	
 	
-//	private static MultiStatus createMultiStatus(String msg, Throwable t) {
-//
-//	    List<Status> childStatuses = new ArrayList<>();
-//	    StackTraceElement[] stackTraces = Thread.currentThread().getStackTrace();
-//
-//	     for (StackTraceElement stackTrace: stackTraces) {
-//	      Status status = new Status(IStatus.ERROR,
-//	          "org.wso2.developerstudio.eclipse", stackTrace.toString());
-//	      childStatuses.add(status);
-//	    }
-//
-//	    MultiStatus ms = new MultiStatus("org.wso2.developerstudio.eclipse",
-//	        IStatus.ERROR, childStatuses.toArray(new Status[] {}),
-//	        t.toString(), t);
-//	    return ms;
-//	  }
+	private static MultiStatus createMultiStatus(String msg, Throwable t) {
+
+	    List<Status> childStatuses = new ArrayList<>();
+	    StackTraceElement[] stackTraces = Thread.currentThread().getStackTrace();
+
+	     for (StackTraceElement stackTrace: stackTraces) {
+	      Status status = new Status(IStatus.ERROR,
+	          "org.wso2.developerstudio.eclipse", stackTrace.toString());
+	      childStatuses.add(status);
+	    }
+
+	    MultiStatus ms = new MultiStatus("org.wso2.developerstudio.eclipse",
+	        IStatus.ERROR, childStatuses.toArray(new Status[] {}),
+	        t.toString(), t);
+	    return ms;
+	  }
 }

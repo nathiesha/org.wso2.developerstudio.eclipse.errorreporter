@@ -16,10 +16,13 @@
 
 package org.wso2.developerstudio.eclipse.errorreporter.startup;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IStatus;
 import org.wso2.developerstudio.eclipse.errorreporter.other.ErrorReporter;
-//import org.eclipse.equinox.p2.query.*;;
+
 
 public class LogListener implements ILogListener {
 
@@ -28,11 +31,12 @@ public class LogListener implements ILogListener {
 
 	@Override
 	public void logging(IStatus status, String plugin) {
-
 		this.loggedStatus = status;
-
+		
+//		System.out.println("Error"+plugin);
+		
 		// method to check whether the error belongs to dev studio
-		if (loggedStatus.getSeverity() == IStatus.ERROR && plugin.contains("org.wso2.developerstudio")) {
+		if (checkError(status, plugin)) {
 
 			// create error reporter object
 			errorReporter = new ErrorReporter(status);
@@ -42,6 +46,32 @@ public class LogListener implements ILogListener {
 
 		// QueryUtil.createIUQuery("org.wso2.developerstudio.eclipse");
 
+	}
+	
+	private Boolean checkError(IStatus status, String plugin)
+	{
+		StringWriter sw = new StringWriter();
+		PrintWriter pw = new PrintWriter(sw);
+		status.getException().printStackTrace(pw);
+		String exception=(sw.toString());
+
+		if(status.getSeverity() == IStatus.ERROR && plugin.contains("org.wso2.developerstudio"))
+		{
+			return true;
+			
+		}
+		
+		else if(status.getSeverity() == IStatus.ERROR && exception.contains("org.wso2.developerstudio"))
+		{
+			
+			System.out.println("Error"+plugin);
+			return true;
+		}
+
+		else
+			return false;
+		
+		
 	}
 
 	public IStatus getLoggedStatus() {

@@ -33,6 +33,8 @@ public class Startup implements IStartup {
 		// attach a listener to the dev studio plug-in error log
 		// TODO devStudio plugin names should be included here
 		// devStudioPluginName.getDefault().getLog().addLogListener(listener);
+		
+		System.out.println("Early start up");
 
 	}
 
