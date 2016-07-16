@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.wso2.developerstudio.eclipse.errorreporter.other;
+package org.wso2.developerstudio.eclipse.errorreporter.util;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -28,6 +28,7 @@ import org.eclipse.core.runtime.Platform;
 import org.json.simple.JSONObject;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
+import org.wso2.developerstudio.eclipse.errorreporter.formats.ErrorInformation;
 
 public class ReportGenerator {
 

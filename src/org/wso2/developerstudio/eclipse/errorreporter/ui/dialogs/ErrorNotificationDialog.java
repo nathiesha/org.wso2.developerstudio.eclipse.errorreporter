@@ -15,7 +15,7 @@
  */
 
 
-package org.wso2.developerstudio.eclipse.errorreporter.ui.dialog;
+package org.wso2.developerstudio.eclipse.errorreporter.ui.dialogs;
 
 import java.io.BufferedReader;
 //import java.io.FileReader;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.wso2.developerstudio.eclipse.errorreporter.other;
+package org.wso2.developerstudio.eclipse.errorreporter.formats;
 
 public class Bundles {
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.wso2.developerstudio.eclipse.errorreporter.other;
+package org.wso2.developerstudio.eclipse.errorreporter.util;
 
 import com.sun.mail.smtp.SMTPTransport;
 import com.sun.net.ssl.internal.ssl.Provider;

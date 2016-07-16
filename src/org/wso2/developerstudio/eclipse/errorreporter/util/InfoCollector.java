@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.wso2.developerstudio.eclipse.errorreporter.other;
+package org.wso2.developerstudio.eclipse.errorreporter.util;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Version;
 import org.wso2.developerstudio.eclipse.errorreporter.Activator;
+import org.wso2.developerstudio.eclipse.errorreporter.formats.ErrorInformation;
 
 public class InfoCollector {
 

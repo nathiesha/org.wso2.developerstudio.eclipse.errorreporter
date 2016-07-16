@@ -21,7 +21,7 @@ import org.eclipse.ui.IStartup;
 
 public class Startup implements IStartup {
 
-	private LogListener listener;
+	private static LogListener listener;
 
 	@Override
 	public void earlyStartup() {
@@ -30,12 +30,16 @@ public class Startup implements IStartup {
 		listener = new LogListener();
 		Platform.addLogListener(listener);
 
-		// attach a listener to the dev studio plug-in error log
-		// TODO devStudio plugin names should be included here
-		// devStudioPluginName.getDefault().getLog().addLogListener(listener);
-		
-		System.out.println("Early start up");
+		 System.out.println("Early start up");
 
+	}
+
+	public static LogListener getListener() {
+		return listener;
+	}
+
+	public void setListener(LogListener listener) {
+		Startup.listener = listener;
 	}
 
 }

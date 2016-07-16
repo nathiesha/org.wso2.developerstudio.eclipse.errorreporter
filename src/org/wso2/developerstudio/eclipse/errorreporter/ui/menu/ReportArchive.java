@@ -15,7 +15,7 @@
 */
 
 
-package org.wso2.developerstudio.eclipse.errorreporter.other;
+package org.wso2.developerstudio.eclipse.errorreporter.ui.menu;
 
 import java.io.BufferedReader;
 import java.io.File;

@@ -7,7 +7,6 @@ Bundle-Activator: org.wso2.developerstudio.eclipse.errorreporter.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
  lib/commons-codec-1.9.jar,
  lib/json-simple.jar,
@@ -15,9 +14,12 @@ Bundle-ClassPath: .,
  lib/org.eclipse.equinox.p2.metadata_2.1.0.v20110510.jar,
  lib/com.sun.net.ssl.jar
 Export-Package: org.wso2.developerstudio.eclipse.errorreporter,
- org.wso2.developerstudio.eclipse.errorreporter.other,
+ org.wso2.developerstudio.eclipse.errorreporter.controller,
+ org.wso2.developerstudio.eclipse.errorreporter.formats,
  org.wso2.developerstudio.eclipse.errorreporter.startup,
- org.wso2.developerstudio.eclipse.errorreporter.ui.dialog,
+ org.wso2.developerstudio.eclipse.errorreporter.ui.dialogs,
  org.wso2.developerstudio.eclipse.errorreporter.ui.menu,
- org.wso2.developerstudio.eclipse.errorreporter.ui.prefs
-Import-Package: org.wso2.developerstudio.eclipse.errorreporter.other
+ org.wso2.developerstudio.eclipse.errorreporter.ui.preferences,
+ org.wso2.developerstudio.eclipse.errorreporter.util
+Import-Package: org.wso2.developerstudio.eclipse.errorreporter.controller
+Bundle-ActivationPolicy: lazy

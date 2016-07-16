@@ -15,7 +15,7 @@
 */
 
 
-package org.wso2.developerstudio.eclipse.errorreporter.ui.prefs;
+package org.wso2.developerstudio.eclipse.errorreporter.ui.preferences;
 
 import org.eclipse.jface.preference.BooleanFieldEditor;
 //import org.eclipse.jface.preference.DirectoryFieldEditor;

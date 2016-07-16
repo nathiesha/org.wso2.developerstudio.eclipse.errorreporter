@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.wso2.developerstudio.eclipse.errorreporter.ui.dialog;
+package org.wso2.developerstudio.eclipse.errorreporter.ui.dialogs;
 
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.wso2.developerstudio.eclipse.errorreporter.Activator;
 
 public class UserInputDialog extends TitleAreaDialog {
 
@@ -41,9 +42,10 @@ public class UserInputDialog extends TitleAreaDialog {
 	private String gmailPasswordStr;
 	
 	private Text jiraUsername;
-	//private String jiraUsernameStr;
+	private String jiraUsernameStr;
 
 	private Text jiraPassword;
+	private String jiraPasswordStr;
 
 
 
@@ -55,9 +57,9 @@ public class UserInputDialog extends TitleAreaDialog {
 	@Override
 	public void create() {
 		super.create();
-		setTitle("Report Developer Studio Errors");
+		setTitle("We noticed an error");
 		setMessage(
-				"Thank you for enabling Developer studio automated error reporting tool. Please eneter your contact details.",
+				"An error has been logged in. Help us fix it. Please take a moment to fill the folllowing details!",
 				IMessageProvider.INFORMATION);
 	}
 
@@ -85,6 +87,8 @@ public class UserInputDialog extends TitleAreaDialog {
 
 		return area;
 	}
+	
+	
 	
 
 	private void createName(Composite container) {
@@ -197,7 +201,15 @@ public class UserInputDialog extends TitleAreaDialog {
 		NameStr = name.getText();
 		EmailStr = email.getText();
 		gmailPasswordStr=gmailPassword.getText();
+		setJiraUsernameStr(jiraUsername.getText());
+		setJiraPasswordStr(jiraPassword.getText());
 
+		Activator.getDefault().getPreferenceStore().setValue("NAME", NameStr);
+		Activator.getDefault().getPreferenceStore().setValue("EMAIL", EmailStr);
+		Activator.getDefault().getPreferenceStore().setValue("GMAIL_PASSWORD", gmailPasswordStr);
+		Activator.getDefault().getPreferenceStore().setValue("JIRA_USERNAME", jiraUsernameStr);
+		Activator.getDefault().getPreferenceStore().setValue("JIRA_PASSWORD", jiraPasswordStr);
+	
 	}
 
 	@Override
@@ -268,5 +280,21 @@ public class UserInputDialog extends TitleAreaDialog {
 
 	public void setEmail(Text email) {
 		this.email = email;
+	}
+
+	public String getJiraUsernameStr() {
+		return jiraUsernameStr;
+	}
+
+	public void setJiraUsernameStr(String jiraUsernameStr) {
+		this.jiraUsernameStr = jiraUsernameStr;
+	}
+
+	public String getJiraPasswordStr() {
+		return jiraPasswordStr;
+	}
+
+	public void setJiraPasswordStr(String jiraPasswordStr) {
+		this.jiraPasswordStr = jiraPasswordStr;
 	}
 }

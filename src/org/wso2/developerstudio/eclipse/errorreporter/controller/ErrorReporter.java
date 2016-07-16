@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.wso2.developerstudio.eclipse.errorreporter.other;
+package org.wso2.developerstudio.eclipse.errorreporter.controller;
 
 
 import java.io.BufferedReader;
@@ -28,10 +28,17 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 import org.json.simple.JSONObject;
 import org.wso2.developerstudio.eclipse.errorreporter.Activator;
-import org.wso2.developerstudio.eclipse.errorreporter.ui.dialog.ErrorNotificationDialog;
+import org.wso2.developerstudio.eclipse.errorreporter.formats.ErrorInformation;
+import org.wso2.developerstudio.eclipse.errorreporter.ui.dialogs.ErrorNotificationDialog;
+import org.wso2.developerstudio.eclipse.errorreporter.ui.dialogs.UserInputDialog;
+import org.wso2.developerstudio.eclipse.errorreporter.util.EmailSender;
+import org.wso2.developerstudio.eclipse.errorreporter.util.InfoCollector;
+import org.wso2.developerstudio.eclipse.errorreporter.util.RemoteJiraConnector;
+import org.wso2.developerstudio.eclipse.errorreporter.util.ReportGenerator;
 
 
 //this class handles the complete process of sending the error report 
@@ -63,47 +70,91 @@ public class ErrorReporter {
 		//get error information and assign it to errorInformation object
 		errorInfoCollector = new InfoCollector(status);
 		errorInformation=errorInfoCollector.getInformation();
+
 		
 		//create reportGenerator object
 		//store the error report and user space
 		reportGenerator=new ReportGenerator(errorInformation);
+		errorMessage=reportGenerator.writeString();
 
 		userResponse=openErrorDialog();
 		
-//		switch(userResponse)
-//		{
-//			case 0:
-//			try {
-//				
-//				sendReport();
-//			} catch (AddressException e) 
-//			
-//			{
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			} catch (MessagingException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//				break;
-//				
-//			case 1:
-//				break;
-//					
-//		}
+		switch(userResponse)
+		{
+			case 0:
+			try {
+				
+				sendReport();
+			} catch (AddressException e) 
+			
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (MessagingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+				break;
+				
+			case 1:
+				break;
+					
+		}
 		
 	}
 	
 	//open up the error dialog box and get user input
-		public int openErrorDialog() {
-			Shell shell = new Shell();
+	public int openErrorDialog() {
+		Shell shell = new Shell();
+			if(checkUserInput())
+			{
+
 			ErrorNotificationDialog errDialog=new ErrorNotificationDialog(shell, errorMessage, status);
 			return errDialog.open();
+			
+			}
+			
+			else
+			{
+				UserInputDialog ui=new UserInputDialog(shell);
+				int num=ui.open();
+				
+				if(num==0)
+				{
+					
+					ErrorNotificationDialog errDialog=new ErrorNotificationDialog(shell, errorMessage, status);
+					return errDialog.open();
+				}
+				
+				else
+				{
+					
+					return SWT.CANCEL;
+				}
+					
+			}
+			
+
 		}
 	
+	private boolean checkUserInput() {
+		
+		String username=Activator.getDefault().getPreferenceStore().getString("JIRA_USERNAME");
+		String password=Activator.getDefault().getPreferenceStore().getString("JIRA_PASSWORD");
+		
+		if(username=="" & password=="")
+		{
+			
+			return false;
+		}
+		
+		else
+			return true;
+	}
+
 	public void sendReport() throws AddressException, MessagingException, IOException{
 		
 		if(Activator.getDefault().getPreferenceStore()
