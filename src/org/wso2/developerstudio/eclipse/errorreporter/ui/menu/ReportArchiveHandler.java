@@ -19,11 +19,11 @@ package org.wso2.developerstudio.eclipse.errorreporter.ui.menu;
 
 
 
+
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.osgi.service.prefs.BackingStoreException;
-import org.wso2.developerstudio.eclipse.errorreporter.ui.preferences.Preferences;
+import org.eclipse.swt.widgets.Shell;
 
 
 
@@ -46,14 +46,19 @@ public class ReportArchiveHandler extends AbstractHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
+		Shell parentShell=new Shell();
+		try{
+			
+		ReportArchive archive=new ReportArchive(parentShell);
+		archive.open();
 
-	
-
-		Preferences pr=new Preferences("org.wso2.developerstudio.eclipse.errorreporter");
-
-		System.out.println(pr.getPreferenceKey("hello"));
-	
-		    
+        
+		}
+		
+		catch(Exception e)
+		{
+			System.out.println("Error in Report archive:"+ e.getMessage());
+		}
 		    
 		return event;
 	}

@@ -21,6 +21,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
@@ -48,6 +50,7 @@ public class ReportArchive extends TitleAreaDialog {
 	String dateTime;
 	String error;
 	String status;
+	String content;
 	
 	public ReportArchive(Shell parentShell) {
 		super(parentShell);
@@ -87,18 +90,19 @@ public class ReportArchive extends TitleAreaDialog {
 	private void createTable(Composite container) {
 
 		    
-		 Table table = new Table(container, SWT.BORDER | SWT.V_SCROLL
+		 final Table table = new Table(container, SWT.BORDER | SWT.V_SCROLL
 			        | SWT.H_SCROLL);
 			    table.setHeaderVisible(true);
-			    String[] titles = { "Error Report ID", "ID", "Date & Time", "Error","Status" };
+			    String[] titles = { "Error Report ID", "ID", "Date & Time", "Error Message","Status" };
 			    
-				 final Text text = new Text(container, SWT.BORDER);
-				    text.setBounds(25, 240, 220, 250);
+			    // Create a multiple-line text field
+			    final Text text = new Text(container, SWT.MULTI | SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
+			    text.setLayoutData(new GridData(SWT.FILL, SWT.FILL,false, true));
 				    
-				    Menu contextMenu = new Menu(table);
-				    table.setMenu(contextMenu);
-				    MenuItem mItem1 = new MenuItem(contextMenu, SWT.None);
-				    mItem1.setText("Menu Item Test.");
+				Menu contextMenu = new Menu(table);
+				table.setMenu(contextMenu);
+				MenuItem mItem1 = new MenuItem(contextMenu, SWT.None);
+				mItem1.setText("Menu Item Test.");
 
 			    for (int loopIndex = 0; loopIndex < titles.length; loopIndex++) {
 			      TableColumn column = new TableColumn(table, SWT.NULL);
@@ -127,8 +131,10 @@ public class ReportArchive extends TitleAreaDialog {
 			      try {
 					readFile(listOfFiles[loopIndex].getPath());
 				      item.setText(1, id);
-				      item.setText(3, error);
 				      item.setText(2, dateTime);
+				      item.setText(3, error);
+				      item.setText(4, status);
+				      
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -144,8 +150,9 @@ public class ReportArchive extends TitleAreaDialog {
 
 			    table.addListener(SWT.MouseDown, new Listener() {
 			      public void handleEvent(Event event) {
-			          text.setText("You selected " + event.item);
-			        
+			    	  String file=setText(table);
+			          text.setText(getContent( file));
+
 			      }
 			    });
 		
@@ -154,6 +161,34 @@ public class ReportArchive extends TitleAreaDialog {
 
 	}
 	
+	private String setText(Table table)
+	{
+
+        String file="";
+        String temp;
+        String temp2;
+        TableItem[] selection = table.getSelection();
+        
+        for (int i = 0; i < selection.length; i++)
+        {
+        	temp=selection[i]+"";
+        	temp2=temp.substring(11,30);
+        	file = System.getProperty("user.dir")+"\\"+"ErrorReports"+"\\"+temp2+"";
+        }
+      
+        return file;
+	}
+	
+	protected String getContent(String fileName) {
+    	
+    	try {
+			content = new String(Files.readAllBytes(Paths.get(fileName)));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return content;
+	}
+
 	private void readFile(String fileName) throws IOException {
 	    BufferedReader br = new BufferedReader(new FileReader(fileName));
 	    try {

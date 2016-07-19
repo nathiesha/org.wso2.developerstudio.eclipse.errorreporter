@@ -26,6 +26,8 @@ import java.util.Date;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 import org.wso2.developerstudio.eclipse.errorreporter.formats.ErrorInformation;
@@ -42,7 +44,7 @@ public class ReportGenerator {
 	private static final String ID = "\nIssueId: ";
 	private static final String ISSUE_STATUS = "\nStatus: ";
 	
-	private static final String INTRODUCTION = "The following report will be sent to Jira:\n\n";
+	private static final String INTRODUCTION = "\nThe following report will be sent to Jira:\n\n";
 
 	private static final String STATUS = "\n--STATUS--\n";
 	private static final String PLUGIN_ID = "\nPlugin ID: ";
@@ -142,11 +144,12 @@ public class ReportGenerator {
 	}
 
 	// store the errorReport and return its location
-	public String storeReport(String fileId) throws IOException {
-
-		String fileName = fileId + ".txt";
-
-		// temporary storage
+	public String storeReport(String Id) throws IOException {
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		Date date = new Date();
+		String timeStamp=(dateFormat.format(date)); //2014/08/06 15:59:48
+		
+		String fileName = timeStamp + ".txt";
 		Bundle bundle = FrameworkUtil.getBundle(getClass());
 		IPath stateLoc = Platform.getStateLocation(bundle);
 
@@ -182,6 +185,27 @@ public class ReportGenerator {
 		filePath = reportPersistent.getPath();
 		return filePath;
 
+	}
+	
+	public String getJsonId(String response)
+	{
+		
+		
+		JSONParser parser = new JSONParser();
+		JSONObject json;
+		try {
+			json = (JSONObject) parser.parse(response);
+	        String id = (String) json.get("id");
+	        return id;
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+
+        
+
+		
 	}
 
 	private void writeReport(FileWriter fw) throws IOException {

@@ -50,7 +50,7 @@ public class ErrorReporter {
 	private ErrorInformation errorInformation;
 	private ReportGenerator reportGenerator;
 	private String errorMessage;
-	private String jiraId;
+	private String response;
 	private JSONObject json;
 	
 	private static final String TARGET_URL="https://wso2.org/jira/rest/api/2/issue";
@@ -145,7 +145,7 @@ public class ErrorReporter {
 		String username=Activator.getDefault().getPreferenceStore().getString("JIRA_USERNAME");
 		String password=Activator.getDefault().getPreferenceStore().getString("JIRA_PASSWORD");
 		
-		if(username=="" & password=="")
+		if(username=="" || password=="")
 		{
 			
 			return false;
@@ -164,7 +164,7 @@ public class ErrorReporter {
 			Job reporterJob = new Job("Reporting the Developer Studio Error") {
 				@Override
 				protected IStatus run(IProgressMonitor monitor) {
-						//sendJira();
+						//response=sendJira();
 						return Status.OK_STATUS;
 				}
 		     };
@@ -185,7 +185,7 @@ public class ErrorReporter {
 
 
 							try {
-								jiraId=sendJira();
+								//response=sendJira();
 								sendEmail();
 							} catch (IOException | MessagingException e) {
 								// TODO Auto-generated catch block
@@ -202,8 +202,8 @@ public class ErrorReporter {
 		}
 		
 		try {
-			
-			reportGenerator.storeReport(jiraId);
+			String id=reportGenerator.getJsonId(response);
+			reportGenerator.storeReport(id);
 		} catch (IOException e) {
 
 			e.printStackTrace();

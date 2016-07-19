@@ -169,7 +169,15 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 	    setDescription(DESCRIPTION);
 	  }
 	  
-	  
+	  public Boolean setValues(String key, String value)
+	  {
+		  Activator.getDefault().getPreferenceStore().setValue(key, value);
+		  super.performApply();
+		  return super.performOk();
+		  
+		  
+		  
+	  }
 
 
 	} 

@@ -16,6 +16,8 @@
 
 package org.wso2.developerstudio.eclipse.errorreporter.ui.dialogs;
 
+
+
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
@@ -28,7 +30,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.wso2.developerstudio.eclipse.errorreporter.Activator;
+import org.wso2.developerstudio.eclipse.errorreporter.ui.preferences.PreferencePage;
 
 public class UserInputDialog extends TitleAreaDialog {
 
@@ -204,12 +206,17 @@ public class UserInputDialog extends TitleAreaDialog {
 		setJiraUsernameStr(jiraUsername.getText());
 		setJiraPasswordStr(jiraPassword.getText());
 
-		Activator.getDefault().getPreferenceStore().setValue("NAME", NameStr);
-		Activator.getDefault().getPreferenceStore().setValue("EMAIL", EmailStr);
-		Activator.getDefault().getPreferenceStore().setValue("GMAIL_PASSWORD", gmailPasswordStr);
-		Activator.getDefault().getPreferenceStore().setValue("JIRA_USERNAME", jiraUsernameStr);
-		Activator.getDefault().getPreferenceStore().setValue("JIRA_PASSWORD", jiraPasswordStr);
-	
+		PreferencePage pf=new PreferencePage();
+		Boolean ab=pf.setValues("NAME", NameStr);
+		System.out.println(ab);
+		//Activator.getDefault().getPreferenceStore().setValue("NAME", NameStr);
+//		Activator.getDefault().getPreferenceStore().setValue("EMAIL", EmailStr);
+//		Activator.getDefault().getPreferenceStore().setValue("GMAIL_PASSWORD", gmailPasswordStr);
+//		Activator.getDefault().getPreferenceStore().setValue("JIRA_USERNAME", jiraUsernameStr);
+//		Activator.getDefault().getPreferenceStore().setValue("JIRA_PASSWORD", jiraPasswordStr);
+//		//resource.setPersistentProperty(
+//                  new QualifiedName(pageId, name), value);  resource.setPersistentProperty(
+//                          new QualifiedName(pageId, name), value);
 	}
 
 	@Override
