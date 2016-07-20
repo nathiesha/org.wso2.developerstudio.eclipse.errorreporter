@@ -50,7 +50,7 @@ public class InfoCollector {
 	}
 
 	// collect the information regarding the exception
-	private void getErrorInfo() {
+	public void getErrorInfo() {
 
 		errorInformation.setPluginId(status.getPlugin());
 		//TODO exception might occur here
@@ -74,7 +74,7 @@ public class InfoCollector {
 	}
 
 	// collect information regarding the environment
-	private void getSystemInfo() {
+	public void getSystemInfo() {
 
 		errorInformation.setEclipseBuildId(System.getProperty("eclipse.buildId"));
 		errorInformation.setEclipseProduct(System.getProperty("eclipse.product"));
@@ -88,7 +88,7 @@ public class InfoCollector {
 	}
 
 	// collect the user set values
-	private void getUserInfo() {
+	public void getUserInfo() {
 
 		errorInformation.setName(Activator.getDefault().getPreferenceStore().getString("NAME"));
 		errorInformation.setEmail(Activator.getDefault().getPreferenceStore().getString("EMAIL"));
