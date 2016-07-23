@@ -39,6 +39,8 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
+import org.wso2.developerstudio.eclipse.errorreporter.Activator;
+import org.wso2.developerstudio.eclipse.errorreporter.util.RemoteJiraConnector;
 
 /**
  * @author Nathie
@@ -99,10 +101,12 @@ public class ReportArchive extends TitleAreaDialog {
 			    final Text text = new Text(container, SWT.MULTI | SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
 			    text.setLayoutData(new GridData(SWT.FILL, SWT.FILL,false, true));
 				    
-				Menu contextMenu = new Menu(table);
+
+			    			    
+			    final Menu contextMenu = new Menu(table);
 				table.setMenu(contextMenu);
 				MenuItem mItem1 = new MenuItem(contextMenu, SWT.None);
-				mItem1.setText("Menu Item Test.");
+				mItem1.setText("Inquire status");
 
 			    for (int loopIndex = 0; loopIndex < titles.length; loopIndex++) {
 			      TableColumn column = new TableColumn(table, SWT.NULL);
@@ -152,13 +156,33 @@ public class ReportArchive extends TitleAreaDialog {
 			      public void handleEvent(Event event) {
 			    	  String file=setText(table);
 			          text.setText(getContent( file));
+			          TableItem[] selection = table.getSelection();
+			            if(selection.length!=0 && (event.button == 3)){
+			                contextMenu.setVisible(true);
+			            }
 
 			      }
 			    });
+			    
+
 		
 	}
                                               
 
+	}
+	
+	public String getStatus()
+	{
+		
+		String targetURL="https://wso2.org/jira/rest/api/2/issue/TOOLS-3418?fields&expand";
+		RemoteJiraConnector rj=new RemoteJiraConnector();
+		String username=Activator.getDefault().getPreferenceStore().getString("JIRA_USERNAME");
+		String password=Activator.getDefault().getPreferenceStore().getString("JIRA_PASSWORD");
+		String userCredentials = username+":"+password;
+		String st=rj.executeGet(targetURL, userCredentials);
+		System.out.println(st);
+		
+		return st;
 	}
 	
 	private String setText(Table table)

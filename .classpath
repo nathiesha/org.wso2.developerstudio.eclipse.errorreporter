@@ -8,5 +8,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/java-mail-1.4.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/org.eclipse.equinox.p2.metadata_2.1.0.v20110510.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/com.sun.net.ssl.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/org.json.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

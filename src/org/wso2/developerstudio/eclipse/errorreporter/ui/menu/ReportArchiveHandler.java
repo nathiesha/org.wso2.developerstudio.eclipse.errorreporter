@@ -25,11 +25,6 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.swt.widgets.Shell;
 
-
-
-
-
-
 /**
  * Our sample handler extends AbstractHandler, an IHandler base class.
  *
@@ -52,13 +47,15 @@ public class ReportArchiveHandler extends AbstractHandler {
 		ReportArchive archive=new ReportArchive(parentShell);
 		archive.open();
 
-        
+
 		}
 		
 		catch(Exception e)
 		{
 			System.out.println("Error in Report archive:"+ e.getMessage());
 		}
+		
+		
 		    
 		return event;
 	}

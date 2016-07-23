@@ -30,7 +30,9 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
-import org.json.simple.JSONObject;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.simple.parser.ParseException;
 import org.wso2.developerstudio.eclipse.errorreporter.Activator;
 import org.wso2.developerstudio.eclipse.errorreporter.formats.ErrorInformation;
 import org.wso2.developerstudio.eclipse.errorreporter.ui.dialogs.ErrorNotificationDialog;
@@ -96,6 +98,12 @@ public class ErrorReporter {
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 				break;
 				
@@ -155,7 +163,7 @@ public class ErrorReporter {
 			return true;
 	}
 
-	public void sendReport() throws AddressException, MessagingException, IOException{
+	public void sendReport() throws AddressException, MessagingException, IOException, JSONException, ParseException{
 		
 		if(Activator.getDefault().getPreferenceStore()
 				.getBoolean("Jira"))
@@ -212,7 +220,7 @@ public class ErrorReporter {
 		
 	}
 	
-	public String sendJira()
+	public String sendJira() throws JSONException
 	{
 
 				json=reportGenerator.createIssue();

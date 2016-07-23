@@ -18,13 +18,14 @@ package org.wso2.developerstudio.eclipse.errorreporter.util;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.apache.commons.codec.binary.Base64;
-import org.json.simple.JSONObject;
 
 public class RemoteJiraConnector {
 
@@ -37,9 +38,9 @@ public class RemoteJiraConnector {
 
 
 
-	public  String excutePost(String targetURL, JSONObject issue,String userCredentials) {
+	public  String excutePost(String targetURL, org.json.JSONObject json,String userCredentials) {
 
-		  urlParameters=issue.toString();
+		  urlParameters=json.toString();
 		  //urlParameters="{\"fields\": {\"project\":{ \"key\": \"TOOLS\"},\"summary\": \"GSOC ERROR REPORTER TEST.\",\"description\": \"Creating of an issue through Developer Studio using the REST API\",\"issuetype\": {\"name\": \"Bug\"}}}";	
 		  try {
 			  
@@ -98,7 +99,50 @@ public class RemoteJiraConnector {
 		  }
 		}
 
+	
+	public  String executeGet(String targetURL, String userCredentials) {
 
+			String output="";
+		  try {
+
+			URL url = new URL(targetURL);
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setRequestMethod("GET");
+			conn.setRequestProperty("Accept", "application/json");
+
+			if (conn.getResponseCode() != 200) {
+				throw new RuntimeException("Failed : HTTP error code : "
+						+ conn.getResponseCode());
+			}
+
+			BufferedReader br = new BufferedReader(new InputStreamReader(
+				(conn.getInputStream())));
+
+			
+			System.out.println("Output from Server .... \n");
+			while ((output = br.readLine()) != null) {
+				System.out.println(output);
+			}
+
+			conn.disconnect();
+
+		  } catch (MalformedURLException e) {
+
+			e.printStackTrace();
+
+		  } catch (IOException e) {
+
+			e.printStackTrace();
+
+		  }
+
+		  return output;
+		}
+
+
+	//TOOLS-3418
+	//GET
+	///rest/api/2/issue/{issueIdOrKey}?fields&expand
 	public String getAuth(String username, String password) {
 		try {
 			String s = username + ":" + password;

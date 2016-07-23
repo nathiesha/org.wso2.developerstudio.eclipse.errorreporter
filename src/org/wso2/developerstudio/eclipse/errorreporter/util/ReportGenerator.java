@@ -25,9 +25,8 @@ import java.util.Date;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 import org.wso2.developerstudio.eclipse.errorreporter.formats.ErrorInformation;
@@ -86,8 +85,7 @@ public class ReportGenerator {
 		this.errorInformation = errorInformation;
 	}
 
-	@SuppressWarnings("unchecked")
-	public JSONObject createIssue() {
+	public JSONObject createIssue() throws JSONException {
 
 		json = new JSONObject();
 		String summary="Testing error reporting tool-GSoC Project-" +errorInformation.getMessage();
@@ -186,27 +184,7 @@ public class ReportGenerator {
 		return filePath;
 
 	}
-	
-	public String getJsonId(String response)
-	{
-		
-		
-		JSONParser parser = new JSONParser();
-		JSONObject json;
-		try {
-			json = (JSONObject) parser.parse(response);
-	        String id = (String) json.get("id");
-	        return id;
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
 
-        
-
-		
-	}
 
 	private void writeReport(FileWriter fw) throws IOException {
 
@@ -242,6 +220,41 @@ public class ReportGenerator {
 		fw.write(COMMENT + errorInformation.getComment());
 		fw.write(SEVERITY_USER + errorInformation.getSeverity2());
 
+	}
+	
+	public String getIssueId(String jsonStr) throws JSONException
+	{
+		
+			JSONObject jsonObj;
+
+			jsonObj = new JSONObject(jsonStr);
+	        String id = jsonObj.getString("id");
+	        System.out.println(id);
+	        String key = jsonObj.getString("key");
+	        System.out.println(key);
+//	        first = jsonObj.getJSONArray("arrArray").getJSONObject(0).getString("a");
+//	        System.out.println(first);
+	        
+		return jsonStr;
+	}
+	
+		//{"expand":"renderedFields,names,schema,transitions,operations,editmeta,changelog","id":"80403","self":"https://wso2.org/jira/rest/api/2/issue/80403","key":"TOOLS-3418","fields":{"progress":{"progress":0,"total":0},"summary":"GSOC ERROR REPORTER TEST.","timetracking":{},"customfield_10084":null,"customfield_10113":null,"issuetype":{"self":"https://wso2.org/jira/rest/api/2/issuetype/1","id":"1","description":"A problem which impairs or prevents the functions of the product.","iconUrl":"https://wso2.org/jira/images/icons/issuetypes/bug.png","name":"Bug","subtask":false},"customfield_10080":null,"votes":{"self":"https://wso2.org/jira/rest/api/2/issue/TOOLS-3418/votes","votes":0,"hasVoted":false},"resolution":null,"fixVersions":[],"resolutiondate":null,"timespent":null,"reporter":{"self":"https://wso2.org/jira/rest/api/2/user?username=nathieshamaddage%40gmail.com","name":"nathieshamaddage@gmail.com","emailAddress":"nathieshamaddage@gmail.com","avatarUrls":{"16x16":"https://wso2.org/jira/secure/useravatar?size=xsmall&avatarId=10142","24x24":"https://wso2.org/jira/secure/useravatar?size=small&avatarId=10142","32x32":"https://wso2.org/jira/secure/useravatar?size=medium&avatarId=10142","48x48":"https://wso2.org/jira/secure/useravatar?avatarId=10142"},"displayName":"Nathiesha Maddage","active":true},"customfield_10122":"68285","aggregatetimeoriginalestimate":null,"updated":"2016-06-08T09:00:28.000+0530","created":"2016-06-08T09:00:28.000+0530","priority":{"self":"https://wso2.org/jira/rest/api/2/priority/3","iconUrl":"https://wso2.org/jira/images/icons/priorities/major.png","name":"Normal","id":"3"},"description":"Creating of an issue through Developer Studio using the REST API","customfield_10120":null,"customfield_10121":null,"duedate":null,"customfield_10020":null,"customfield_10040":{"self":"https://wso2.org/jira/rest/api/2/customFieldOption/10012","value":"Moderate","id":"10012"},"issuelinks":[],"watches":{"self":"https://wso2.org/jira/rest/api/2/issue/TOOLS-3418/watchers","watchCount":1,"isWatching":false},"worklog":{"startAt":0,"maxResults":0,"total":0,"worklogs":[]},"subtasks":[],"status":{"self":"https://wso2.org/jira/rest/api/2/status/1","description":"The issue is open and ready for the assignee to start work on it.","iconUrl":"https://wso2.org/jira/images/icons/statuses/open.png","name":"Open","id":"1"},"customfield_10090":{"self":"https://wso2.org/jira/rest/api/2/customFieldOption/10061","value":"Yes","id":"10061"},"labels":[],"workratio":-1,"assignee":null,"attachment":[],"customfield_10220":null,"aggregatetimeestimate":null,"project":{"self":"https://wso2.org/jira/rest/api/2/project/TOOLS","id":"10030","key":"TOOLS","name":"WSO2 Developer Studio","avatarUrls":{"16x16":"https://wso2.org/jira/secure/projectavatar?size=xsmall&pid=10030&avatarId=10011","24x24":"https://wso2.org/jira/secure/projectavatar?size=small&pid=10030&avatarId=10011","32x32":"https://wso2.org/jira/secure/projectavatar?size=medium&pid=10030&avatarId=10011","48x48":"https://wso2.org/jira/secure/projectavatar?pid=10030&avatarId=10011"}},"versions":[],"customfield_10075":{"self":"https://wso2.org/jira/rest/api/2/customFieldOption/10039","value":"Major","id":"10039"},"environment":null,"timeestimate":null,"aggregateprogress":{"progress":0,"total":0},"lastViewed":null,"components":[],"comment":{"startAt":0,"maxResults":0,"total":0,"comments":[]},"timeoriginalestimate":null,"aggregatetimespent":null}}
+
+
+	public String getIssueStatus(String jsonStr) throws JSONException
+	{
+		
+			JSONObject jsonObj;
+
+			jsonObj = new JSONObject(jsonStr);
+	        String id = jsonObj.getString("id");
+	        System.out.println(id);
+//	        String key = jsonObj.getString("key");
+//	        System.out.println(key);
+	        String key = jsonObj.getJSONArray("fields").getJSONObject(0).getString("key");
+	        System.out.println(key);
+	        
+		return jsonStr;
 	}
 
 	//getters and setters
