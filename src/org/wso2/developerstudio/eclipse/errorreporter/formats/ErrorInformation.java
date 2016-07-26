@@ -46,6 +46,8 @@ public class ErrorInformation {
 		
 		//multi status information
 		private String multiStatus;
+		
+
 
 		private Bundles bundleArray[] = new Bundles[10];
 		
@@ -223,6 +225,7 @@ public class ErrorInformation {
 			this.multiStatus = multiStatus;
 		}
 
+	
 	
 
 }

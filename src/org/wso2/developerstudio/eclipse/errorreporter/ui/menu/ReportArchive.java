@@ -26,6 +26,8 @@ import java.nio.file.Paths;
 
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -34,13 +36,16 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
+import org.json.JSONException;
 import org.wso2.developerstudio.eclipse.errorreporter.Activator;
-import org.wso2.developerstudio.eclipse.errorreporter.util.RemoteJiraConnector;
+import org.wso2.developerstudio.eclipse.errorreporter.util.JiraPublisher;
+import org.wso2.developerstudio.eclipse.errorreporter.util.TextReportGenerator;
 
 /**
  * @author Nathie
@@ -48,11 +53,12 @@ import org.wso2.developerstudio.eclipse.errorreporter.util.RemoteJiraConnector;
  */
 public class ReportArchive extends TitleAreaDialog {
 	
-	String id;
+	String key;
 	String dateTime;
 	String error;
 	String status;
 	String content;
+	String id;
 	
 	public ReportArchive(Shell parentShell) {
 		super(parentShell);
@@ -76,17 +82,8 @@ public class ReportArchive extends TitleAreaDialog {
 		container.setLayout(layout);
 
 		createTable(container);
-		
-//		Composite container2 = new Composite(area, SWT.NONE);
-//		container2.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-//		GridLayout layout2 = new GridLayout(1, false);
-//		container2.setLayout(layout2);
-		
-
-
-		   
-
 		return area;
+		
 	}
 
 	private void createTable(Composite container) {
@@ -121,7 +118,6 @@ public class ReportArchive extends TitleAreaDialog {
 
 				    for (int i = 0; i <fileNo ; i++) {
 				      if (listOfFiles[i].isFile()) {
-				        System.out.println("File " + listOfFiles[i].getName());
 				        counter++;
 
 				    }
@@ -134,7 +130,7 @@ public class ReportArchive extends TitleAreaDialog {
 			      
 			      try {
 					readFile(listOfFiles[loopIndex].getPath());
-				      item.setText(1, id);
+				      item.setText(1, key);
 				      item.setText(2, dateTime);
 				      item.setText(3, error);
 				      item.setText(4, status);
@@ -164,25 +160,44 @@ public class ReportArchive extends TitleAreaDialog {
 			      }
 			    });
 			    
+			    mItem1.addSelectionListener(new SelectionAdapter() {
+			        public void widgetSelected(SelectionEvent e) {
+			        	try {
+							getStatus("TOOLS-3418");
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						} catch (JSONException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
 
-		
-	}
+			        }});
                                               
 
+			    }
 	}
+				    
 	
-	public String getStatus()
+	public void getStatus(String id) throws IOException, JSONException
 	{
-		
-		String targetURL="https://wso2.org/jira/rest/api/2/issue/TOOLS-3418?fields&expand";
-		RemoteJiraConnector rj=new RemoteJiraConnector();
+		String status2="";
+		String targetURL="https://wso2.org/jira/rest/api/2/issue/"+id+"?fields&expand";
+		JiraPublisher remoteJira=new JiraPublisher();
 		String username=Activator.getDefault().getPreferenceStore().getString("JIRA_USERNAME");
 		String password=Activator.getDefault().getPreferenceStore().getString("JIRA_PASSWORD");
 		String userCredentials = username+":"+password;
-		String st=rj.executeGet(targetURL, userCredentials);
-		System.out.println(st);
-		
-		return st;
+		String jsonResponse=remoteJira.executeGet(targetURL, userCredentials);
+        TextReportGenerator reportGen=new TextReportGenerator();
+
+        status2=reportGen.getIssueStatus(jsonResponse);
+
+        Shell shell=new Shell();
+		MessageBox box=new MessageBox(shell);
+		box.setText("Issue status");
+		box.setMessage(status2);
+		box.open();
+
 	}
 	
 	private String setText(Table table)
@@ -196,7 +211,8 @@ public class ReportArchive extends TitleAreaDialog {
         for (int i = 0; i < selection.length; i++)
         {
         	temp=selection[i]+"";
-        	temp2=temp.substring(11,30);
+        	System.out.println(temp);
+        	temp2=temp.substring(11,15);
         	file = System.getProperty("user.dir")+"\\"+"ErrorReports"+"\\"+temp2+"";
         }
       
@@ -219,7 +235,10 @@ public class ReportArchive extends TitleAreaDialog {
 
 	        
 	        String line = br.readLine();
-	        id=line.substring(9);
+	        key=line.substring(0);
+	        
+	        line = br.readLine();
+	        id = line.substring(10);
 
 	        line = br.readLine();
 	        dateTime=line.substring(6);

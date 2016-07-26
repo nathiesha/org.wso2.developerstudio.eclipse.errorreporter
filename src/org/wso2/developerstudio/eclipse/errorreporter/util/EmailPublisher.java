@@ -19,17 +19,19 @@ package org.wso2.developerstudio.eclipse.errorreporter.util;
 import com.sun.mail.smtp.SMTPTransport;
 import com.sun.net.ssl.internal.ssl.Provider;
 
+import java.io.IOException;
 import java.security.Security;
 import java.util.Date;
 import java.util.Properties;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
-import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-public class EmailSender {
+import org.wso2.developerstudio.eclipse.errorreporter.interfaces.ErrorPublisher;
+
+public class EmailPublisher implements ErrorPublisher{
 
 
 
@@ -41,7 +43,7 @@ public class EmailSender {
 	private String title;
 	private String message;
 	
-	public EmailSender(String username, String password, String recEmail, String title, String message) {
+	public EmailPublisher(String username, String password, String recEmail, String title, String message) {
 		super();
 		this.username = username;
 		this.password = password;
@@ -52,7 +54,8 @@ public class EmailSender {
 
 	private static final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
 
-	public void Send() throws AddressException, MessagingException {
+    void init () throws IOException{
+        //init : read preferences for SMTP connection params
 		Security.addProvider(new Provider());
 
 		// Get a Properties object
@@ -67,26 +70,35 @@ public class EmailSender {
 		props.put("mail.smtps.quitwait", "false");
 
 		session = Session.getInstance(props, null);
+      }
+    
+     // implement publish method 
+     public String publish(TextReportGenerator reportGen) throws IOException, MessagingException{
+         init();
+        //send mail
+ 		// -- Create a new message --
+ 		final MimeMessage msg = new MimeMessage(session);
 
-		// -- Create a new message --
-		final MimeMessage msg = new MimeMessage(session);
-
-		// -- Set the FROM and TO fields --
-		msg.setFrom(new InternetAddress());
-		//
-		msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recEmail, false));
+ 		// -- Set the FROM and TO fields --
+ 		msg.setFrom(new InternetAddress());
+ 		//
+ 		msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recEmail, false));
 
 
 
-		msg.setSubject(title);
-		msg.setText(message, "utf-8");
-		msg.setSentDate(new Date());
+ 		msg.setSubject(title);
+ 		msg.setText(message, "utf-8");
+ 		msg.setSentDate(new Date());
 
-		SMTPTransport t = (SMTPTransport) session.getTransport("smtps");
+ 		SMTPTransport t = (SMTPTransport) session.getTransport("smtps");
 
-		t.connect("smtp.gmail.com", username, password);
-		t.sendMessage(msg, msg.getAllRecipients());
-		t.close();
-	}
+ 		t.connect("smtp.gmail.com", username, password);
+ 		t.sendMessage(msg, msg.getAllRecipients());
+ 		t.close();
+ 		
+ 		return "ok";
+     }
+
+
 
 }

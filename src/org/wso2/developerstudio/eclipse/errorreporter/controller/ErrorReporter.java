@@ -37,10 +37,10 @@ import org.wso2.developerstudio.eclipse.errorreporter.Activator;
 import org.wso2.developerstudio.eclipse.errorreporter.formats.ErrorInformation;
 import org.wso2.developerstudio.eclipse.errorreporter.ui.dialogs.ErrorNotificationDialog;
 import org.wso2.developerstudio.eclipse.errorreporter.ui.dialogs.UserInputDialog;
-import org.wso2.developerstudio.eclipse.errorreporter.util.EmailSender;
+import org.wso2.developerstudio.eclipse.errorreporter.util.EmailPublisher;
 import org.wso2.developerstudio.eclipse.errorreporter.util.InfoCollector;
-import org.wso2.developerstudio.eclipse.errorreporter.util.RemoteJiraConnector;
-import org.wso2.developerstudio.eclipse.errorreporter.util.ReportGenerator;
+import org.wso2.developerstudio.eclipse.errorreporter.util.JiraPublisher;
+import org.wso2.developerstudio.eclipse.errorreporter.util.TextReportGenerator;
 
 
 //this class handles the complete process of sending the error report 
@@ -50,10 +50,12 @@ public class ErrorReporter {
 	private int userResponse;//to get user input from dialog
 	private InfoCollector errorInfoCollector;
 	private ErrorInformation errorInformation;
-	private ReportGenerator reportGenerator;
+	private TextReportGenerator textReportGenerator;
 	private String errorMessage;
 	private String response;
 	private JSONObject json;
+	private String id;
+	private String key;
 	
 	private static final String TARGET_URL="https://wso2.org/jira/rest/api/2/issue";
 	private static final String TITLE="Developer Studio Error Report";
@@ -74,10 +76,10 @@ public class ErrorReporter {
 		errorInformation=errorInfoCollector.getInformation();
 
 		
-		//create reportGenerator object
+		//create textReportGenerator object
 		//store the error report and user space
-		reportGenerator=new ReportGenerator(errorInformation);
-		errorMessage=reportGenerator.writeString();
+		textReportGenerator=new TextReportGenerator();
+		errorMessage=textReportGenerator.writeString(errorInformation);
 
 		userResponse=openErrorDialog();
 		
@@ -165,14 +167,21 @@ public class ErrorReporter {
 
 	public void sendReport() throws AddressException, MessagingException, IOException, JSONException, ParseException{
 		
-		if(Activator.getDefault().getPreferenceStore()
+		if(!Activator.getDefault().getPreferenceStore()
 				.getBoolean("Jira"))
 		{
 			
 			Job reporterJob = new Job("Reporting the Developer Studio Error") {
 				@Override
 				protected IStatus run(IProgressMonitor monitor) {
-						//response=sendJira();
+					System.out.println("jira");
+//						try {
+////							response=sendJira();
+//
+//						} catch ( IOException e) {
+//							// TODO Auto-generated catch block
+//							e.printStackTrace();
+//						}
 						return Status.OK_STATUS;
 				}
 		     };
@@ -193,9 +202,10 @@ public class ErrorReporter {
 
 
 							try {
-								//response=sendJira();
+//								response=sendJira();
+								System.out.println("Sending email");
 								sendEmail();
-							} catch (IOException | MessagingException e) {
+							} catch (IOException | MessagingException  e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
@@ -210,8 +220,11 @@ public class ErrorReporter {
 		}
 		
 		try {
-			String id=reportGenerator.getJsonId(response);
-			reportGenerator.storeReport(id);
+//			id=textReportGenerator.getJsonId(response);
+//			key=textReportGenerator.getJsonKey(response);
+			id="5678";
+			key="TOOLS-3168";
+			textReportGenerator.storeReport(id,key,errorInformation);
 		} catch (IOException e) {
 
 			e.printStackTrace();
@@ -220,15 +233,11 @@ public class ErrorReporter {
 		
 	}
 	
-	public String sendJira() throws JSONException
+	public String sendJira() throws JSONException, IOException
 	{
 
-				json=reportGenerator.createIssue();
-				RemoteJiraConnector jiraCon= new RemoteJiraConnector();
-				String username=Activator.getDefault().getPreferenceStore().getString("JIRA_USERNAME");
-				String password=Activator.getDefault().getPreferenceStore().getString("JIRA_PASSWORD");
-				String userCredentials = username+":"+password;
-				String response=jiraCon.excutePost(TARGET_URL, json,userCredentials);
+				JiraPublisher jiraCon= new JiraPublisher();
+				String response=jiraCon.publish(textReportGenerator);
 				return (response);
 						
 		
@@ -240,11 +249,11 @@ public class ErrorReporter {
 		String username=Activator.getDefault().getPreferenceStore().getString("GMAIL USERNAME");
 		String password=Activator.getDefault().getPreferenceStore().getString("GMAIL PASSWORD");
 		String recipientEmail=Activator.getDefault().getPreferenceStore().getString("REC EMAIL");;
-		String message=reportGenerator.writeString();
+		String message=textReportGenerator.writeString(errorInformation);
 			//readFile(filePath);
 		
-		EmailSender emailS=new EmailSender(username, password, recipientEmail, TITLE, message);
-		emailS.Send();
+		EmailPublisher emailS=new EmailPublisher(username, password, recipientEmail, TITLE, message);
+		emailS.publish(textReportGenerator);
 
 		
 	}
