@@ -1,4 +1,3 @@
-
 /*
 * Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 *
@@ -16,10 +15,16 @@
 */
 
 
-package org.wso2.developerstudio.eclipse.errorreporter.interfaces;
+package org.wso2.developerstudio.eclipse.errorreporter.publishers;
 
-public interface ReportGenerator {
-	
-	public void createReport();
 
+import org.wso2.developerstudio.eclipse.errorreporter.reportgenerators.TextReportGenerator;
+
+/**
+ * @author Nathie
+ *
+ */
+public interface ErrorPublisher {
+
+	String publish(TextReportGenerator reportGen) throws Exception;
 }

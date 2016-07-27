@@ -1,3 +1,4 @@
+
 /*
 * Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 *
@@ -15,20 +16,12 @@
 */
 
 
-package org.wso2.developerstudio.eclipse.errorreporter.interfaces;
+package org.wso2.developerstudio.eclipse.errorreporter.reportgenerators;
 
-import java.io.IOException;
+import org.wso2.developerstudio.eclipse.errorreporter.formats.ErrorInformation;
 
-import javax.mail.MessagingException;
+public interface ReportGenerator {
+	
+	public void createReport(ErrorInformation errorInformation) throws Exception;
 
-import org.json.JSONException;
-import org.wso2.developerstudio.eclipse.errorreporter.util.TextReportGenerator;
-
-/**
- * @author Nathie
- *
- */
-public interface ErrorPublisher {
-
-	String publish(TextReportGenerator reportGen) throws IOException, MessagingException, JSONException;
 }

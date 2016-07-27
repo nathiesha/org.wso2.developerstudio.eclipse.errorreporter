@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.wso2.developerstudio.eclipse.errorreporter.util;
+package org.wso2.developerstudio.eclipse.errorreporter.publishers;
 
 import com.sun.mail.smtp.SMTPTransport;
 import com.sun.net.ssl.internal.ssl.Provider;
@@ -29,7 +29,7 @@ import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import org.wso2.developerstudio.eclipse.errorreporter.interfaces.ErrorPublisher;
+import org.wso2.developerstudio.eclipse.errorreporter.reportgenerators.TextReportGenerator;
 
 public class EmailPublisher implements ErrorPublisher{
 

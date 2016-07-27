@@ -44,8 +44,9 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.json.JSONException;
 import org.wso2.developerstudio.eclipse.errorreporter.Activator;
-import org.wso2.developerstudio.eclipse.errorreporter.util.JiraPublisher;
-import org.wso2.developerstudio.eclipse.errorreporter.util.TextReportGenerator;
+import org.wso2.developerstudio.eclipse.errorreporter.publishers.JiraPublisher;
+import org.wso2.developerstudio.eclipse.errorreporter.util.JiraStatusChecker;
+
 
 /**
  * @author Nathie
@@ -188,9 +189,9 @@ public class ReportArchive extends TitleAreaDialog {
 		String password=Activator.getDefault().getPreferenceStore().getString("JIRA_PASSWORD");
 		String userCredentials = username+":"+password;
 		String jsonResponse=remoteJira.executeGet(targetURL, userCredentials);
-        TextReportGenerator reportGen=new TextReportGenerator();
+       JiraStatusChecker checker=new JiraStatusChecker();
 
-        status2=reportGen.getIssueStatus(jsonResponse);
+        status2=checker.getIssueStatus(jsonResponse);
 
         Shell shell=new Shell();
 		MessageBox box=new MessageBox(shell);

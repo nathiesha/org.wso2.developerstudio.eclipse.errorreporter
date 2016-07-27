@@ -30,17 +30,17 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.simple.parser.ParseException;
+//import org.json.JSONObject;
 import org.wso2.developerstudio.eclipse.errorreporter.Activator;
 import org.wso2.developerstudio.eclipse.errorreporter.formats.ErrorInformation;
+import org.wso2.developerstudio.eclipse.errorreporter.publishers.EmailPublisher;
+import org.wso2.developerstudio.eclipse.errorreporter.publishers.FilePublisher;
+import org.wso2.developerstudio.eclipse.errorreporter.publishers.JiraPublisher;
+import org.wso2.developerstudio.eclipse.errorreporter.reportgenerators.TextReportGenerator;
 import org.wso2.developerstudio.eclipse.errorreporter.ui.dialogs.ErrorNotificationDialog;
 import org.wso2.developerstudio.eclipse.errorreporter.ui.dialogs.UserInputDialog;
-import org.wso2.developerstudio.eclipse.errorreporter.util.EmailPublisher;
 import org.wso2.developerstudio.eclipse.errorreporter.util.InfoCollector;
-import org.wso2.developerstudio.eclipse.errorreporter.util.JiraPublisher;
-import org.wso2.developerstudio.eclipse.errorreporter.util.TextReportGenerator;
+
 
 
 //this class handles the complete process of sending the error report 
@@ -52,12 +52,12 @@ public class ErrorReporter {
 	private ErrorInformation errorInformation;
 	private TextReportGenerator textReportGenerator;
 	private String errorMessage;
-	private String response;
-	private JSONObject json;
-	private String id;
-	private String key;
+//	private String response;
+//	private JSONObject json;
+//	private String id;
+//	private String key;
 	
-	private static final String TARGET_URL="https://wso2.org/jira/rest/api/2/issue";
+	//private static final String TARGET_URL="https://wso2.org/jira/rest/api/2/issue";
 	private static final String TITLE="Developer Studio Error Report";
 
 	
@@ -79,7 +79,8 @@ public class ErrorReporter {
 		//create textReportGenerator object
 		//store the error report and user space
 		textReportGenerator=new TextReportGenerator();
-		errorMessage=textReportGenerator.writeString(errorInformation);
+		textReportGenerator.createReport(errorInformation);
+		errorMessage=textReportGenerator.getTextString();
 
 		userResponse=openErrorDialog();
 		
@@ -89,21 +90,7 @@ public class ErrorReporter {
 			try {
 				
 				sendReport();
-			} catch (AddressException e) 
-			
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (MessagingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ParseException e) {
+			}  catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -165,7 +152,7 @@ public class ErrorReporter {
 			return true;
 	}
 
-	public void sendReport() throws AddressException, MessagingException, IOException, JSONException, ParseException{
+	public void sendReport() throws Exception{
 		
 		if(!Activator.getDefault().getPreferenceStore()
 				.getBoolean("Jira"))
@@ -222,9 +209,10 @@ public class ErrorReporter {
 		try {
 //			id=textReportGenerator.getJsonId(response);
 //			key=textReportGenerator.getJsonKey(response);
-			id="5678";
-			key="TOOLS-3168";
-			textReportGenerator.storeReport(id,key,errorInformation);
+//			id="5678";
+//			key="TOOLS-3168";
+			FilePublisher nw=new FilePublisher();
+			nw.publish(textReportGenerator);
 		} catch (IOException e) {
 
 			e.printStackTrace();
@@ -233,7 +221,7 @@ public class ErrorReporter {
 		
 	}
 	
-	public String sendJira() throws JSONException, IOException
+	public String sendJira() throws Exception
 	{
 
 				JiraPublisher jiraCon= new JiraPublisher();
@@ -249,7 +237,8 @@ public class ErrorReporter {
 		String username=Activator.getDefault().getPreferenceStore().getString("GMAIL USERNAME");
 		String password=Activator.getDefault().getPreferenceStore().getString("GMAIL PASSWORD");
 		String recipientEmail=Activator.getDefault().getPreferenceStore().getString("REC EMAIL");;
-		String message=textReportGenerator.writeString(errorInformation);
+		textReportGenerator.createReport(errorInformation);
+		String message=textReportGenerator.getTextString();
 			//readFile(filePath);
 		
 		EmailPublisher emailS=new EmailPublisher(username, password, recipientEmail, TITLE, message);

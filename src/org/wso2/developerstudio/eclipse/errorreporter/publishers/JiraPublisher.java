@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.wso2.developerstudio.eclipse.errorreporter.util;
+package org.wso2.developerstudio.eclipse.errorreporter.publishers;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -24,18 +24,17 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import org.apache.commons.codec.binary.Base64;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.wso2.developerstudio.eclipse.errorreporter.Activator;
 import org.wso2.developerstudio.eclipse.errorreporter.formats.ErrorInformation;
-import org.wso2.developerstudio.eclipse.errorreporter.interfaces.ErrorPublisher;
+import org.wso2.developerstudio.eclipse.errorreporter.reportgenerators.JSONReportGenerator;
+import org.wso2.developerstudio.eclipse.errorreporter.reportgenerators.TextReportGenerator;
 
 public class JiraPublisher implements ErrorPublisher {
 
 	private HttpURLConnection connection;
 	private String urlParameters;
 	private JSONObject json;
-	private TextReportGenerator reportGen;
 	private static final String TARGET_URL="https://wso2.org/jira/rest/api/2/issue";
 
 	public JiraPublisher() {
@@ -90,11 +89,13 @@ public class JiraPublisher implements ErrorPublisher {
 	}
 
 
-    void init () throws IOException, JSONException{
+    void init () throws Exception{
         //init : read preferences for JIRA resp API connection params
     	
 		ErrorInformation errorInformation = null;
-		json=reportGen.createIssue(errorInformation);
+		JSONReportGenerator nw=new JSONReportGenerator();
+		nw.createReport(errorInformation);
+		json=nw.getIssue();
 		String username=Activator.getDefault().getPreferenceStore().getString("JIRA_USERNAME");
 		String password=Activator.getDefault().getPreferenceStore().getString("JIRA_PASSWORD");
 		String userCredentials = username+":"+password;
@@ -116,7 +117,7 @@ public class JiraPublisher implements ErrorPublisher {
    }
  
     // implement publish method 
-    public String publish(TextReportGenerator reportGen) throws IOException, JSONException{
+    public String publish(TextReportGenerator reportGen) throws Exception{
      init();
     //post to JIRA api and create issue
      
