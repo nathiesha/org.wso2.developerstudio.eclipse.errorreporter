@@ -41,7 +41,7 @@ import org.wso2.developerstudio.eclipse.errorreporter.reportgenerators.TextRepor
 import org.wso2.developerstudio.eclipse.errorreporter.ui.dialogs.ErrorNotificationDialog;
 import org.wso2.developerstudio.eclipse.errorreporter.ui.dialogs.UserInputDialog;
 import org.wso2.developerstudio.eclipse.errorreporter.util.InfoCollector;
-import org.wso2.developerstudio.eclipse.errorreporter.util.JSONReader;
+
 
 
 //this class handles the complete process of publishing the error reports 

@@ -17,10 +17,10 @@
 package org.wso2.developerstudio.eclipse.errorreporter.publishers;
 
 import com.sun.mail.smtp.SMTPTransport;
-import com.sun.net.ssl.internal.ssl.Provider;
+//import com.sun.net.ssl.internal.ssl.Provider;
 
 import java.io.IOException;
-import java.security.Security;
+//import java.security.Security;
 import java.util.Date;
 import java.util.Properties;
 import javax.mail.Message;
@@ -56,7 +56,7 @@ public class EmailPublisher implements ErrorPublisher{
 
     void init () throws IOException{
         //init : read preferences for SMTP connection params
-		Security.addProvider(new Provider());
+    	//Security.addProvider(new Provider());
 
 		// Get a Properties object
 		props = System.getProperties();
