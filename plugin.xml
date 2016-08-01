@@ -18,7 +18,7 @@
          point="org.eclipse.ui.handlers">
       <handler
             commandId="ErrorReporterTool.commands.sampleCommand"
-            class="org.wso2.developerstudio.eclipse.errorreporter.ui.menu.ReportArchiveHandler">
+            class="org.wso2.developerstudio.eclipse.errorreporter.ui.archivemenu.ReportArchiveHandler">
       </handler>
    </extension>
    <extension

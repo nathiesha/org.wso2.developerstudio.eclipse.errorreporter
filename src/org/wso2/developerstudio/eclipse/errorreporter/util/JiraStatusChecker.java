@@ -17,6 +17,12 @@
 
 package org.wso2.developerstudio.eclipse.errorreporter.util;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -37,6 +43,35 @@ public class JiraStatusChecker {
 	        String status=name+desc;
 
 		return status;
+	}
+	
+	
+	public  String executeGet(String targetURL, String userCredentials) throws IOException {
+
+		String output="";
+		String response="";
+
+		URL url = new URL(targetURL);
+		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		conn.setRequestMethod("GET");
+		conn.setRequestProperty("Accept", "application/json");
+
+		if (conn.getResponseCode() != 200) {
+			throw new RuntimeException("Failed : HTTP error code : "
+					+ conn.getResponseCode());
+		}
+
+		BufferedReader br = new BufferedReader(new InputStreamReader(
+				(conn.getInputStream())));
+
+			while ((output = br.readLine()) != null) {
+
+				response+=output;
+			}
+			
+			conn.disconnect();
+
+			return response;
 	}
 
 }

@@ -46,7 +46,7 @@ public class FilePublisher implements ErrorPublisher{
 
 	
     public String publish(TextReportGenerator reportGen) throws Exception{
-    	String Id="1234";
+    	String Id="abcd";
     	String key="5678";
     	String fileName = Id + ".txt";
 		Bundle bundle = FrameworkUtil.getBundle(getClass());
@@ -101,29 +101,7 @@ public class FilePublisher implements ErrorPublisher{
 		fw.write(ID +id);
 		fw.write(DATE+ timeStamp);
 		fw.write(reportGen.getTextString());
-//		fw.write(EXCEPTION + errorInformation.getExceptionS());
-//		fw.write(ISSUE_STATUS);
-//		fw.write(STATUS);
-//		fw.write(PLUGIN_ID + errorInformation.getPluginId());
-//		fw.write(PLUGIN_VERSION + errorInformation.getPluginVersion());
-//		fw.write(CODE + errorInformation.getCode());
-//		fw.write(SEVERITY + errorInformation.getSeverity());
-//		fw.write(MESSAGE + errorInformation.getMessage());
-//		fw.write(EXCEPTION + errorInformation.getExceptionS());
-//		fw.write(MULTI_STATUS_INFORMATION + errorInformation.getMultiStatus());
-//		fw.write(REPORT);
-//		fw.write(ECLIPSE_BUILD_ID + errorInformation.getEclipseBuildId());
-//		fw.write(ECLIPSE_PRODUCT + errorInformation.getEclipseProduct());
-//		fw.write(JAVA_RUNTIME_VERSION + errorInformation.getJavaRuntimeVersion());
-//		fw.write(OSGIWS + errorInformation.getOsgiWs());
-//		fw.write(OSGI_OS + errorInformation.getOsgiOs());
-//		fw.write(OSGI_OS_VERSION + errorInformation.getOsgiOsVersion());
-//		fw.write(OSGI_ARCH + errorInformation.getOsgiArch());
-//		fw.write(REPORT_SENDER);
-//		fw.write(NAME + errorInformation.getName());
-//		fw.write(EMAIL + errorInformation.getEmail());
-//		fw.write(COMMENT + errorInformation.getComment());
-//		fw.write(SEVERITY_USER + errorInformation.getSeverity2());
+		
 
 	}
 

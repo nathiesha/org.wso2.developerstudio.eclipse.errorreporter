@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IStatus;
 import org.wso2.developerstudio.eclipse.errorreporter.controller.ErrorReporter;
 
-
 public class LogListener implements ILogListener {
 
 	private IStatus loggedStatus;
@@ -32,47 +31,44 @@ public class LogListener implements ILogListener {
 	public void logging(IStatus status, String plugin) {
 		this.loggedStatus = status;
 
-	
+		// check whether the error has any relavanc to developer studio plugings
 		if (checkError(status, plugin)) {
 
 			System.out.println("error found");
-			// create error reporter object and report the error to user and jira
+			// create error reporter object and report the error to user and
+			// jira
 			errorReporter = new ErrorReporter(status);
 			errorReporter.reportError();
 
 		}
 
 	}
-	
+
 	// method to check whether the error belongs to dev studio
-	private Boolean checkError(IStatus status, String plugin)
-	{
-		
-		//To convert the exception to a string
+	private Boolean checkError(IStatus status, String plugin) {
+
+		// To convert the exception to a string
 		StringWriter sw = new StringWriter();
 		PrintWriter pw = new PrintWriter(sw);
 		status.getException().printStackTrace(pw);
-		String exception=(sw.toString());
+		String exception = sw.toString();
 
-		//check whether the plugin belongs to wso2.developerstudio
-		if(status.getSeverity() == IStatus.ERROR && plugin.contains("org.wso2.developerstudio"))
-		{
+		// check whether the plugin belongs to wso2.developerstudio
+		if (status.getSeverity() == IStatus.ERROR && plugin.contains("org.wso2.developerstudio")) {
 			return true;
-			
-		}
-		
-		//check whether the exception message contains wso2.developerstudio string
-		else if(status.getSeverity() == IStatus.ERROR && exception.contains("org.wso2.developerstudio"))
-		{
-			
-			return true;
+
 		}
 
-		else
-			return false;		
-		
+		// check whether the exception message contains wso2.developerstudio
+		// string
+		else if (status.getSeverity() == IStatus.ERROR && exception.contains("org.wso2.developerstudio")) {
+
+			return true;
+		} else {
+			return false;
+		}
+
 	}
-	
 
 	public IStatus getLoggedStatus() {
 		return loggedStatus;

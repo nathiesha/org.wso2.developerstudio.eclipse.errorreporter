@@ -30,7 +30,7 @@ public class Startup implements IStartup {
 		listener = new LogListener();
 		Platform.addLogListener(listener);
 
-		 System.out.println("Early start up");
+		System.out.println("Early start up");
 
 	}
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.wso2.developerstudio.eclipse.errorreporter.ui.menu;
+package org.wso2.developerstudio.eclipse.errorreporter.ui.archivemenu;
 
 
 
@@ -43,6 +43,7 @@ public class ReportArchiveHandler extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		Shell parentShell=new Shell();
+		
 		try{
 			
 		ReportArchive archive=new ReportArchive(parentShell);

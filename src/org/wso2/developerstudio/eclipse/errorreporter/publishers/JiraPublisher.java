@@ -36,40 +36,16 @@ public class JiraPublisher implements ErrorPublisher {
 	private String urlParameters;
 	private JSONObject json;
 	private static final String TARGET_URL="https://wso2.org/jira/rest/api/2/issue";
+	ErrorInformation errorInformation;
+	
+	public JiraPublisher(ErrorInformation errorInformation) {
 
-	public JiraPublisher() {
-
+		this.errorInformation=errorInformation;
 	}
 
 
 	
-	public  String executeGet(String targetURL, String userCredentials) throws IOException {
 
-			String output="";
-			String response="";
-
-			URL url = new URL(targetURL);
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.setRequestMethod("GET");
-			conn.setRequestProperty("Accept", "application/json");
-
-			if (conn.getResponseCode() != 200) {
-				throw new RuntimeException("Failed : HTTP error code : "
-						+ conn.getResponseCode());
-			}
-
-			BufferedReader br = new BufferedReader(new InputStreamReader(
-					(conn.getInputStream())));
-
-				while ((output = br.readLine()) != null) {
-
-					response+=output;
-				}
-				
-				conn.disconnect();
-
-				return response;
-		}
 
 
 	//TOOLS-3418
@@ -92,7 +68,6 @@ public class JiraPublisher implements ErrorPublisher {
     void init () throws Exception{
         //init : read preferences for JIRA resp API connection params
     	
-		ErrorInformation errorInformation = null;
 		JSONReportGenerator nw=new JSONReportGenerator();
 		nw.createReport(errorInformation);
 		json=nw.getIssue();
@@ -130,7 +105,7 @@ public class JiraPublisher implements ErrorPublisher {
 
 	    //Send request
 
-
+		System.out.println("InsidePublish");
 	    DataOutputStream wr = new DataOutputStream (
 	        connection.getOutputStream());
 	    wr.writeBytes(urlParameters);

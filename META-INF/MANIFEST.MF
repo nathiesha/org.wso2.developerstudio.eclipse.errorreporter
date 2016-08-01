@@ -19,8 +19,8 @@ Export-Package: org.wso2.developerstudio.eclipse.errorreporter,
  org.wso2.developerstudio.eclipse.errorreporter.controller,
  org.wso2.developerstudio.eclipse.errorreporter.formats,
  org.wso2.developerstudio.eclipse.errorreporter.startup,
+ org.wso2.developerstudio.eclipse.errorreporter.ui.archivemenu,
  org.wso2.developerstudio.eclipse.errorreporter.ui.dialogs,
- org.wso2.developerstudio.eclipse.errorreporter.ui.menu,
  org.wso2.developerstudio.eclipse.errorreporter.ui.preferences,
  org.wso2.developerstudio.eclipse.errorreporter.util
 Import-Package: org.wso2.developerstudio.eclipse.errorreporter.controller
