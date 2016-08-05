@@ -26,7 +26,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.json.JSONObject;
 import org.wso2.developerstudio.eclipse.errorreporter.Activator;
 import org.wso2.developerstudio.eclipse.errorreporter.formats.ErrorInformation;
-import org.wso2.developerstudio.eclipse.errorreporter.reportgenerators.JSONReportGenerator;
+import org.wso2.developerstudio.eclipse.errorreporter.reportgenerators.JSONRepGenerator;
 import org.wso2.developerstudio.eclipse.errorreporter.reportgenerators.TextReportGenerator;
 
 public class JiraPublisher implements ErrorPublisher {
@@ -67,7 +67,7 @@ public class JiraPublisher implements ErrorPublisher {
     void init () throws Exception{
         //init : read preferences for JIRA resp API connection params
     	
-		JSONReportGenerator nw=new JSONReportGenerator();
+		JSONRepGenerator nw=new JSONRepGenerator();
 		nw.createReport(errorInformation);
 		json=nw.getIssue();
 		String username=Activator.getDefault().getPreferenceStore().getString("JIRA_USERNAME");

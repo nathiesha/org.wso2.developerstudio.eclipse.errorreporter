@@ -25,7 +25,7 @@ import org.wso2.developerstudio.eclipse.errorreporter.formats.ErrorInformation;
  * @author Nathie
  *
  */
-public class JSONReportGenerator implements ReportGenerator {
+public class JSONRepGenerator implements ReportGenerator {
 	
 	// Jira issue fields
 	private static final String PROJECT = "project";
@@ -38,7 +38,7 @@ public class JSONReportGenerator implements ReportGenerator {
 	
 	private JSONObject issue;
 
-	public JSONReportGenerator() {
+	public JSONRepGenerator() {
 		super();
 	}
 

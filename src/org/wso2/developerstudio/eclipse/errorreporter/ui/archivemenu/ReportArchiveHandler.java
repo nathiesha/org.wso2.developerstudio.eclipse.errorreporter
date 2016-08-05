@@ -24,6 +24,8 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.swt.widgets.Shell;
+import org.wso2.developerstudio.eclipse.errorreporter.publishers.JiraPublisher;
+import org.wso2.developerstudio.eclipse.errorreporter.publishers.RemoteServerPublisher;
 
 
 /**
@@ -46,8 +48,17 @@ public class ReportArchiveHandler extends AbstractHandler {
 		
 		try{
 			
-		ReportArchive archive=new ReportArchive(parentShell);
-		archive.open();
+			RemoteServerPublisher jp=new RemoteServerPublisher();
+			try {
+				String rp=jp.publish();
+				System.out.println(rp);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+//		ReportArchive archive=new ReportArchive(parentShell);
+//		archive.open();
 
 
 		}
