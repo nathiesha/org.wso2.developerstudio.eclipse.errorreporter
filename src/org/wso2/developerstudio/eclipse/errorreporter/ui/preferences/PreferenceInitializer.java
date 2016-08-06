@@ -27,19 +27,19 @@ import org.wso2.developerstudio.eclipse.errorreporter.Activator;
 
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
-	private static final String TARGET_URL = "https://wso2.org/jira/rest/api/2/issue";
+	private static final String TARGET_URL = "http://test4475-jira-publisher-test-1-0-0.wso2apps.com/publish";
 	private static final String PROJECT_KEY = "TOOLS";
 
 	@Override
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 
-		store.setDefault(PreferencePage.ANO_PACK, false);
-		store.setDefault(PreferencePage.ANO_LOG, false);
+//		store.setDefault(PreferencePage.ANO_PACK, false);
+//		store.setDefault(PreferencePage.ANO_LOG, false);
 		store.setDefault(PreferencePage.JIRA, true);
 		store.setDefault(PreferencePage.EMAIL, false);
 
-		store.setDefault(PreferencePage.JIRA_URL, TARGET_URL);
+		store.setDefault(PreferencePage.SERVER_URL, TARGET_URL);
 		store.setDefault(PreferencePage.PROJECT_KEY, PROJECT_KEY);
 
 	}

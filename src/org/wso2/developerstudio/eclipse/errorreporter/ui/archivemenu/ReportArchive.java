@@ -45,7 +45,7 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.json.JSONException;
 import org.wso2.developerstudio.eclipse.errorreporter.Activator;
-import org.wso2.developerstudio.eclipse.errorreporter.publishers.JiraPublisher;
+//import org.wso2.developerstudio.eclipse.errorreporter.publishers.JiraPublisher;
 import org.wso2.developerstudio.eclipse.errorreporter.util.JiraStatusChecker;
 
 

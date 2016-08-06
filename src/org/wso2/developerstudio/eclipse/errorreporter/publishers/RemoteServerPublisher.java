@@ -41,7 +41,7 @@ public class RemoteServerPublisher {
 	private HttpURLConnection connection;
 	private String urlParameters;
 	private JSONObject json;
-	private static final String TARGET_URL="http://localhost:8080/publish";
+	private static final String TARGET_URL="http://test4475-jira-publisher-test-1-0-0.wso2apps.com/publish";
 	ErrorInformation errorInformation;
 	
 
@@ -60,14 +60,11 @@ public class RemoteServerPublisher {
 //			nw.createReport(errorInformation);
 //			json=nw.getIssue();
 //			String username=Activator.getDefault().getPreferenceStore().getString("JIRA_USERNAME");
-//			String password=Activator.getDefault().getPreferenceStore().getString("JIRA_PASSWORD");
-//			String userCredentials = username+":"+password;
+
 
 			
 		    URL url = new URL(TARGET_URL);
 		    connection = (HttpURLConnection)url.openConnection();
-//			String basicAuth = "Basic " + new String(new Base64().encode(userCredentials.getBytes()));
-//			connection.setRequestProperty ("Authorization", basicAuth);
 		    connection.setRequestMethod("POST");
 
 	   }

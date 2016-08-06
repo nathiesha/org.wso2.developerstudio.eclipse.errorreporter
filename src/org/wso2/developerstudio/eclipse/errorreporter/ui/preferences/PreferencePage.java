@@ -16,7 +16,7 @@
 
 package org.wso2.developerstudio.eclipse.errorreporter.ui.preferences;
 
-import org.eclipse.jface.preference.BooleanFieldEditor;
+//import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
@@ -34,11 +34,10 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 	private static final String DESCRIPTION = "Set default sending option for Developer Studio Error Reporting tool";
 
 	// group labels
-	private static final String CONTACT_INFO_GROUP = "Conact Information";
-	private static final String ANO_OPTIONS_GROUP = "Anonymization Options";
+	private static final String CONTACT_INFO_GROUP = "Contact Information";
 	private static final String SEND_OPTIONS_GROUP = "Sending Options";
-	private static final String GMAIL_USER_CRED = "Gmail User Credentials";
-	private static final String JIRA_USER_CRED = "Jira User Credentials";
+//	private static final String GMAIL_USER_CRED = "Gmail User Credentials";
+//	private static final String JIRA_USER_CRED = "Jira User Credentials";
 
 	// contact information strings
 	public static final String NAME = "NAME";
@@ -47,10 +46,10 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 	private static final String EMAIL_USER_S = "Email:";
 
 	// annonymize options strings
-	public static final String ANO_PACK = "ANOPACK";
-	private static final String ANO_PACK_S = "&Anonymize package, class and method names";
-	public static final String ANO_LOG = "ANOLOG";
-	private static final String ANO_LOG_S = "&Anonymize error log messages";
+//	public static final String ANO_PACK = "ANOPACK";
+//	private static final String ANO_PACK_S = "&Anonymize package, class and method names";
+//	public static final String ANO_LOG = "ANOLOG";
+//	private static final String ANO_LOG_S = "&Anonymize error log messages";
 
 	// send options Strings
 	public static final String SEND_OPTIONS = "SENDOPTIONS";
@@ -60,23 +59,28 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 	public static final String EMAIL = "Email";
 	private static final String EMAIL_S = "&Report the error in Jira and send an email";
 
-	// Gmail user credentials
-	private static final String GMAIL_USERNAME = "GMAIL USERNAME";
-	private static final String GMAIL_USERNAME_S = "Gmail Username:";
-	private static final String GMAIL_PASSWORD = "GMAIL PASSWORD";
-	private static final String GMAIL_PASSWORD_S = "Password:";
-	private static final String REC_EMAIL = "REC EMAIL";
-	private static final String REC_EMAIL_S = "Recipient Email Address:";
-
-	// Jira user credentials
-	public static final String JIRA_URL = "JIRA_URL";
-	private static final String JIRA_URL_S = "Remote Jira URL:";
+	public static final String SERVER_URL = "SERVER_URL";
+	private static final String SERVER_URL_S = "Remote Jira URL:";
 	public static final String PROJECT_KEY = "PROJECT_KEY";
 	private static final String PROJECT_KEY_S = "Project Key:";
-	private static final String JIRA_USERNAME = "JIRA_USERNAME";
-	private static final String JIRA_USERNAME_S = "Username:";
-	private static final String JIRA_PASSWORD = "JIRA_PASSWORD";
-	private static final String JIRA_PASSWORD_S = "Password:";
+	
+	// Gmail user credentials
+//	private static final String GMAIL_USERNAME = "GMAIL USERNAME";
+//	private static final String GMAIL_USERNAME_S = "Gmail Username:";
+//	private static final String GMAIL_PASSWORD = "GMAIL PASSWORD";
+//	private static final String GMAIL_PASSWORD_S = "Password:";
+//	private static final String REC_EMAIL = "REC EMAIL";
+//	private static final String REC_EMAIL_S = "Recipient Email Address:";
+
+	// Jira user credentials
+//	public static final String JIRA_URL = "JIRA_URL";
+//	private static final String JIRA_URL_S = "Remote Jira URL:";
+//	public static final String PROJECT_KEY = "PROJECT_KEY";
+//	private static final String PROJECT_KEY_S = "Project Key:";
+//	private static final String JIRA_USERNAME = "JIRA_USERNAME";
+//	private static final String JIRA_USERNAME_S = "Username:";
+//	private static final String JIRA_PASSWORD = "JIRA_PASSWORD";
+//	private static final String JIRA_PASSWORD_S = "Password:";
 
 	public PreferencePage() {
 		super(GRID);
@@ -101,56 +105,57 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 		data.horizontalAlignment = GridData.FILL;
 		data.grabExcessHorizontalSpace = true;
 		Group con = new Group(top, SWT.SHADOW_OUT);
-		Group ano = new Group(top, SWT.SHADOW_OUT);
-		Group sop = new Group(top, SWT.SHADOW_OUT);
-		Group guc = new Group(top, SWT.SHADOW_OUT);
-		Group juc = new Group(top, SWT.SHADOW_OUT);
+		Group sop = new Group(top, SWT.SHADOW_OUT);	
+		Group rem = new Group(top, SWT.SHADOW_OUT);
+//		Group guc = new Group(top, SWT.SHADOW_OUT);
+//		Group juc = new Group(top, SWT.SHADOW_OUT);
 
 		// set text to groups
 		con.setText(CONTACT_INFO_GROUP);
-		ano.setText(ANO_OPTIONS_GROUP);
 		sop.setText(SEND_OPTIONS_GROUP);
-		guc.setText(GMAIL_USER_CRED);
-		juc.setText(JIRA_USER_CRED);
+		rem.setText(SEND_OPTIONS_GROUP);
+//		guc.setText(GMAIL_USER_CRED);
+//		juc.setText(JIRA_USER_CRED);
 
 		addField(new StringFieldEditor(NAME, NAME_S, con));
 		addField(new StringFieldEditor(EMAIL_USER, EMAIL_USER_S, con));
 
-		addField(new BooleanFieldEditor(ANO_PACK, ANO_PACK_S, ano));
-		addField(new BooleanFieldEditor(ANO_LOG, ANO_LOG_S, ano));
 
 		addField(new RadioGroupFieldEditor(SEND_OPTIONS, SEND_OPTIONS_S, 1,
 				new String[][] { { JIRA_S, JIRA }, { EMAIL_S, EMAIL } }, sop));
 
-		addField(new StringFieldEditor(GMAIL_USERNAME, GMAIL_USERNAME_S, guc));
-		StringFieldEditor passwordGmail = new StringFieldEditor(GMAIL_PASSWORD, GMAIL_PASSWORD_S, guc) {
-
-			@Override
-			protected void doFillIntoGrid(Composite parent, int numColumns) {
-				super.doFillIntoGrid(parent, numColumns);
-
-				getTextControl().setEchoChar('*');
-			}
-
-		};
-		addField(passwordGmail);
-
-		addField(new StringFieldEditor(REC_EMAIL, REC_EMAIL_S, guc));
-
-		addField(new StringFieldEditor(JIRA_URL, JIRA_URL_S, juc));
-		addField(new StringFieldEditor(PROJECT_KEY, PROJECT_KEY_S, juc));
-		addField(new StringFieldEditor(JIRA_USERNAME, JIRA_USERNAME_S, juc));
-		StringFieldEditor passwordJira = new StringFieldEditor(JIRA_PASSWORD, JIRA_PASSWORD_S, juc) {
-
-			@Override
-			protected void doFillIntoGrid(Composite parent, int numColumns) {
-				super.doFillIntoGrid(parent, numColumns);
-
-				getTextControl().setEchoChar('*');
-			}
-
-		};
-		addField(passwordJira);
+		addField(new StringFieldEditor(SERVER_URL, SERVER_URL_S, rem));
+		addField(new StringFieldEditor(PROJECT_KEY, PROJECT_KEY_S, rem));
+		
+//		addField(new StringFieldEditor(GMAIL_USERNAME, GMAIL_USERNAME_S, guc));
+//		StringFieldEditor passwordGmail = new StringFieldEditor(GMAIL_PASSWORD, GMAIL_PASSWORD_S, guc) {
+//
+//			@Override
+//			protected void doFillIntoGrid(Composite parent, int numColumns) {
+//				super.doFillIntoGrid(parent, numColumns);
+//
+//				getTextControl().setEchoChar('*');
+//			}
+//
+//		};
+//		addField(passwordGmail);
+//
+//		addField(new StringFieldEditor(REC_EMAIL, REC_EMAIL_S, guc));
+//
+//		addField(new StringFieldEditor(JIRA_URL, JIRA_URL_S, juc));
+//		addField(new StringFieldEditor(PROJECT_KEY, PROJECT_KEY_S, juc));
+//		addField(new StringFieldEditor(JIRA_USERNAME, JIRA_USERNAME_S, juc));
+//		StringFieldEditor passwordJira = new StringFieldEditor(JIRA_PASSWORD, JIRA_PASSWORD_S, juc) {
+//
+//			@Override
+//			protected void doFillIntoGrid(Composite parent, int numColumns) {
+//				super.doFillIntoGrid(parent, numColumns);
+//
+//				getTextControl().setEchoChar('*');
+//			}
+//
+//		};
+//		addField(passwordJira);
 	}
 
 	@Override

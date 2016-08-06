@@ -27,18 +27,22 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
@@ -91,6 +95,28 @@ public class ErrorNotificationDialog extends ErrorDialog {
 
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
+		
+		final Link link = new Link(parent, SWT.NONE);
+	    link.setFont(parent.getFont());
+	    link.setText("<A>" + "Click here to edit the sending option preferences." + "</A>"); 
+	    GridData data = new GridData(SWT.LEFT_TO_RIGHT , SWT.TOP, false, false);
+	    data.horizontalSpan = 3;
+	    link.setLayoutData(data);
+	    
+	    
+	    
+		link.addSelectionListener(new SelectionAdapter() {
+		  @Override
+		  public void widgetSelected(final SelectionEvent e)
+		  {
+			  Shell shell=new Shell();
+			  PreferenceDialog pref = 
+					  PreferencesUtil.createPreferenceDialogOn(shell, 
+							  "org.wso2.developerstudio.eclipse.errorreporter.page1", null, null);
+					  if (pref != null)
+					  pref.open();
+		  }
+		});
 		// create OK CANCEL and Details buttons
 		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL,
 				true);

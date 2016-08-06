@@ -50,8 +50,8 @@ public class ReportArchiveHandler extends AbstractHandler {
 			
 			RemoteServerPublisher jp=new RemoteServerPublisher();
 			try {
-				String rp=jp.publish();
-				System.out.println(rp);
+				//String rp=jp.publish();
+				//System.out.println(rp);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
