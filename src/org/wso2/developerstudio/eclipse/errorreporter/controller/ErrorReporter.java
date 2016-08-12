@@ -141,8 +141,6 @@ public class ErrorReporter {
 
 	}
 
-	
-
 	// open up the error dialog box and get user input
 	public int openErrorDialog() {
 
@@ -180,7 +178,6 @@ public class ErrorReporter {
 
 	}
 
-
 	public void sendReportJ() throws Exception {
 
 		Job reporterJob = new Job(REPORTER) {
@@ -188,13 +185,13 @@ public class ErrorReporter {
 			protected IStatus run(IProgressMonitor monitor) {
 
 				try {
-					 System.out.println("publishJIRA");
+					System.out.println("publishJIRA");
 					// response=publishJira();
 					// JSONReader reader=new JSONReader();
 					// id=reader.getJsonId(response);
 					// key=reader.getJsonKey(response);
 					//
-//					 System.out.println(id);
+					// System.out.println(id);
 					// System.out.println(response);
 					// System.out.println(key);
 					// // id="5678";
@@ -224,15 +221,15 @@ public class ErrorReporter {
 
 				System.out.println("Sending email and jira");
 				try {
-					//response=publishJira();
+					// response=publishJira();
 					// JSONReader reader=new JSONReader();
 					// id=reader.getJsonId(response);
 					// key=reader.getJsonKey(response);
 					//
 					// System.out.println(id);
 					// System.out.println(key);
-					//System.out.println(response);
-					String ret=sendEmail();
+					// System.out.println(response);
+					String ret = sendEmail();
 					System.out.println(ret);
 					// id="5678";
 					// key="TOOLS-3168";
@@ -256,10 +253,30 @@ public class ErrorReporter {
 		reporterJob.schedule();
 
 	}
-	public String publishJira() throws Exception {
 
-		String rp = jp.publishJira();
-		System.out.println(rp);
+	public String publishJira() throws Exception {
+		String rp = "";
+		String key;
+		int keyNo=errorInformation.getPackageKey().size();
+		
+		if(keyNo==0)
+		{
+		 key=Activator.getDefault().getPreferenceStore().getString("PROJECT_KEY");
+		 rp= jp.publishJira(key);
+		 System.out.println(rp);
+		
+		}
+		
+		else
+		{
+			for (Map.Entry<String, String> entry : errorInformation.getPackageKey().entrySet())
+			{				
+				key=entry.getValue();
+				rp= jp.publishJira(key);
+				System.out.println(rp);
+			}
+			
+		}
 		return rp;
 
 	}
@@ -281,7 +298,7 @@ public class ErrorReporter {
 		else {
 			try {
 				System.out.println("Trying to publish in Email publisher");
-				System.out.println(recipientEmail+"  "+message);
+				System.out.println(recipientEmail + "  " + message);
 				return jp.publishEmail(recipientEmail, message);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -310,7 +327,7 @@ public class ErrorReporter {
 			br.close();
 		}
 	}
-	
+
 	// this method checks whether user has not entered any value in the
 	// preference page for Jira username and password
 	private boolean checkUserInput() {
@@ -327,7 +344,19 @@ public class ErrorReporter {
 			return true;
 	}
 
+	public String getKeys() {
+		
+		StringBuffer sb = new StringBuffer();
+		for (Map.Entry<String, String> entry : errorInformation.getPackageKey().entrySet())
+		{				
+			sb.append("/n");
+			sb.append(entry.getValue());
 
+		}
+		
+		return sb.toString();
+	}
+	
 	public IStatus getStatus() {
 		return status;
 	}

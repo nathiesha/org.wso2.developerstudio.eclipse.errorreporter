@@ -63,16 +63,6 @@
                </documentation>
             </annotation>
          </attribute>
-         <attribute name="class" type="string">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-               <appinfo>
-                  <meta.attribute kind="java" basedOn=":org.wso2.developerstudio.eclipse.errorreporter.extensionpoint.PackageKey"/>
-               </appinfo>
-            </annotation>
-         </attribute>
       </complexType>
    </element>
 

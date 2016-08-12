@@ -34,22 +34,17 @@ public class JiraPublisher implements ErrorPublisher {
 	private HttpURLConnection connection;
 	private String urlParameters;
 	private JSONObject json;
-	private static final String TARGET_URL="https://wso2.org/jira/rest/api/2/issue";
+	private static final String TARGET_URL = "https://wso2.org/jira/rest/api/2/issue";
 	ErrorInformation errorInformation;
-	
+
 	public JiraPublisher(ErrorInformation errorInformation) {
 
-		this.errorInformation=errorInformation;
+		this.errorInformation = errorInformation;
 	}
 
-
-	
-
-
-
-	//TOOLS-3418
-	//GET
-	///rest/api/2/issue/{issueIdOrKey}?fields&expand
+	// TOOLS-3418
+	// GET
+	/// rest/api/2/issue/{issueIdOrKey}?fields&expand
 	public String getAuth(String username, String password) {
 		try {
 			String s = username + ":" + password;
@@ -63,83 +58,75 @@ public class JiraPublisher implements ErrorPublisher {
 		}
 	}
 
+	void init() throws Exception {
+		// init : read preferences for JIRA resp API connection params
 
-    void init () throws Exception{
-        //init : read preferences for JIRA resp API connection params
-    	
-		JSONRepGenerator nw=new JSONRepGenerator();
+		JSONRepGenerator nw = new JSONRepGenerator();
 		nw.createReport(errorInformation);
-		json=nw.getIssue();
-		String username=Activator.getDefault().getPreferenceStore().getString("JIRA_USERNAME");
-		String password=Activator.getDefault().getPreferenceStore().getString("JIRA_PASSWORD");
-		String userCredentials = username+":"+password;
+		json = nw.getIssue();
+		String username = Activator.getDefault().getPreferenceStore().getString("JIRA_USERNAME");
+		String password = Activator.getDefault().getPreferenceStore().getString("JIRA_PASSWORD");
+		String userCredentials = username + ":" + password;
 
-		
-	    URL url = new URL(TARGET_URL);
-	    connection = (HttpURLConnection)url.openConnection();
+		URL url = new URL(TARGET_URL);
+		connection = (HttpURLConnection) url.openConnection();
 		String basicAuth = "Basic " + new String(new Base64().encode(userCredentials.getBytes()));
-		connection.setRequestProperty ("Authorization", basicAuth);
-	    connection.setRequestMethod("POST");
-	    connection.setRequestProperty("Content-Type", 
-	        "application/json");
-	    connection.setRequestProperty("Content-Length", 
-	        Integer.toString(urlParameters.getBytes().length));
-	    connection.setRequestProperty("Content-Language", "en-US");  
+		connection.setRequestProperty("Authorization", basicAuth);
+		connection.setRequestMethod("POST");
+		connection.setRequestProperty("Content-Type", "application/json");
+		connection.setRequestProperty("Content-Length", Integer.toString(urlParameters.getBytes().length));
+		connection.setRequestProperty("Content-Language", "en-US");
 
-	    connection.setUseCaches(false);
-	    connection.setDoOutput(true);
-   }
- 
-    // implement publish method 
-    public String publish(TextReportGenerator reportGen) throws Exception{
-     init();
-    //post to JIRA api and create issue
-     
-     urlParameters=json.toString();
-	  //urlParameters="{\"fields\": {\"project\":{ \"key\": \"TOOLS\"},\"summary\": \"GSOC ERROR REPORTER TEST.\",\"description\": \"Creating of an issue through Developer Studio using the REST API\",\"issuetype\": {\"name\": \"Bug\"}}}";	
-	  try {
-		  
-	    //Create connection
+		connection.setUseCaches(false);
+		connection.setDoOutput(true);
+	}
 
+	// implement publish method
+	@Override
+	public String publish(TextReportGenerator reportGen) throws Exception {
+		init();
+		// post to JIRA api and create issue
 
-	    //Send request
+		urlParameters = json.toString();
+		// urlParameters="{\"fields\": {\"project\":{ \"key\":
+		// \"TOOLS\"},\"summary\": \"GSOC ERROR REPORTER
+		// TEST.\",\"description\": \"Creating of an issue through Developer
+		// Studio using the REST API\",\"issuetype\": {\"name\": \"Bug\"}}}";
+		try {
 
-		System.out.println("InsidePublish");
-	    DataOutputStream wr = new DataOutputStream (
-	        connection.getOutputStream());
-	    wr.writeBytes(urlParameters);
-	    wr.close();
+			DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
+			wr.writeBytes(urlParameters);
+			wr.close();
 
-	    //Get Response  
-	    InputStream is ;
+			// Get Response
+			InputStream is;
 
-		if (connection.getResponseCode() >= 400) {
-		    is = connection.getErrorStream();
-		} else {
-		    is = connection.getInputStream();
+			if (connection.getResponseCode() >= 400) {
+				is = connection.getErrorStream();
+			} else {
+				is = connection.getInputStream();
+			}
+
+			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+			StringBuilder response = new StringBuilder(); // or StringBuffer if
+			// not Java 5+
+			String line;
+
+			while ((line = rd.readLine()) != null) {
+				response.append(line);
+				response.append('\r');
+			}
+			rd.close();
+			return response.toString();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+
+		} finally {
+			if (connection != null) {
+				connection.disconnect();
+			}
 		}
-		
-	    BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-	    StringBuilder response = new StringBuilder(); // or StringBuffer if not Java 5+ 
-	    String line;
-	    
-	    while((line = rd.readLine()) != null) {
-	      response.append(line);
-	      response.append('\r');
-	    }
-	    rd.close();
-	    return response.toString();
-	  } 
-	  catch (Exception e) {
-	    e.printStackTrace();
-	    return null;
-	    
-	  } 
-	  finally {
-	    if(connection != null) {
-	      connection.disconnect(); 
-	    }
-	  }
-    }
+	}
 
 }

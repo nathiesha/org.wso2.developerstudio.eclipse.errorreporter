@@ -49,9 +49,7 @@ public class RemoteServerPublisher {
 	void initJira() throws Exception {
 		// init : read preferences for JIRA resp API connection params
 
-		JSONRepGenerator nw = new JSONRepGenerator();
-		nw.createReport(errorInformation);
-		json = nw.getIssue();
+
 		String rem = Activator.getDefault().getPreferenceStore().getString("SERVER_URL");
 		URL url = new URL(rem);
 		connection = (HttpURLConnection) url.openConnection();
@@ -60,7 +58,12 @@ public class RemoteServerPublisher {
 	}
 
 	// implement publish method
-	public String publishJira() throws Exception {
+	public String publishJira(String key) throws Exception {
+		
+		JSONRepGenerator nw = new JSONRepGenerator();
+		nw.createReport(errorInformation,key);
+		json = nw.getIssue();
+		
 		initJira();
 
 		urlParameters = json.toString();

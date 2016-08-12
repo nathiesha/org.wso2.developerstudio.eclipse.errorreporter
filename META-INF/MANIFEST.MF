@@ -16,7 +16,6 @@ Bundle-ClassPath: .,
  lib/jersey-client.jar
 Export-Package: org.wso2.developerstudio.eclipse.errorreporter,
  org.wso2.developerstudio.eclipse.errorreporter.controller,
- org.wso2.developerstudio.eclipse.errorreporter.extensionpoint,
  org.wso2.developerstudio.eclipse.errorreporter.formats,
  org.wso2.developerstudio.eclipse.errorreporter.startup,
  org.wso2.developerstudio.eclipse.errorreporter.ui.archivemenu,

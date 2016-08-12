@@ -17,6 +17,9 @@
 
 package org.wso2.developerstudio.eclipse.errorreporter.formats;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ErrorInformation {
 
 	// error information
@@ -32,6 +35,7 @@ public class ErrorInformation {
 		// user information
 		private String name;
 		private String email;
+		private String organization;
 		private String comment;
 		private String severityUser;
 
@@ -46,10 +50,8 @@ public class ErrorInformation {
 		
 		//multi status information
 		private String multiStatus;
+		private Map<String, String> packageKey=new HashMap<String, String>();
 		
-
-
-		private Bundles bundleArray[] = new Bundles[10];
 		
 		public ErrorInformation() {
 			// TODO Auto-generated constructor stub
@@ -193,13 +195,6 @@ public class ErrorInformation {
 			this.severityUser = severity2;
 		}
 
-		public Bundles[] getBundleArray() {
-			return bundleArray;
-		}
-
-		public void setBundleArray(Bundles[] bundleArray) {
-			this.bundleArray = bundleArray;
-		}
 
 		public Exception getException() {
 			return e;
@@ -224,6 +219,29 @@ public class ErrorInformation {
 		public void setMultiStatus(String multiStatus) {
 			this.multiStatus = multiStatus;
 		}
+
+		public Map<String, String> getPackageKey() {
+			return packageKey;
+		}
+
+		public void setPackageKey(Map<String, String> packageKey) {
+			this.packageKey = packageKey;
+		}
+
+		public String getOrganization() {
+			return organization;
+		}
+
+
+
+		public void setOrganization(String organization2) {
+			this.organization=organization2;
+			
+		}
+
+
+
+
 
 	
 	

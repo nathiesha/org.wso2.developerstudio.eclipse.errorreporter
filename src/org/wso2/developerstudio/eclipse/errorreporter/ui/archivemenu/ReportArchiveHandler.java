@@ -41,9 +41,8 @@ public class ReportArchiveHandler extends AbstractHandler {
 		try {
 
 			ReportArchive archive = new ReportArchive(parentShell);
-			archive.open();
-			
-			// ExtensionPoint.run();
+			archive.open();			
+			// ExtensionPointReader.run();
 		}
 
 		catch (Exception e) {

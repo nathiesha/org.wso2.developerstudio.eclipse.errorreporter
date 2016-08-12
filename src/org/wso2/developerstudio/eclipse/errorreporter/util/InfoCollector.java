@@ -18,6 +18,8 @@ package org.wso2.developerstudio.eclipse.errorreporter.util;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
@@ -44,10 +46,13 @@ public class InfoCollector {
 		getSystemInfo();
 		getUserInfo();
 		getMultiStatusInfo();
+		getPackageKeyInfo();
 
 		return errorInformation;
 
 	}
+
+
 
 	// collect the information regarding the exception
 	public void getErrorInfo() {
@@ -92,6 +97,7 @@ public class InfoCollector {
 
 		errorInformation.setName(Activator.getDefault().getPreferenceStore().getString("NAME"));
 		errorInformation.setEmail(Activator.getDefault().getPreferenceStore().getString("EMAIL"));
+		errorInformation.setOrganization((Activator.getDefault().getPreferenceStore().getString("ORGANIZATION")));
 
 	}
 
@@ -142,6 +148,34 @@ public class InfoCollector {
 			}
 		}
 		return message;
+	}
+	
+	private void getPackageKeyInfo() {
+		
+		Map<String, String> pair=ExtensionPointReader.getKeys();
+		Map<String, String> packageKey=new HashMap<String, String>();
+		
+		for (Map.Entry<String, String> entry : pair.entrySet())
+		{
+			if(errorInformation.getPluginId().equals(entry.getKey()))
+			{				
+				packageKey.put(entry.getKey(),entry.getValue() );
+			}
+			
+			else if(errorInformation.getExceptionS().contains(entry.getKey()))
+			{
+				packageKey.put(entry.getKey(),entry.getValue() );								
+			}
+			
+			else if(errorInformation.getMultiStatus().contains(entry.getKey()))
+			{
+				packageKey.put(entry.getKey(),entry.getValue() );								
+			}
+			
+		    System.out.println(entry.getKey() + "/" + entry.getValue());
+		}
+		
+		errorInformation.setPackageKey(packageKey);
 	}
 
 	// getters and setters

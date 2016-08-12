@@ -15,42 +15,51 @@
 */
 
 
-package org.wso2.developerstudio.eclipse.errorreporter.extensionpoint;
+package org.wso2.developerstudio.eclipse.errorreporter.util;
 
-import java.awt.Window;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Shell;
+
 
 /**
  * @author Nathie
  *
  */
-public class ExtensionPoint {
-	public static void run() {
-		StringBuffer buffer = new StringBuffer();
+
+
+public class ExtensionPointReader {
+	
+	private static final String ID="org.wso2.deveoperstudio.eclipse.errorreporter.jirakey";
+	
+	public static Map<String,String> getKeys() {
+		
+
 		IExtensionRegistry reg = Platform.getExtensionRegistry();
 		IConfigurationElement[] extensions = reg
-				.getConfigurationElementsFor("org.wso2.deveoperstudio.eclipse.errorreporter.jirakey");
+				.getConfigurationElementsFor(ID);
+		
+		Map<String, String> pair = new HashMap<String, String>();
+		String pack = "";
+		String key = "";
+		
 		for (int i = 0; i < extensions.length; i++) {
+			
 			IConfigurationElement element = extensions[i];
-			buffer.append(element.getAttribute("package"));
-			buffer.append(" ");
-			String key = "unknown";
+			pack=element.getAttribute("package");
+						
 			if (element.getAttribute("key") != null) {
 				key = element.getAttribute("key");
 			} 
-			buffer.append(key);
-			buffer.append("\n");
+			
+			pair.put(pack, key);
+			
+
 		}
 		
-		Shell sh=new Shell();
-		MessageBox mb=new MessageBox(sh);
-		mb.setMessage("Installed pizza toppings "+buffer.toString());
-		mb.open();
+		return pair;
 	}
 }

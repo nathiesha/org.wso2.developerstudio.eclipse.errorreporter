@@ -32,8 +32,6 @@ public class JSONRepGenerator implements ReportGenerator {
 	private static final String ISSUE_TYPE = "issuetype";
 	private static final String SUMMARY = "summary";
 	private static final String DESCRIPTION = "description";
-	
-	private static final String PROJECT_KEY = "TOOLS";
 	private static final String iSSUE_TYPE_NAME = "Bug";
 	
 	private JSONObject issue;
@@ -42,8 +40,7 @@ public class JSONRepGenerator implements ReportGenerator {
 		super();
 	}
 
-	@Override
-	public void createReport(ErrorInformation errorInformation) throws Exception {
+	public void createReport(ErrorInformation errorInformation,String key) throws Exception {
 		TextReportGenerator txt=new TextReportGenerator();
 		JSONObject json = new JSONObject();
 		String summary="Testing error reporting tool-GSoC Project-" +errorInformation.getMessage();
@@ -52,7 +49,7 @@ public class JSONRepGenerator implements ReportGenerator {
 				
 		
 		JSONObject js = new JSONObject();
-		js.put("key", PROJECT_KEY);
+		js.put("key", key);
 		
 		JSONObject js2 = new JSONObject();
 		js2.put("name", iSSUE_TYPE_NAME);
@@ -74,6 +71,12 @@ public class JSONRepGenerator implements ReportGenerator {
 
 	public void setIssue(JSONObject issue) {
 		this.issue = issue;
+	}
+
+	@Override
+	public void createReport(ErrorInformation errorInformation) throws Exception {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
