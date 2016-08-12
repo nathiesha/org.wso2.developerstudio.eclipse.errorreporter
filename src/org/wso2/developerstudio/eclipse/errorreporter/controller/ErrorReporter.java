@@ -30,19 +30,15 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.json.JSONObject;
-//import org.json.JSONObject;
 import org.wso2.developerstudio.eclipse.errorreporter.Activator;
 import org.wso2.developerstudio.eclipse.errorreporter.formats.ErrorInformation;
-import org.wso2.developerstudio.eclipse.errorreporter.publishers.EmailPublisher;
 import org.wso2.developerstudio.eclipse.errorreporter.publishers.ErrorPublisher;
 import org.wso2.developerstudio.eclipse.errorreporter.publishers.FilePublisher;
-import org.wso2.developerstudio.eclipse.errorreporter.publishers.JiraPublisher;
+import org.wso2.developerstudio.eclipse.errorreporter.publishers.RemoteServerPublisher;
 import org.wso2.developerstudio.eclipse.errorreporter.reportgenerators.TextReportGenerator;
 import org.wso2.developerstudio.eclipse.errorreporter.ui.dialogs.ErrorNotificationDialog;
 import org.wso2.developerstudio.eclipse.errorreporter.ui.dialogs.UserInputDialog;
 import org.wso2.developerstudio.eclipse.errorreporter.util.InfoCollector;
-
-
 
 //this class handles the complete process of publishing the error reports 
 public class ErrorReporter {
@@ -52,14 +48,14 @@ public class ErrorReporter {
 	private InfoCollector errorInfoCollector;
 	private ErrorInformation errorInformation;
 	private TextReportGenerator textReportGenerator;
+	private RemoteServerPublisher jp;
 	private String errorMessage;
-	 private String response;
-	 private JSONObject json;
-	 private String id;
-	 private String key;
+	private String response;
+	private JSONObject json;
+	private String id;
+	private String key;
 
 	// private static final String
-	// TARGET_URL="https://wso2.org/jira/rest/api/2/issue";
 	private static final String TITLE = "Developer Studio Error Report";
 	private static final String REPORTER = "Reporting the Developer Studio Error";
 
@@ -73,10 +69,9 @@ public class ErrorReporter {
 		this.status = status;
 
 	}
-	
 
 	public void init() {
-		
+
 		// create an InfoCollector
 		// get error information and assign it to errorInformation object
 		errorInfoCollector = new InfoCollector(status);
@@ -100,19 +95,34 @@ public class ErrorReporter {
 		// and call publish() method
 
 		init();
+		System.out.println(userResponse);
+		switch (userResponse) {
 
-		switch (userResponse) 
-		{
-		
-		case 0:
-			try 
-			{
-
-				sendReport();
+		case 100:
+			try {
+				jp = new RemoteServerPublisher(errorInformation);
+				sendReportJ();
 			}
 
-			catch (Exception e) 
-			{
+			catch (Exception e) {
+				// in case of an exception, print stacktrace and open up the
+				// message box
+				e.printStackTrace();
+				Shell shell = new Shell();
+				MessageBox msg = new MessageBox(shell);
+				msg.setMessage(e.getMessage());
+				msg.open();
+
+			}
+			break;
+
+		case 200:
+			try {
+				jp = new RemoteServerPublisher(errorInformation);
+				sendReportE();
+			}
+
+			catch (Exception e) {
 				// in case of an exception, print stacktrace and open up the
 				// message box
 				e.printStackTrace();
@@ -130,6 +140,8 @@ public class ErrorReporter {
 		}
 
 	}
+
+	
 
 	// open up the error dialog box and get user input
 	public int openErrorDialog() {
@@ -159,8 +171,7 @@ public class ErrorReporter {
 			}
 
 			// if user presssed cancel
-			else 
-			{
+			else {
 
 				return SWT.CANCEL;
 			}
@@ -169,161 +180,119 @@ public class ErrorReporter {
 
 	}
 
-	// this method checks whether user has not entered any value in the
-	// preference page for Jira username and password
-	private boolean checkUserInput() {
 
-		String username = Activator.getDefault().getPreferenceStore().getString("JIRA_USERNAME");
-		String password = Activator.getDefault().getPreferenceStore().getString("JIRA_PASSWORD");
+	public void sendReportJ() throws Exception {
 
-		// checks whether any of username or password is not filled
-		if (username == "" || password == "") {
+		Job reporterJob = new Job(REPORTER) {
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {
 
-			return false;
-		}
+				try {
+					 System.out.println("publishJIRA");
+					// response=publishJira();
+					// JSONReader reader=new JSONReader();
+					// id=reader.getJsonId(response);
+					// key=reader.getJsonKey(response);
+					//
+//					 System.out.println(id);
+					// System.out.println(response);
+					// System.out.println(key);
+					// // id="5678";
+					// // key="TOOLS-3168";
+					// FilePublisher nw = new FilePublisher();
+					// nw.publish(textReportGenerator);
 
-		else
-			return true;
-	}
-
-	public void sendReport() throws Exception {
-
-		String selected = Activator.getDefault().getPreferenceStore().getString("SENDOPTIONS");
-		System.out.println(selected);
-
-		if (selected == "Jira") {
-
-			Job reporterJob = new Job(REPORTER) {
-				@Override
-				protected IStatus run(IProgressMonitor monitor) {
-
-					try {
-//						System.out.println("publishJIRA");
-//						response=publishJira();
-//						JSONReader reader=new JSONReader();
-//						id=reader.getJsonId(response);
-//						key=reader.getJsonKey(response);
-//						
-//						System.out.println(id);
-//						System.out.println(key);
-//						// id="5678";
-//						// key="TOOLS-3168";
-//						FilePublisher nw = new FilePublisher();
-//						nw.publish(textReportGenerator);
-						
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-
-					return Status.OK_STATUS;
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-			};
 
-			reporterJob.setUser(true);
-			reporterJob.schedule();
+				return Status.OK_STATUS;
+			}
+		};
 
-		}
-
-		else
-
-		{
-
-			Job reporterJob = new Job(REPORTER) {
-				@Override
-				protected IStatus run(IProgressMonitor monitor) {
-
-					System.out.println("Sending email");
-					try 
-					{
-//						response=publishJira();
-//						JSONReader reader=new JSONReader();
-//						id=reader.getJsonId(response);
-//						key=reader.getJsonKey(response);
-//						
-//						System.out.println(id);
-//						System.out.println(key);
-						
-						sendEmail();
-						// id="5678";
-						// key="TOOLS-3168";
-						FilePublisher nw = new FilePublisher();
-						nw.publish(textReportGenerator);
-					} 
-					
-					catch (IOException | MessagingException e) 
-					{
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-
-					return Status.OK_STATUS;
-				}
-			};
-
-			reporterJob.setUser(true);
-			reporterJob.schedule();
-
-		}
-
-
+		reporterJob.setUser(true);
+		reporterJob.schedule();
 
 	}
 
+	private void sendReportE() {
+
+		Job reporterJob = new Job(REPORTER) {
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {
+
+				System.out.println("Sending email and jira");
+				try {
+					//response=publishJira();
+					// JSONReader reader=new JSONReader();
+					// id=reader.getJsonId(response);
+					// key=reader.getJsonKey(response);
+					//
+					// System.out.println(id);
+					// System.out.println(key);
+					//System.out.println(response);
+					String ret=sendEmail();
+					System.out.println(ret);
+					// id="5678";
+					// key="TOOLS-3168";
+					FilePublisher nw = new FilePublisher();
+					nw.publish(textReportGenerator);
+				}
+
+				catch (IOException | MessagingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+				return Status.OK_STATUS;
+			}
+		};
+
+		reporterJob.setUser(true);
+		reporterJob.schedule();
+
+	}
 	public String publishJira() throws Exception {
 
-		JiraPublisher jiraCon = new JiraPublisher(errorInformation);
-		String response = jiraCon.publish(textReportGenerator);
-		return (response);
+		String rp = jp.publishJira();
+		System.out.println(rp);
+		return rp;
 
 	}
 
-	public void sendEmail() throws IOException, AddressException, MessagingException 
-	{
+	public String sendEmail() throws IOException, AddressException, MessagingException {
 
-		String username = Activator.getDefault().getPreferenceStore().getString("GMAIL USERNAME");
-		String password = Activator.getDefault().getPreferenceStore().getString("GMAIL PASSWORD");
 		String recipientEmail = Activator.getDefault().getPreferenceStore().getString("REC EMAIL");
-		
+
 		textReportGenerator.createReport(errorInformation);
 		String message = textReportGenerator.getTextString();
 
-		if(username=="")
-		{
-			Shell shell=new Shell();
-			MessageBox msg=new MessageBox(shell);
+		if (recipientEmail == "") {
+			Shell shell = new Shell();
+			MessageBox msg = new MessageBox(shell);
 			msg.setMessage("Please enter your gmail username, password and recipient email adress");
-			
+			return "tryAgain";
 		}
-		
-		else if(password=="")
-		{
-			
-			Shell shell=new Shell();
-			MessageBox msg=new MessageBox(shell);
-			msg.setMessage("Please enter your gmail username, password and recipient email adress");
-		}
-		
-		else if(recipientEmail=="")
-		{
-			Shell shell=new Shell();
-			MessageBox msg=new MessageBox(shell);
-			msg.setMessage("Please enter your gmail username, password and recipient email adress");
-		}
-		
-		else
-		{
-			EmailPublisher emailS = new EmailPublisher(username, password, recipientEmail, TITLE, message);
-			emailS.publish(textReportGenerator);
+
+		else {
+			try {
+				System.out.println("Trying to publish in Email publisher");
+				System.out.println(recipientEmail+"  "+message);
+				return jp.publishEmail(recipientEmail, message);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return "error";
+			}
 		}
 
 	}
 
-	String readFile(String fileName) throws IOException 
-	{
+	String readFile(String fileName) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader(fileName));
 		try {
 			StringBuilder sb = new StringBuilder();
@@ -341,6 +310,23 @@ public class ErrorReporter {
 			br.close();
 		}
 	}
+	
+	// this method checks whether user has not entered any value in the
+	// preference page for Jira username and password
+	private boolean checkUserInput() {
+
+		String url = Activator.getDefault().getPreferenceStore().getString("SERVER_URL");
+
+		// checks whether remote server url is not filled
+		if (url == "") {
+
+			return false;
+		}
+
+		else
+			return true;
+	}
+
 
 	public IStatus getStatus() {
 		return status;

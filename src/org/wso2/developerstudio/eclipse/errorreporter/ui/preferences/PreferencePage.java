@@ -36,14 +36,16 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 	// group labels
 	private static final String CONTACT_INFO_GROUP = "Contact Information";
 	private static final String SEND_OPTIONS_GROUP = "Sending Options";
-//	private static final String GMAIL_USER_CRED = "Gmail User Credentials";
-//	private static final String JIRA_USER_CRED = "Jira User Credentials";
+	private static final String GMAIL_USER_CRED = "Gmail - Credentials";
+	private static final String JIRA_USER_CRED = "Jira - Credentials";
 
 	// contact information strings
 	public static final String NAME = "NAME";
 	private static final String EMAIL_USER = "EMAIL";
+	public static final String ORGANIZATION = "ORGANIZATION";
 	private static final String NAME_S = "Name:";
 	private static final String EMAIL_USER_S = "Email:";
+	public static final String ORGANIZATION_S= "Organization:";
 
 	// annonymize options strings
 //	public static final String ANO_PACK = "ANOPACK";
@@ -69,8 +71,10 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 //	private static final String GMAIL_USERNAME_S = "Gmail Username:";
 //	private static final String GMAIL_PASSWORD = "GMAIL PASSWORD";
 //	private static final String GMAIL_PASSWORD_S = "Password:";
-//	private static final String REC_EMAIL = "REC EMAIL";
-//	private static final String REC_EMAIL_S = "Recipient Email Address:";
+	public static final String EMAIL_SERVER_URL = "EMAIL_URL";
+	private static final String EMAIL_SERVER_URL_S = "Remote Email Publisher URL:";
+	private static final String REC_EMAIL = "REC EMAIL";
+	private static final String REC_EMAIL_S = "Recipient Email Address:";
 
 	// Jira user credentials
 //	public static final String JIRA_URL = "JIRA_URL";
@@ -107,25 +111,28 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 		Group con = new Group(top, SWT.SHADOW_OUT);
 		Group sop = new Group(top, SWT.SHADOW_OUT);	
 		Group rem = new Group(top, SWT.SHADOW_OUT);
-//		Group guc = new Group(top, SWT.SHADOW_OUT);
+		Group guc = new Group(top, SWT.SHADOW_OUT);
 //		Group juc = new Group(top, SWT.SHADOW_OUT);
 
 		// set text to groups
 		con.setText(CONTACT_INFO_GROUP);
 		sop.setText(SEND_OPTIONS_GROUP);
-		rem.setText(SEND_OPTIONS_GROUP);
-//		guc.setText(GMAIL_USER_CRED);
+		rem.setText(JIRA_USER_CRED);
+		guc.setText(GMAIL_USER_CRED);
 //		juc.setText(JIRA_USER_CRED);
 
 		addField(new StringFieldEditor(NAME, NAME_S, con));
 		addField(new StringFieldEditor(EMAIL_USER, EMAIL_USER_S, con));
-
+		addField(new StringFieldEditor(ORGANIZATION, ORGANIZATION_S, con));
 
 		addField(new RadioGroupFieldEditor(SEND_OPTIONS, SEND_OPTIONS_S, 1,
 				new String[][] { { JIRA_S, JIRA }, { EMAIL_S, EMAIL } }, sop));
 
 		addField(new StringFieldEditor(SERVER_URL, SERVER_URL_S, rem));
 		addField(new StringFieldEditor(PROJECT_KEY, PROJECT_KEY_S, rem));
+		
+		addField(new StringFieldEditor(EMAIL_SERVER_URL, EMAIL_SERVER_URL_S, guc));
+		addField(new StringFieldEditor(REC_EMAIL, REC_EMAIL_S, guc));
 		
 //		addField(new StringFieldEditor(GMAIL_USERNAME, GMAIL_USERNAME_S, guc));
 //		StringFieldEditor passwordGmail = new StringFieldEditor(GMAIL_PASSWORD, GMAIL_PASSWORD_S, guc) {

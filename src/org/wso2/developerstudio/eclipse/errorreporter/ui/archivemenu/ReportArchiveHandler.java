@@ -16,17 +16,10 @@
 
 package org.wso2.developerstudio.eclipse.errorreporter.ui.archivemenu;
 
-
-
-
-
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.swt.widgets.Shell;
-import org.wso2.developerstudio.eclipse.errorreporter.publishers.JiraPublisher;
-import org.wso2.developerstudio.eclipse.errorreporter.publishers.RemoteServerPublisher;
-
 
 /**
  * Our sample handler extends AbstractHandler, an IHandler base class.
@@ -41,38 +34,23 @@ public class ReportArchiveHandler extends AbstractHandler {
 	public ReportArchiveHandler() {
 	}
 
-
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		Shell parentShell=new Shell();
-		
-		try{
-			
-			RemoteServerPublisher jp=new RemoteServerPublisher();
-			try {
-				//String rp=jp.publish();
-				//System.out.println(rp);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-//		ReportArchive archive=new ReportArchive(parentShell);
-//		archive.open();
+		Shell parentShell = new Shell();
 
+		try {
 
+			ReportArchive archive = new ReportArchive(parentShell);
+			archive.open();
+			
+			// ExtensionPoint.run();
 		}
-		
-		catch(Exception e)
-		{
+
+		catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		
-		    
+
 		return event;
 	}
-	
-	
-	
+
 }

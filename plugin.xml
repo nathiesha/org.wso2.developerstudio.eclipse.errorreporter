@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+   <extension-point id="org.wso2.deveoperstudio.eclipse.errorreporter.jirakey" name="JiraKey" schema="schema/org.wso2.deveoperstudio.eclipse.errorreporter.jirakey.exsd"/>
 
    <extension
          point="org.eclipse.ui.commands">

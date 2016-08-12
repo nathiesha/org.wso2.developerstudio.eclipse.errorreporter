@@ -62,6 +62,7 @@ public class JSONRepGenerator implements ReportGenerator {
 		json.put(SUMMARY, summary);
 		json.put(DESCRIPTION, description);
 
+		issue=new JSONObject();
 		issue.put("fields", json);
 
 		

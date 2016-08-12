@@ -40,8 +40,11 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Menu;
@@ -64,6 +67,7 @@ public class ErrorNotificationDialog extends ErrorDialog {
 
 	private Button detailsButton;
 	private Clipboard clipboard;
+	private int selection=0;
 	//private BufferedReader br;
 
 
@@ -81,6 +85,7 @@ public class ErrorNotificationDialog extends ErrorDialog {
 	protected void configureShell(Shell shell) {
 		super.configureShell(shell);
 		shell.setText(DIALOG_TITLE);
+	    // Create the first Group
 	}
 
 
@@ -96,10 +101,52 @@ public class ErrorNotificationDialog extends ErrorDialog {
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
 		
+
+	    Label label = new Label(parent, SWT.NULL);
+	    label.setText("Select sending option: ");
+	    
+	    Button jira = new Button(parent, SWT.RADIO);
+	    jira.setText("Publish in Jira");
+	    jira.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				selection=0;
+				
+			}
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		
+		});
+
+	    
+	    Button email = new Button(parent, SWT.RADIO);
+	    email.setText("Publish in Jira and email");
+	    
+	    email.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				
+				selection=1;
+			}
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		
+		});
+	    
 		final Link link = new Link(parent, SWT.NONE);
 	    link.setFont(parent.getFont());
 	    link.setText("<A>" + "Click here to edit the sending option preferences." + "</A>"); 
-	    GridData data = new GridData(SWT.LEFT_TO_RIGHT , SWT.TOP, false, false);
+	    GridData data = new GridData(SWT.LEFT , SWT.TOP, false, false);
 	    data.horizontalSpan = 3;
 	    link.setLayoutData(data);
 	    
@@ -182,9 +229,15 @@ public class ErrorNotificationDialog extends ErrorDialog {
 			close();
 		}
 
-		if(id==IDialogConstants.OK_ID)
+		if(id==IDialogConstants.OK_ID && selection==0)
 		{
-			setReturnCode(OK);
+			setReturnCode(100);
+			close();
+		}
+		
+		if(id==IDialogConstants.OK_ID && selection==1)
+		{
+			setReturnCode(200);
 			close();
 		}
 	}
@@ -205,20 +258,6 @@ public class ErrorNotificationDialog extends ErrorDialog {
 
 	}
 
-//	private String readFile(String fileName) throws IOException {
-//		br = new BufferedReader(new FileReader(fileName));
-//
-//			StringBuilder sb = new StringBuilder();
-//			String line = br.readLine();
-//
-//			while (line != null) {
-//				sb.append(line);
-//				sb.append("\n");
-//				line = br.readLine();}
-//
-//			return sb.toString();
-//
-//	}
 
 
 	private  java.util.List<String> readLines(final String s) throws IOException {
