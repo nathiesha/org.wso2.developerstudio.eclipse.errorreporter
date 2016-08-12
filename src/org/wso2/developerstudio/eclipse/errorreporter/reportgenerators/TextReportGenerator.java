@@ -46,8 +46,11 @@ public class TextReportGenerator implements ReportGenerator {
 	private static final String REPORT_SENDER = "\n\n--REPORT SENDER DETAILS--\n";
 	private static final String NAME = "\nName: ";
 	private static final String EMAIL = "\nEmail: ";
+	private static final String ORGANIZATION = "\nOrganization: ";
 	private static final String COMMENT = "\nComment: ";
 	private static final String SEVERITY_USER = "\nSeverity: ";
+	
+	private static final String RELATED_PLUGINS = "\n\n--RELATED PLUGIN IDS--\n";
 
 
 
@@ -82,8 +85,11 @@ public class TextReportGenerator implements ReportGenerator {
 		sb.append(REPORT_SENDER);
 		sb.append(NAME + errorInformation.getName());
 		sb.append(EMAIL + errorInformation.getEmail());
+		sb.append(ORGANIZATION + errorInformation.getOrganization());
 		sb.append(COMMENT + errorInformation.getComment());
 		sb.append(SEVERITY_USER + errorInformation.getSeverity2());
+		sb.append(RELATED_PLUGINS);
+		sb.append(errorInformation.getPackage());
 		
 		setTextString(sb.toString());
 		

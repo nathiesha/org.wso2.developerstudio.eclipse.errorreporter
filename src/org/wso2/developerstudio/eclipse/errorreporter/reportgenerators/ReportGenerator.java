@@ -24,4 +24,6 @@ public interface ReportGenerator {
 	
 	public void createReport(ErrorInformation errorInformation) throws Exception;
 
+	public void createReport(ErrorInformation errorInformation, String key) throws Exception;
+
 }

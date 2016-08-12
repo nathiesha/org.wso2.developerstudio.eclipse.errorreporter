@@ -220,30 +220,34 @@ public class ErrorInformation {
 			this.multiStatus = multiStatus;
 		}
 
-		public Map<String, String> getPackageKey() {
-			return packageKey;
+		public String getPackage() {
+			StringBuffer sb = new StringBuffer();
+			for (Map.Entry<String, String> entry : packageKey.entrySet())
+			{				
+				sb.append("/n");
+				sb.append(entry.getKey());
+			}
+			
+			return sb.toString();
 		}
-
-		public void setPackageKey(Map<String, String> packageKey) {
-			this.packageKey = packageKey;
-		}
+		
 
 		public String getOrganization() {
 			return organization;
 		}
-
-
 
 		public void setOrganization(String organization2) {
 			this.organization=organization2;
 			
 		}
 
+		public void setPackageKey(Map<String, String> packageKey) {
+			this.packageKey = packageKey;
+		}
 
+		public Map<String, String> getPackageKey() {
+			return packageKey;
+		}
 
-
-
-	
-	
 
 }
