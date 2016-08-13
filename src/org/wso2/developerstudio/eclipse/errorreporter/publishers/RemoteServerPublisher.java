@@ -28,10 +28,6 @@ import org.wso2.developerstudio.eclipse.errorreporter.Activator;
 import org.wso2.developerstudio.eclipse.errorreporter.formats.ErrorInformation;
 import org.wso2.developerstudio.eclipse.errorreporter.reportgenerators.JSONRepGenerator;
 
-/**
- * @author Nathie
- *
- */
 public class RemoteServerPublisher {
 
 	private HttpURLConnection connection;
@@ -39,96 +35,29 @@ public class RemoteServerPublisher {
 	private JSONObject json;
 	ErrorInformation errorInformation;
 
-	
 	public RemoteServerPublisher(ErrorInformation errorInformation) {
 
 		this.errorInformation = errorInformation;
-	}
-	
-
-	void initJira() throws Exception {
-		// init : read preferences for JIRA resp API connection params
-
-
-		String rem = Activator.getDefault().getPreferenceStore().getString("SERVER_URL");
-		URL url = new URL(rem);
-		connection = (HttpURLConnection) url.openConnection();
-		connection.setRequestMethod("POST");
-
-	}
-
-	// implement publish method
-	public String publishJira(String key) throws Exception {
-		
-		JSONRepGenerator nw = new JSONRepGenerator();
-		nw.createReport(errorInformation,key);
-		json = nw.getIssue();
-		
-		initJira();
-
-		urlParameters = json.toString();
-		// urlParameters="{\"fields\": {\"project\":{ \"key\":
-		// \"TOOLS\"},\"summary\": \"GSOC ERROR REPORTER
-		// TEST.\",\"description\": \"Creating of an issue through Developer
-		// Studio using the REST API\",\"issuetype\": {\"name\": \"Bug\"}}}";
-
-		String charset = java.nio.charset.StandardCharsets.UTF_8.name();
-		String param1 = urlParameters;
-		String query = String.format("urlParams=%s", URLEncoder.encode(param1, charset));
-
-		try {
-			// Create connection
-			connection.setRequestProperty("Content-Length", Integer.toString(query.getBytes().length));
-			connection.setRequestProperty("Content-Language", "en-US");
-			connection.setRequestProperty("Accept-Charset", charset);
-			connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=" + charset);
-
-			connection.setUseCaches(false);
-			connection.setDoOutput(true);
-
-			// Send request
-			DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-			wr.writeBytes(query);
-			wr.close();
-
-			// Get Response
-			InputStream is;
-
-			if (connection.getResponseCode() >= 400) {
-				is = connection.getErrorStream();
-			} else {
-				is = connection.getInputStream();
-			}
-
-			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-			StringBuilder response = new StringBuilder(); 
-			String line;
-
-			while ((line = rd.readLine()) != null) {
-				response.append(line);
-				response.append('\r');
-			}
-			rd.close();
-			return response.toString();
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-
-		} finally {
-			if (connection != null) {
-				connection.disconnect();
-			}
-		}
 	}
 
 	void initEmail() throws Exception {
 		// init : read preferences for JIRA resp API connection params
 
-		JSONRepGenerator nw = new JSONRepGenerator();
-		nw.createReport(errorInformation);
-		json = nw.getIssue();
+		// JSONRepGenerator nw = new JSONRepGenerator(key);
+		// nw.createReport(errorInformation);
+		// json = nw.getIssue();
 		String emailUrl = Activator.getDefault().getPreferenceStore().getString("EMAIL_URL");
 		URL url = new URL(emailUrl);
+		connection = (HttpURLConnection) url.openConnection();
+		connection.setRequestMethod("POST");
+
+	}
+
+	void initJira() throws Exception {
+		// init : read preferences for JIRA resp API connection params
+
+		String rem = Activator.getDefault().getPreferenceStore().getString("SERVER_URL");
+		URL url = new URL(rem);
 		connection = (HttpURLConnection) url.openConnection();
 		connection.setRequestMethod("POST");
 
@@ -169,7 +98,7 @@ public class RemoteServerPublisher {
 			}
 
 			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-			StringBuilder response = new StringBuilder(); 
+			StringBuilder response = new StringBuilder();
 			String line;
 
 			while ((line = rd.readLine()) != null) {
@@ -187,5 +116,59 @@ public class RemoteServerPublisher {
 				connection.disconnect();
 			}
 		}
+	}
+
+	// implement publish method
+	public String publishJira(String key) throws Exception {
+
+		JSONRepGenerator nw = new JSONRepGenerator(key);
+		nw.createReport(errorInformation);
+		json = nw.getIssue();
+
+		initJira();
+
+		urlParameters = json.toString();
+		// urlParameters="{\"fields\": {\"project\":{ \"key\":
+		// \"TOOLS\"},\"summary\": \"GSOC ERROR REPORTER
+		// TEST.\",\"description\": \"Creating of an issue through Developer
+		// Studio using the REST API\",\"issuetype\": {\"name\": \"Bug\"}}}";
+		System.out.println("/n" + urlParameters);
+
+		String charset = java.nio.charset.StandardCharsets.UTF_8.name();
+		String param1 = urlParameters;
+		String query = String.format("urlParams=%s", URLEncoder.encode(param1, charset));
+
+		/*
+		 * try { // Create connection
+		 * connection.setRequestProperty("Content-Length",
+		 * Integer.toString(query.getBytes().length));
+		 * connection.setRequestProperty("Content-Language", "en-US");
+		 * connection.setRequestProperty("Accept-Charset", charset);
+		 * connection.setRequestProperty("Content-Type",
+		 * "application/x-www-form-urlencoded;charset=" + charset);
+		 * 
+		 * connection.setUseCaches(false); connection.setDoOutput(true);
+		 * 
+		 * // Send request DataOutputStream wr = new
+		 * DataOutputStream(connection.getOutputStream()); wr.writeBytes(query);
+		 * wr.close();
+		 * 
+		 * // Get Response InputStream is;
+		 * 
+		 * if (connection.getResponseCode() >= 400) { is =
+		 * connection.getErrorStream(); } else { is =
+		 * connection.getInputStream(); }
+		 * 
+		 * BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+		 * StringBuilder response = new StringBuilder(); String line;
+		 * 
+		 * while ((line = rd.readLine()) != null) { response.append(line);
+		 * response.append('\r'); } rd.close(); return response.toString(); }
+		 * catch (Exception e) { e.printStackTrace(); return null;
+		 * 
+		 * } finally { if (connection != null) { connection.disconnect(); } }
+		 */
+
+		return "testJira";
 	}
 }

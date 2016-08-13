@@ -20,8 +20,10 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Map;
+
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -95,7 +97,6 @@ public class ErrorReporter {
 		// and call publish() method
 
 		init();
-		System.out.println(userResponse);
 		switch (userResponse) {
 
 		case 100:
@@ -186,7 +187,7 @@ public class ErrorReporter {
 
 				try {
 					System.out.println("publishJIRA");
-					// response=publishJira();
+					response = publishJira();
 					// JSONReader reader=new JSONReader();
 					// id=reader.getJsonId(response);
 					// key=reader.getJsonKey(response);
@@ -221,7 +222,7 @@ public class ErrorReporter {
 
 				System.out.println("Sending email and jira");
 				try {
-					// response=publishJira();
+					response = publishJira();
 					// JSONReader reader=new JSONReader();
 					// id=reader.getJsonId(response);
 					// key=reader.getJsonKey(response);
@@ -257,25 +258,23 @@ public class ErrorReporter {
 	public String publishJira() throws Exception {
 		String rp = "";
 		String key;
-		int keyNo=errorInformation.getPackageKey().size();
-		
-		if(keyNo==0)
-		{
-		 key=Activator.getDefault().getPreferenceStore().getString("PROJECT_KEY");
-		 rp= jp.publishJira(key);
-		 System.out.println(rp);
-		
+		int keyNo = errorInformation.getPackageKey().size();
+		System.out.println(keyNo);
+
+		if (keyNo == 0) {
+			key = Activator.getDefault().getPreferenceStore().getString("PROJECT_KEY");
+			rp = jp.publishJira(key);
+			System.out.println(rp);
+
 		}
-		
-		else
-		{
-			for (Map.Entry<String, String> entry : errorInformation.getPackageKey().entrySet())
-			{				
-				key=entry.getValue();
-				rp= jp.publishJira(key);
+
+		else {
+			for (Map.Entry<String, String> entry : errorInformation.getPackageKey().entrySet()) {
+				key = entry.getValue();
+				rp = jp.publishJira(key);
 				System.out.println(rp);
 			}
-			
+
 		}
 		return rp;
 
@@ -345,18 +344,17 @@ public class ErrorReporter {
 	}
 
 	public String getKeys() {
-		
+
 		StringBuffer sb = new StringBuffer();
-		for (Map.Entry<String, String> entry : errorInformation.getPackageKey().entrySet())
-		{				
+		for (Map.Entry<String, String> entry : errorInformation.getPackageKey().entrySet()) {
 			sb.append("/n");
 			sb.append(entry.getValue());
 
 		}
-		
+
 		return sb.toString();
 	}
-	
+
 	public IStatus getStatus() {
 		return status;
 	}

@@ -16,13 +16,12 @@
 
 package org.wso2.developerstudio.eclipse.errorreporter.reportgenerators;
 
-
 import org.wso2.developerstudio.eclipse.errorreporter.formats.ErrorInformation;
 
 public class TextReportGenerator implements ReportGenerator {
 
 	private String textString;
-	
+
 	private static final String INTRODUCTION = "\nThe following report will be sent to Jira:\n\n";
 
 	private static final String STATUS = "\n--STATUS--\n";
@@ -49,21 +48,16 @@ public class TextReportGenerator implements ReportGenerator {
 	private static final String ORGANIZATION = "\nOrganization: ";
 	private static final String COMMENT = "\nComment: ";
 	private static final String SEVERITY_USER = "\nSeverity: ";
-	
+
 	private static final String RELATED_PLUGINS = "\n\n--RELATED PLUGIN IDS--\n";
-
-
-
 
 	public TextReportGenerator() {
 		super();
 	}
 
-
 	@Override
-	public  void createReport(ErrorInformation errorInformation) {
+	public void createReport(ErrorInformation errorInformation) {
 		StringBuilder sb = new StringBuilder();
-
 
 		sb.append(INTRODUCTION);
 		sb.append(STATUS);
@@ -90,21 +84,18 @@ public class TextReportGenerator implements ReportGenerator {
 		sb.append(SEVERITY_USER + errorInformation.getSeverity2());
 		sb.append(RELATED_PLUGINS);
 		sb.append(errorInformation.getPackage());
-		
-		setTextString(sb.toString());
-		
-	}
 
+		setTextString(sb.toString());
+
+	}
 
 	public String getTextString() {
-		
+
 		return textString;
 	}
-
 
 	public void setTextString(String textString) {
 		this.textString = textString;
 	}
-
 
 }

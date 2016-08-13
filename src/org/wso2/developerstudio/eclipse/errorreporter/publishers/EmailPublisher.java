@@ -16,13 +16,11 @@
 
 package org.wso2.developerstudio.eclipse.errorreporter.publishers;
 
-import com.sun.mail.smtp.SMTPTransport;
-//import com.sun.net.ssl.internal.ssl.Provider;
-
 import java.io.IOException;
 //import java.security.Security;
 import java.util.Date;
 import java.util.Properties;
+
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
@@ -31,9 +29,10 @@ import javax.mail.internet.MimeMessage;
 
 import org.wso2.developerstudio.eclipse.errorreporter.reportgenerators.TextReportGenerator;
 
-public class EmailPublisher implements ErrorPublisher{
+import com.sun.mail.smtp.SMTPTransport;
+//import com.sun.net.ssl.internal.ssl.Provider;
 
-
+public class EmailPublisher implements ErrorPublisher {
 
 	private Properties props;
 	private Session session;
@@ -42,7 +41,7 @@ public class EmailPublisher implements ErrorPublisher{
 	private String recEmail;
 	private String title;
 	private String message;
-	
+
 	public EmailPublisher(String username, String password, String recEmail, String title, String message) {
 		super();
 		this.username = username;
@@ -54,9 +53,9 @@ public class EmailPublisher implements ErrorPublisher{
 
 	private static final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
 
-    void init () throws IOException{
-        //init : read preferences for SMTP connection params
-    	//Security.addProvider(new Provider());
+	void init() throws IOException {
+		// init : read preferences for SMTP connection params
+		// Security.addProvider(new Provider());
 
 		// Get a Properties object
 		props = System.getProperties();
@@ -70,35 +69,32 @@ public class EmailPublisher implements ErrorPublisher{
 		props.put("mail.smtps.quitwait", "false");
 
 		session = Session.getInstance(props, null);
-      }
-    
-     // implement publish method 
-     public String publish(TextReportGenerator reportGen) throws IOException, MessagingException{
-         init();
-        //send mail
- 		// -- Create a new message --
- 		final MimeMessage msg = new MimeMessage(session);
+	}
 
- 		// -- Set the FROM and TO fields --
- 		msg.setFrom(new InternetAddress());
- 		//
- 		msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recEmail, false));
+	// implement publish method
+	@Override
+	public String publish(TextReportGenerator reportGen) throws IOException, MessagingException {
+		init();
+		// send mail
+		// -- Create a new message --
+		final MimeMessage msg = new MimeMessage(session);
 
+		// -- Set the FROM and TO fields --
+		msg.setFrom(new InternetAddress());
+		//
+		msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recEmail, false));
 
+		msg.setSubject(title);
+		msg.setText(message, "utf-8");
+		msg.setSentDate(new Date());
 
- 		msg.setSubject(title);
- 		msg.setText(message, "utf-8");
- 		msg.setSentDate(new Date());
+		SMTPTransport t = (SMTPTransport) session.getTransport("smtps");
 
- 		SMTPTransport t = (SMTPTransport) session.getTransport("smtps");
+		t.connect("smtp.gmail.com", username, password);
+		t.sendMessage(msg, msg.getAllRecipients());
+		t.close();
 
- 		t.connect("smtp.gmail.com", username, password);
- 		t.sendMessage(msg, msg.getAllRecipients());
- 		t.close();
- 		
- 		return "ok";
-     }
-
-
+		return "ok";
+	}
 
 }

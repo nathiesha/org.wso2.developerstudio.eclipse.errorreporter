@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.wso2.developerstudio.eclipse.errorreporter.ui.dialogs;
 
 import java.io.BufferedReader;
@@ -47,13 +46,11 @@ import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 
-
-
 public class ErrorNotificationDialog extends ErrorDialog {
 
 	private static final String NESTING_INDENT = " ";
-	private static final String DIALOG_TITLE="A problem was detected";
-	private static final String DIALOG_MESSAGE= "An unexpected error occured. Please press send to report the error to the development team";
+	private static final String DIALOG_TITLE = "A problem was detected";
+	private static final String DIALOG_MESSAGE = "An unexpected error occured. Please press send to report the error to the development team";
 	private static final int DISPLAY_MASK = 0xFFFF;
 
 	private String errorMessage;
@@ -64,27 +61,23 @@ public class ErrorNotificationDialog extends ErrorDialog {
 
 	private Button detailsButton;
 	private Clipboard clipboard;
-	private int selection=0;
-	//private BufferedReader br;
+	private int selection = 0;
+	// private BufferedReader br;
 
-
-	public ErrorNotificationDialog(Shell parentShell, 
-			String errorMessage,IStatus status) {
+	public ErrorNotificationDialog(Shell parentShell, String errorMessage, IStatus status) {
 		super(parentShell, DIALOG_TITLE, DIALOG_MESSAGE, status, DISPLAY_MASK);
 
 		this.errorMessage = errorMessage;
-		this.status=status;
+		this.status = status;
 
 	}
-
 
 	@Override
 	protected void configureShell(Shell shell) {
 		super.configureShell(shell);
 		shell.setText(DIALOG_TITLE);
-	    // Create the first Group
+		// Create the first Group
 	}
-
 
 	@Override
 	public int open() {
@@ -94,98 +87,85 @@ public class ErrorNotificationDialog extends ErrorDialog {
 
 	}
 
-
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
-		
 
-	    Label label = new Label(parent, SWT.NULL);
-	    label.setText("Select sending option: ");
-	    
-	    Button jira = new Button(parent, SWT.RADIO);
-	    jira.setText("Publish in Jira");
-	    jira.addSelectionListener(new SelectionListener() {
-			
+		Label label = new Label(parent, SWT.NULL);
+		label.setText("Select sending option: ");
+
+		Button jira = new Button(parent, SWT.RADIO);
+		jira.setText("Publish in Jira");
+		jira.addSelectionListener(new SelectionListener() {
+
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				selection=0;
-				
+				selection = 0;
+
 			}
 
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
-		
+
 		});
 
-	    
-	    Button email = new Button(parent, SWT.RADIO);
-	    email.setText("Publish in Jira and email");
-	    
-	    email.addSelectionListener(new SelectionListener() {
-			
+		Button email = new Button(parent, SWT.RADIO);
+		email.setText("Publish in Jira and email");
+
+		email.addSelectionListener(new SelectionListener() {
+
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				
-				selection=1;
+
+				selection = 1;
 			}
 
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
-		
+
 		});
-	    
+
 		final Link link = new Link(parent, SWT.NONE);
-	    link.setFont(parent.getFont());
-	    link.setText("<A>" + "Click here to edit the sending option preferences." + "</A>"); 
-	    GridData data = new GridData(SWT.LEFT , SWT.TOP, false, false);
-	    data.horizontalSpan = 3;
-	    link.setLayoutData(data);
-	    
-	    
-	    
+		link.setFont(parent.getFont());
+		link.setText("<A>" + "Click here to edit the sending option preferences." + "</A>");
+		GridData data = new GridData(SWT.LEFT, SWT.TOP, false, false);
+		data.horizontalSpan = 3;
+		link.setLayoutData(data);
+
 		link.addSelectionListener(new SelectionAdapter() {
-		  @Override
-		  public void widgetSelected(final SelectionEvent e)
-		  {
-			  Shell shell=new Shell();
-			  PreferenceDialog pref = 
-					  PreferencesUtil.createPreferenceDialogOn(shell, 
-							  "org.wso2.developerstudio.eclipse.errorreporter.page1", null, null);
-					  if (pref != null)
-					  pref.open();
-		  }
+			@Override
+			public void widgetSelected(final SelectionEvent e) {
+				Shell shell = new Shell();
+				PreferenceDialog pref = PreferencesUtil.createPreferenceDialogOn(shell,
+						"org.wso2.developerstudio.eclipse.errorreporter.page1", null, null);
+				if (pref != null)
+					pref.open();
+			}
 		});
 		// create OK CANCEL and Details buttons
-		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL,
-				true);
-		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL,
-				true);
-		detailsButton = createButton(parent, IDialogConstants.DETAILS_ID,
-				IDialogConstants.SHOW_DETAILS_LABEL, false);
+		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
+		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, true);
+		detailsButton = createButton(parent, IDialogConstants.DETAILS_ID, IDialogConstants.SHOW_DETAILS_LABEL, false);
 	}
-
 
 	@Override
 	protected List createDropDownList(Composite parent) {
 		// create the list
-		list = new List(parent, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL
-				| SWT.MULTI);
+		list = new List(parent, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI);
 		// fill the list
 		try {
-			addReportInfo(list,errorMessage);
+			addReportInfo(list, errorMessage);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		GridData data = new GridData(GridData.HORIZONTAL_ALIGN_FILL
-				| GridData.GRAB_HORIZONTAL | GridData.VERTICAL_ALIGN_FILL
-				| GridData.GRAB_VERTICAL);
+		GridData data = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL
+				| GridData.VERTICAL_ALIGN_FILL | GridData.GRAB_VERTICAL);
 		data.heightHint = 150;
 		data.horizontalSpan = 2;
 		list.setLayoutData(data);
@@ -193,10 +173,12 @@ public class ErrorNotificationDialog extends ErrorDialog {
 		Menu copyMenu = new Menu(list);
 		MenuItem copyItem = new MenuItem(copyMenu, SWT.NONE);
 		copyItem.addSelectionListener(new SelectionListener() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				copyToClipboard();
 			}
 
+			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
 				copyToClipboard();
 			}
@@ -206,7 +188,6 @@ public class ErrorNotificationDialog extends ErrorDialog {
 		listCreated = true;
 		return list;
 	}
-
 
 	@Override
 	protected void buttonPressed(int id) {
@@ -218,29 +199,22 @@ public class ErrorNotificationDialog extends ErrorDialog {
 		}
 	}
 
-
 	private void buttonPress(int id) {
-		if(id==IDialogConstants.CANCEL_ID)
-		{
+		if (id == IDialogConstants.CANCEL_ID) {
 			setReturnCode(CANCEL);
 			close();
 		}
 
-		if(id==IDialogConstants.OK_ID && selection==0)
-		{
+		if (id == IDialogConstants.OK_ID && selection == 0) {
 			setReturnCode(100);
 			close();
 		}
-		
-		if(id==IDialogConstants.OK_ID && selection==1)
-		{
+
+		if (id == IDialogConstants.OK_ID && selection == 1) {
 			setReturnCode(200);
 			close();
 		}
 	}
-
-
-
 
 	private void addReportInfo(List listToPopulate, String errorMessage) throws IOException {
 
@@ -255,17 +229,15 @@ public class ErrorNotificationDialog extends ErrorDialog {
 
 	}
 
-
-
-	private  java.util.List<String> readLines(final String s) throws IOException {
+	private java.util.List<String> readLines(final String s) throws IOException {
 		java.util.List<String> lines = new ArrayList<String>();
 		BufferedReader reader = new BufferedReader(new StringReader(s));
 		String line;
 
-			while ((line = reader.readLine()) != null) {
-				if (line.length() > 0)
-					lines.add(line);
-			}
+		while ((line = reader.readLine()) != null) {
+			if (line.length() > 0)
+				lines.add(line);
+		}
 
 		return lines;
 	}
@@ -286,13 +258,14 @@ public class ErrorNotificationDialog extends ErrorDialog {
 		}
 		Point newSize = getShell().computeSize(SWT.DEFAULT, SWT.DEFAULT);
 		int diffY = newSize.y - windowSize.y;
-		// increase the dialog height if details were opened and such increase is necessary
-		// decrease the dialog height if details were closed and empty space appeared
+		// increase the dialog height if details were opened and such increase
+		// is necessary
+		// decrease the dialog height if details were closed and empty space
+		// appeared
 		if ((opened && diffY > 0) || (!opened && diffY < 0)) {
 			getShell().setSize(new Point(windowSize.x, windowSize.y + (diffY)));
 		}
 	}
-
 
 	private void copyToClipboard() {
 		if (clipboard != null) {
@@ -301,12 +274,10 @@ public class ErrorNotificationDialog extends ErrorDialog {
 		StringBuffer statusBuffer = new StringBuffer();
 		populateCopyBuffer(status, statusBuffer, 0);
 		clipboard = new Clipboard(list.getDisplay());
-		clipboard.setContents(new Object[] { statusBuffer.toString() },
-				new Transfer[] { TextTransfer.getInstance() });
+		clipboard.setContents(new Object[] { statusBuffer.toString() }, new Transfer[] { TextTransfer.getInstance() });
 	}
 
-	private void populateCopyBuffer(IStatus buildingStatus,
-			StringBuffer buffer, int nesting) {
+	private void populateCopyBuffer(IStatus buildingStatus, StringBuffer buffer, int nesting) {
 		if (!buildingStatus.matches(DISPLAY_MASK)) {
 			return;
 		}
@@ -339,7 +310,5 @@ public class ErrorNotificationDialog extends ErrorDialog {
 			populateCopyBuffer(children[i], buffer, nesting + 1);
 		}
 	}
-
-
 
 }

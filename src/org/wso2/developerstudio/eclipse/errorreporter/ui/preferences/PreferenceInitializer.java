@@ -20,11 +20,6 @@ import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.wso2.developerstudio.eclipse.errorreporter.Activator;
 
-/**
- * @author Nathie
- *
- */
-
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
 	private static final String TARGET_URL = "http://test4475-jira-publisher-test-1-0-0.wso2apps.com/publish";
@@ -34,8 +29,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 
-//		store.setDefault(PreferencePage.ANO_PACK, false);
-//		store.setDefault(PreferencePage.ANO_LOG, false);
+		// store.setDefault(PreferencePage.ANO_PACK, false);
+		// store.setDefault(PreferencePage.ANO_LOG, false);
 		store.setDefault(PreferencePage.JIRA, true);
 		store.setDefault(PreferencePage.EMAIL, false);
 

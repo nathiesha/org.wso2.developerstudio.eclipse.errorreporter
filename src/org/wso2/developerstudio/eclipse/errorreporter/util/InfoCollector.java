@@ -52,18 +52,16 @@ public class InfoCollector {
 
 	}
 
-
-
 	// collect the information regarding the exception
 	public void getErrorInfo() {
 
 		errorInformation.setPluginId(status.getPlugin());
-		//TODO exception might occur here
-		//status.getPlugin()
+		// TODO exception might occur here
+		// status.getPlugin()
 		Bundle bundle = Platform.getBundle("com.google.gson");
 		Version version = bundle.getVersion();
 		errorInformation.setPluginVersion(version.toString());
-		
+
 		errorInformation.setSeverity(status.getSeverity());
 		errorInformation.setMessage(status.getMessage());
 		errorInformation.setCode(status.getCode());
@@ -149,33 +147,30 @@ public class InfoCollector {
 		}
 		return message;
 	}
-	
+
 	private void getPackageKeyInfo() {
-		
-		Map<String, String> pair=ExtensionPointReader.getKeys();
-		Map<String, String> packageKey=new HashMap<String, String>();
-		
-		for (Map.Entry<String, String> entry : pair.entrySet())
-		{
-			if(errorInformation.getPluginId().equals(entry.getKey()))
-			{				
-				packageKey.put(entry.getKey(),entry.getValue() );
+
+		Map<String, String> pair = ExtensionPointReader.getKeys();
+		Map<String, String> packageKey = new HashMap<String, String>();
+
+		for (Map.Entry<String, String> entry : pair.entrySet()) {
+			if (errorInformation.getPluginId().equals(entry.getKey())) {
+				packageKey.put(entry.getKey(), entry.getValue());
+
 			}
-			
-			else if(errorInformation.getExceptionS().contains(entry.getKey()))
-			{
-				packageKey.put(entry.getKey(),entry.getValue() );								
+
+			else if (errorInformation.getExceptionS().contains(entry.getKey())) {
+				packageKey.put(entry.getKey(), entry.getValue());
 			}
-			
-			else if(errorInformation.getMultiStatus().contains(entry.getKey()))
-			{
-				packageKey.put(entry.getKey(),entry.getValue() );								
+
+			else if (errorInformation.getMultiStatus().contains(entry.getKey())) {
+				packageKey.put(entry.getKey(), entry.getValue());
 			}
-			
-		    System.out.println(entry.getKey() + "/" + entry.getValue());
+
 		}
-		
+
 		errorInformation.setPackageKey(packageKey);
+
 	}
 
 	// getters and setters

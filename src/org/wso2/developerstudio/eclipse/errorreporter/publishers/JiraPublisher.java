@@ -22,7 +22,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
 import org.json.JSONObject;
@@ -63,7 +62,8 @@ public class JiraPublisher implements ErrorPublisher {
 	void init() throws Exception {
 		// init : read preferences for JIRA resp API connection params
 
-		JSONRepGenerator nw = new JSONRepGenerator();
+		JSONRepGenerator nw = new JSONRepGenerator(
+				Activator.getDefault().getPreferenceStore().getString("PROJECT_KEY"));
 		nw.createReport(errorInformation);
 		json = nw.getIssue();
 		String username = Activator.getDefault().getPreferenceStore().getString("JIRA_USERNAME");
@@ -130,8 +130,5 @@ public class JiraPublisher implements ErrorPublisher {
 			}
 		}
 	}
-	
-
-
 
 }

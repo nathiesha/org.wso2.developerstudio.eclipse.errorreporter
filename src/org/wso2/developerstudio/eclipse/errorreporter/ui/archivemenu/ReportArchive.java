@@ -1,19 +1,18 @@
 /*
-* Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
-
+ * Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package org.wso2.developerstudio.eclipse.errorreporter.ui.archivemenu;
 
@@ -48,19 +47,14 @@ import org.wso2.developerstudio.eclipse.errorreporter.Activator;
 //import org.wso2.developerstudio.eclipse.errorreporter.publishers.JiraPublisher;
 import org.wso2.developerstudio.eclipse.errorreporter.util.JiraStatusChecker;
 
-
-/**
- * @author Nathie
- *
- */
 public class ReportArchive extends TitleAreaDialog {
-	
+
 	String key;
 	String dateTime;
 	String error;
 	String content;
 	String id;
-	
+
 	public ReportArchive(Shell parentShell) {
 		super(parentShell);
 	}
@@ -69,9 +63,7 @@ public class ReportArchive extends TitleAreaDialog {
 	public void create() {
 		super.create();
 		setTitle("Error Report Archive");
-		setMessage(
-				"This windows displays the errors published to Jira",
-				IMessageProvider.INFORMATION);
+		setMessage("This windows displays the errors published to Jira", IMessageProvider.INFORMATION);
 	}
 
 	@Override
@@ -84,151 +76,141 @@ public class ReportArchive extends TitleAreaDialog {
 
 		createTable(container);
 		return area;
-		
+
 	}
 
-	//create the contents of error report table
+	// create the contents of error report table
 	private void createTable(Composite container) {
 
-		 final Table table = new Table(container, SWT.BORDER | SWT.V_SCROLL
-			        | SWT.H_SCROLL);
-			    table.setHeaderVisible(true);
-			    String[] titles = { "Error Report ID", "ID", "Date & Time", "Error Message" };
-			    
-			    // Create a multiple-line text field
-			    final Text text = new Text(container,  SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
-			    text.setLayoutData(new GridData(SWT.FILL, SWT.FILL,false, true));
-				    
+		final Table table = new Table(container, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
+		table.setHeaderVisible(true);
+		String[] titles = { "Error Report ID", "ID", "Date & Time", "Error Message" };
 
-			    			    
-			    final Menu contextMenu = new Menu(table);
-				table.setMenu(contextMenu);
-				MenuItem mItem1 = new MenuItem(contextMenu, SWT.None);
-				mItem1.setText("Inquire status");
+		// Create a multiple-line text field
+		final Text text = new Text(container, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
+		text.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
 
-			    for (int loopIndex = 0; loopIndex < titles.length; loopIndex++) {
-			      TableColumn column = new TableColumn(table, SWT.NULL);
-			      column.setText(titles[loopIndex]);
-			    }
+		final Menu contextMenu = new Menu(table);
+		table.setMenu(contextMenu);
+		MenuItem mItem1 = new MenuItem(contextMenu, SWT.None);
+		mItem1.setText("Inquire status");
 
-				File folder = new File(System.getProperty("user.dir"),"ErrorReports");
-				File[] listOfFiles = folder.listFiles();
-				
-				
-				int fileNo=listOfFiles.length;
-				System.out.println(fileNo);
-				int counter=0;
+		for (int loopIndex = 0; loopIndex < titles.length; loopIndex++) {
+			TableColumn column = new TableColumn(table, SWT.NULL);
+			column.setText(titles[loopIndex]);
+		}
 
-				    for (int i = 0; i <fileNo ; i++) {
-				      if (listOfFiles[i].isFile()) {
-				        counter++;
+		File folder = new File(System.getProperty("user.dir"), "ErrorReports");
+		File[] listOfFiles = folder.listFiles();
 
-				    }
-				    }
+		int fileNo = listOfFiles.length;
+		System.out.println(fileNo);
+		int counter = 0;
 
-			    for (int loopIndex = 0; loopIndex <counter ; loopIndex++) {
-			      TableItem item = new TableItem(table, SWT.NULL);
-			      item.setText("Item " + loopIndex);
-			      item.setText(0, listOfFiles[loopIndex].getName());
-			      
-			      try {
-					readFile(listOfFiles[loopIndex].getPath());
-				      item.setText(1, key);
-				      item.setText(2, dateTime);
-				      item.setText(3, error);
+		for (int i = 0; i < fileNo; i++) {
+			if (listOfFiles[i].isFile()) {
+				counter++;
 
-				      
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+			}
+		}
+
+		for (int loopIndex = 0; loopIndex < counter; loopIndex++) {
+			TableItem item = new TableItem(table, SWT.NULL);
+			item.setText("Item " + loopIndex);
+			item.setText(0, listOfFiles[loopIndex].getName());
+
+			try {
+				readFile(listOfFiles[loopIndex].getPath());
+				item.setText(1, key);
+				item.setText(2, dateTime);
+				item.setText(3, error);
+
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+
+		for (int loopIndex = 0; loopIndex < titles.length; loopIndex++) {
+			table.getColumn(loopIndex).pack();
+		}
+
+		// table.setBounds(25, 25, 220, 200);
+
+		table.addListener(SWT.MouseDown, new Listener() {
+			@Override
+			public void handleEvent(Event event) {
+
+				String file = setText(table);
+				String content = (getContent(file));
+				text.setText(content);
+				TableItem[] selection = table.getSelection();
+				if (selection.length != 0 && (event.button == 3)) {
+					contextMenu.setVisible(true);
 				}
 
-			    }
-				    
+			}
+		});
 
-			    for (int loopIndex = 0; loopIndex < titles.length; loopIndex++) {
-			      table.getColumn(loopIndex).pack();
-			    }
+		mItem1.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				try {
+					getStatus("TOOLS-3418");
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (JSONException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 
-			  //  table.setBounds(25, 25, 220, 200);
+			}
+		});
 
-			    table.addListener(SWT.MouseDown, new Listener() {
-			      public void handleEvent(Event event) {
+	}
 
+	public void getStatus(String id) throws IOException, JSONException {
+		String status2 = "";
+		String targetURL = "https://wso2.org/jira/rest/api/2/issue/" + id + "?fields&expand";
+		String username = Activator.getDefault().getPreferenceStore().getString("JIRA_USERNAME");
+		String password = Activator.getDefault().getPreferenceStore().getString("JIRA_PASSWORD");
+		String userCredentials = username + ":" + password;
+		JiraStatusChecker checker = new JiraStatusChecker();
+		String jsonResponse = checker.executeGet(targetURL, userCredentials);
 
-			    	  String file=setText(table);
-			    	  String content=(getContent( file));
-			          text.setText(content);
-			          TableItem[] selection = table.getSelection();
-			            if(selection.length!=0 && (event.button == 3)){
-			                contextMenu.setVisible(true);
-			            }
+		status2 = checker.getIssueStatus(jsonResponse);
 
-			      }
-			    });
-			    
-			    mItem1.addSelectionListener(new SelectionAdapter() {
-			        public void widgetSelected(SelectionEvent e) {
-			        	try {
-							getStatus("TOOLS-3418");
-						} catch (IOException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						} catch (JSONException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-
-			        }});
-                                              
-
-			    }
-	
-				    
-	
-	public void getStatus(String id) throws IOException, JSONException
-	{
-		String status2="";
-		String targetURL="https://wso2.org/jira/rest/api/2/issue/"+id+"?fields&expand";
-		String username=Activator.getDefault().getPreferenceStore().getString("JIRA_USERNAME");
-		String password=Activator.getDefault().getPreferenceStore().getString("JIRA_PASSWORD");
-		String userCredentials = username+":"+password;
-		JiraStatusChecker checker=new JiraStatusChecker();
-		String jsonResponse=checker.executeGet(targetURL, userCredentials);
-
-        status2=checker.getIssueStatus(jsonResponse);
-
-        Shell shell=new Shell();
-		MessageBox box=new MessageBox(shell);
+		Shell shell = new Shell();
+		MessageBox box = new MessageBox(shell);
 		box.setText("Issue status");
 		box.setMessage(status2);
 		box.open();
 
 	}
-	
-	private String setText(Table table)
-	{
 
-        String file="";
-        String temp;
-        String temp2;
-        TableItem[] selection = table.getSelection();
-        
-        for (int i = 0; i < selection.length; i++)
-        {
-        	temp=selection[i]+"";
-        	//System.out.println(temp);
-        	temp2=temp.substring(11,15);
-        	
-        	file = System.getProperty("user.dir")+"\\"+"ErrorReports"+"\\"+temp2+".txt";
-        }
-      
-        return file;
+	private String setText(Table table) {
+
+		String file = "";
+		String temp;
+		String temp2;
+		TableItem[] selection = table.getSelection();
+
+		for (int i = 0; i < selection.length; i++) {
+			temp = selection[i] + "";
+			// System.out.println(temp);
+			temp2 = temp.substring(11, 15);
+
+			file = System.getProperty("user.dir") + "\\" + "ErrorReports" + "\\" + temp2 + ".txt";
+		}
+
+		return file;
 	}
-	
+
 	protected String getContent(String fileName) {
-    	
-    	try {
+
+		try {
 			content = new String(Files.readAllBytes(Paths.get(fileName)));
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -237,40 +219,35 @@ public class ReportArchive extends TitleAreaDialog {
 	}
 
 	private void readFile(String fileName) throws IOException {
-	    BufferedReader br = new BufferedReader(new FileReader(fileName));
-	    try {
+		BufferedReader br = new BufferedReader(new FileReader(fileName));
+		try {
 
-	        
-	        String line = br.readLine();
-	        line = br.readLine();
-	        key=line.substring(11);
-	        
-	        line = br.readLine();
-	        id = line.substring(10);
+			String line = br.readLine();
+			line = br.readLine();
+			key = line.substring(11);
 
-	        line = br.readLine();
-	        dateTime=line.substring(6);
+			line = br.readLine();
+			id = line.substring(10);
 
-	        line = br.readLine();
-	        line = br.readLine();
-	        line = br.readLine();
-	        line = br.readLine();	        
-	        line = br.readLine();
-	        line = br.readLine();
-	        line = br.readLine();
-	        line = br.readLine();
-	        line = br.readLine();	        
-	        line = br.readLine();
-	        
-	        error=line.substring(9);
-	        
-	        
-	        
-	    } finally {
-	        br.close();
-	    }
+			line = br.readLine();
+			dateTime = line.substring(6);
+
+			line = br.readLine();
+			line = br.readLine();
+			line = br.readLine();
+			line = br.readLine();
+			line = br.readLine();
+			line = br.readLine();
+			line = br.readLine();
+			line = br.readLine();
+			line = br.readLine();
+			line = br.readLine();
+
+			error = line.substring(9);
+
+		} finally {
+			br.close();
+		}
 	}
-	
-	
 
 }

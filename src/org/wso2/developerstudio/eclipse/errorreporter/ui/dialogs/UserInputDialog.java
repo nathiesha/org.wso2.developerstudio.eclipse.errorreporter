@@ -16,8 +16,6 @@
 
 package org.wso2.developerstudio.eclipse.errorreporter.ui.dialogs;
 
-
-
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
@@ -36,21 +34,18 @@ public class UserInputDialog extends TitleAreaDialog {
 
 	private Text name;
 	private String NameStr;
-	
+
 	private Text email;
 	private String EmailStr;
-	
+
 	private Text gmailPassword;
 	private String gmailPasswordStr;
-	
+
 	private Text jiraUsername;
 	private String jiraUsernameStr;
 
 	private Text jiraPassword;
 	private String jiraPasswordStr;
-
-
-
 
 	public UserInputDialog(Shell parentShell) {
 		super(parentShell);
@@ -60,8 +55,7 @@ public class UserInputDialog extends TitleAreaDialog {
 	public void create() {
 		super.create();
 		setTitle("We noticed an error");
-		setMessage(
-				"An error has been logged in. Help us fix it. Please take a moment to fill the folllowing details!",
+		setMessage("An error has been logged in. Help us fix it. Please take a moment to fill the folllowing details!",
 				IMessageProvider.INFORMATION);
 	}
 
@@ -78,20 +72,17 @@ public class UserInputDialog extends TitleAreaDialog {
 		createPassword(container);
 		createJiraUsername(container);
 		createJiraPassword(container);
-		
+
 		Composite container2 = new Composite(area, SWT.NONE);
 		container2.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		GridLayout layout2 = new GridLayout(1, false);
 		container2.setLayout(layout2);
-		
+
 		createSendingOptions(container2);
 		createAnoOptions(container2);
 
 		return area;
 	}
-	
-	
-	
 
 	private void createName(Composite container) {
 		Label lbtFirstName = new Label(container, SWT.NONE);
@@ -116,7 +107,6 @@ public class UserInputDialog extends TitleAreaDialog {
 		email.setLayoutData(dataLastName);
 	}
 
-	
 	private void createPassword(Composite container) {
 		Label lbtPassword = new Label(container, SWT.NONE);
 		lbtPassword.setText("Gmail password");
@@ -127,7 +117,7 @@ public class UserInputDialog extends TitleAreaDialog {
 		gmailPassword = new Text(container, SWT.BORDER);
 		gmailPassword.setLayoutData(dataPassword);
 	}
-	
+
 	private void createJiraUsername(Composite container) {
 		Label lbtPassword = new Label(container, SWT.NONE);
 		lbtPassword.setText("Jira Username");
@@ -138,7 +128,7 @@ public class UserInputDialog extends TitleAreaDialog {
 		jiraUsername = new Text(container, SWT.BORDER);
 		jiraUsername.setLayoutData(dataJiraUsername);
 	}
-	
+
 	private void createJiraPassword(Composite container) {
 		Label lbtPassword = new Label(container, SWT.NONE);
 		lbtPassword.setText("Jira Password");
@@ -148,50 +138,43 @@ public class UserInputDialog extends TitleAreaDialog {
 		dataJiraPassword.horizontalAlignment = GridData.FILL;
 		jiraPassword = new Text(container, SWT.BORDER);
 		jiraPassword.setLayoutData(dataJiraPassword);
-	
 
 	}
-	
+
 	private void createSendingOptions(Composite container) {
 
-//	    Group group = new Group(this, SWT.SHADOW_ETCHED_IN);
-//	    group.setText("Group Label");
+		// Group group = new Group(this, SWT.SHADOW_ETCHED_IN);
+		// group.setText("Group Label");
 
-		
 		Label lbtPassword = new Label(container, SWT.NONE);
 		lbtPassword.setText("Select Sending options");
 
-	    Button[] radios = new Button[3];
+		Button[] radios = new Button[3];
 
-	    radios[0] = new Button(container, SWT.RADIO);
-	    radios[0].setSelection(true);
-	    radios[0].setText("Create an issue in Jira");
+		radios[0] = new Button(container, SWT.RADIO);
+		radios[0].setSelection(true);
+		radios[0].setText("Create an issue in Jira");
 
+		radios[1] = new Button(container, SWT.RADIO);
+		radios[1].setText("Create an issue in Jira and send an email");
 
-	    radios[1] = new Button(container, SWT.RADIO);
-	    radios[1].setText("Create an issue in Jira and send an email");
-
-
-	    
 	}
-	
-	
+
 	private void createAnoOptions(Composite container) {
 
-		
 		Label lbtPassword = new Label(container, SWT.NONE);
 		lbtPassword.setText("Select Anonymizing options");
-	    
-	    Button[] radios2 = new Button[3];
 
-	    radios2[0] = new Button(container, SWT.CHECK);
-	    radios2[0].setText("Anonymize package, class and method names");
-	    
-	    radios2[1] = new Button(container, SWT.CHECK);
-	    radios2[1].setText("Anonymize error log");
+		Button[] radios2 = new Button[3];
 
-	    
+		radios2[0] = new Button(container, SWT.CHECK);
+		radios2[0].setText("Anonymize package, class and method names");
+
+		radios2[1] = new Button(container, SWT.CHECK);
+		radios2[1].setText("Anonymize error log");
+
 	}
+
 	@Override
 	protected boolean isResizable() {
 		return true;
@@ -202,21 +185,27 @@ public class UserInputDialog extends TitleAreaDialog {
 	private void saveInput() {
 		NameStr = name.getText();
 		EmailStr = email.getText();
-		gmailPasswordStr=gmailPassword.getText();
+		gmailPasswordStr = gmailPassword.getText();
 		setJiraUsernameStr(jiraUsername.getText());
 		setJiraPasswordStr(jiraPassword.getText());
 
-		PreferencePage pf=new PreferencePage();
-		Boolean ab=pf.setValues("NAME", NameStr);
+		PreferencePage pf = new PreferencePage();
+		Boolean ab = pf.setValues("NAME", NameStr);
 		System.out.println(ab);
-		//Activator.getDefault().getPreferenceStore().setValue("NAME", NameStr);
-//		Activator.getDefault().getPreferenceStore().setValue("EMAIL", EmailStr);
-//		Activator.getDefault().getPreferenceStore().setValue("GMAIL_PASSWORD", gmailPasswordStr);
-//		Activator.getDefault().getPreferenceStore().setValue("JIRA_USERNAME", jiraUsernameStr);
-//		Activator.getDefault().getPreferenceStore().setValue("JIRA_PASSWORD", jiraPasswordStr);
-//		//resource.setPersistentProperty(
-//                  new QualifiedName(pageId, name), value);  resource.setPersistentProperty(
-//                          new QualifiedName(pageId, name), value);
+		// Activator.getDefault().getPreferenceStore().setValue("NAME",
+		// NameStr);
+		// Activator.getDefault().getPreferenceStore().setValue("EMAIL",
+		// EmailStr);
+		// Activator.getDefault().getPreferenceStore().setValue("GMAIL_PASSWORD",
+		// gmailPasswordStr);
+		// Activator.getDefault().getPreferenceStore().setValue("JIRA_USERNAME",
+		// jiraUsernameStr);
+		// Activator.getDefault().getPreferenceStore().setValue("JIRA_PASSWORD",
+		// jiraPasswordStr);
+		// //resource.setPersistentProperty(
+		// new QualifiedName(pageId, name), value);
+		// resource.setPersistentProperty(
+		// new QualifiedName(pageId, name), value);
 	}
 
 	@Override

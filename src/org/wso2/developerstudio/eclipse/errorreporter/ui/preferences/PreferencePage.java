@@ -16,7 +16,6 @@
 
 package org.wso2.developerstudio.eclipse.errorreporter.ui.preferences;
 
-//import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
