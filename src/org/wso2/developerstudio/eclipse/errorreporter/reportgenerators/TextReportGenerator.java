@@ -16,79 +16,61 @@
 
 package org.wso2.developerstudio.eclipse.errorreporter.reportgenerators;
 
-import org.wso2.developerstudio.eclipse.errorreporter.formats.ErrorInformation;
+import org.wso2.developerstudio.eclipse.errorreporter.constants.TextReportLabels;
+import org.wso2.developerstudio.eclipse.errorreporter.templates.ErrorReportInformation;
 
+/**
+ * This class contains logic to generate a text report, given the error
+ * information to send to Jira and email
+ */
 public class TextReportGenerator implements ReportGenerator {
 
 	private String textString;
 
-	private static final String INTRODUCTION = "\nThe following report will be sent to Jira:\n\n";
-
-	private static final String STATUS = "\n--STATUS--\n";
-	private static final String PLUGIN_ID = "\nPlugin ID: ";
-	private static final String PLUGIN_VERSION = "\nPlugin Version: ";
-	private static final String CODE = "\nCode: ";
-	private static final String SEVERITY = "\nSeverity: ";
-	private static final String MESSAGE = "\nMessage: ";
-	private static final String EXCEPTION = "\nException: ";
-	private static final String MULTI_STATUS_INFORMATION = "\n\nMulti status: ";
-
-	private static final String REPORT = "\n\n--REPORT--\n";
-	private static final String ECLIPSE_BUILD_ID = "\nEclipse Build ID: ";
-	private static final String ECLIPSE_PRODUCT = "\nEclipse Product: ";
-	private static final String JAVA_RUNTIME_VERSION = "\nJava Runtime Version: ";
-	private static final String OSGIWS = "\nOsgiWS: ";
-	private static final String OSGI_OS = "\nOsgiOS: ";
-	private static final String OSGI_OS_VERSION = "\nOsgiOS Version: ";
-	private static final String OSGI_ARCH = "\nOsgiArch: ";
-
-	private static final String REPORT_SENDER = "\n\n--REPORT SENDER DETAILS--\n";
-	private static final String NAME = "\nName: ";
-	private static final String EMAIL = "\nEmail: ";
-	private static final String ORGANIZATION = "\nOrganization: ";
-	private static final String COMMENT = "\nComment: ";
-	private static final String SEVERITY_USER = "\nSeverity: ";
-
-	private static final String RELATED_PLUGINS = "\n\n--RELATED PLUGIN IDS--\n";
-
-	public TextReportGenerator() {
-		super();
-	}
-
+	/**
+	 * This method creates the text report
+	 * @param errorReportInformation
+	 * @return 
+	 */
 	@Override
-	public void createReport(ErrorInformation errorInformation) {
+	public void createReport(ErrorReportInformation errorReportInformation) {
+
 		StringBuilder sb = new StringBuilder();
 
-		sb.append(INTRODUCTION);
-		sb.append(STATUS);
-		sb.append(PLUGIN_ID + errorInformation.getPluginId());
-		sb.append(PLUGIN_VERSION + errorInformation.getPluginVersion());
-		sb.append(CODE + errorInformation.getCode());
-		sb.append(SEVERITY + errorInformation.getSeverity());
-		sb.append(MESSAGE + errorInformation.getMessage());
-		sb.append(EXCEPTION + errorInformation.getExceptionS());
-		sb.append(MULTI_STATUS_INFORMATION + errorInformation.getMultiStatus());
-		sb.append(REPORT);
-		sb.append(ECLIPSE_BUILD_ID + errorInformation.getEclipseBuildId());
-		sb.append(ECLIPSE_PRODUCT + errorInformation.getEclipseProduct());
-		sb.append(JAVA_RUNTIME_VERSION + errorInformation.getJavaRuntimeVersion());
-		sb.append(OSGIWS + errorInformation.getOsgiWs());
-		sb.append(OSGI_OS + errorInformation.getOsgiOs());
-		sb.append(OSGI_OS_VERSION + errorInformation.getOsgiOsVersion());
-		sb.append(OSGI_ARCH + errorInformation.getOsgiArch());
-		sb.append(REPORT_SENDER);
-		sb.append(NAME + errorInformation.getName());
-		sb.append(EMAIL + errorInformation.getEmail());
-		sb.append(ORGANIZATION + errorInformation.getOrganization());
-		sb.append(COMMENT + errorInformation.getComment());
-		sb.append(SEVERITY_USER + errorInformation.getSeverity2());
-		sb.append(RELATED_PLUGINS);
-		sb.append(errorInformation.getPackage());
+		sb.append(TextReportLabels.INTRODUCTION);
+		sb.append(TextReportLabels.STATUS);
+		sb.append(TextReportLabels.PLUGIN_ID.concat(errorReportInformation.getPluginId()));
+		sb.append(TextReportLabels.PLUGIN_VERSION.concat(errorReportInformation.getPluginVersion()));
+		sb.append(TextReportLabels.CODE + errorReportInformation.getCode());
+		sb.append(TextReportLabels.SEVERITY + errorReportInformation.getSeverity());
+		sb.append(TextReportLabels.MESSAGE.concat(errorReportInformation.getMessage()));
+		sb.append(TextReportLabels.EXCEPTION.concat(errorReportInformation.getExceptionS()));
+		sb.append(TextReportLabels.MULTI_STATUS_INFORMATION.concat(errorReportInformation.getMultiStatus()));
+		sb.append(TextReportLabels.REPORT);
+		sb.append(TextReportLabels.ECLIPSE_BUILD_ID.concat(errorReportInformation.getEclipseBuildId()));
+		sb.append(TextReportLabels.ECLIPSE_PRODUCT + errorReportInformation.getEclipseProduct());
+		sb.append(TextReportLabels.JAVA_RUNTIME_VERSION + errorReportInformation.getJavaRuntimeVersion());
+		sb.append(TextReportLabels.OSGIWS + errorReportInformation.getOsgiWs());
+		sb.append(TextReportLabels.OSGI_OS + errorReportInformation.getOsgiOs());
+		sb.append(TextReportLabels.OSGI_OS_VERSION + errorReportInformation.getOsgiOsVersion());
+		sb.append(TextReportLabels.OSGI_ARCH + errorReportInformation.getOsgiArch());
+		sb.append(TextReportLabels.REPORT_SENDER);
+		sb.append(TextReportLabels.NAME.concat(errorReportInformation.getName()));
+		sb.append(TextReportLabels.EMAIL.concat(errorReportInformation.getEmail()));
+		sb.append(TextReportLabels.ORGANIZATION.concat(errorReportInformation.getOrganization()));
+		sb.append(TextReportLabels.COMMENT + (errorReportInformation.getComment()));
+		sb.append(TextReportLabels.SEVERITY_USER + (errorReportInformation.getSeverity2()));
+		sb.append(TextReportLabels.RELATED_PLUGINS);
+		sb.append(errorReportInformation.getPackage());
 
 		setTextString(sb.toString());
 
 	}
 
+	/**
+	 * Getters and setters
+	 * 
+	 */
 	public String getTextString() {
 
 		return textString;

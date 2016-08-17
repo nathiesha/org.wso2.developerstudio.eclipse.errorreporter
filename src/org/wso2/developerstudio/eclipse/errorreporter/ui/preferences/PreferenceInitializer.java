@@ -19,23 +19,23 @@ package org.wso2.developerstudio.eclipse.errorreporter.ui.preferences;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.wso2.developerstudio.eclipse.errorreporter.Activator;
+import org.wso2.developerstudio.eclipse.errorreporter.constants.DeafultPreferences;
+import org.wso2.developerstudio.eclipse.errorreporter.constants.PreferencePageStrings;
 
+/**
+ * This class sets the deafult values in the preferences page
+ * 
+ */
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
-
-	private static final String TARGET_URL = "http://test4475-jira-publisher-test-1-0-0.wso2apps.com/publish";
-	private static final String PROJECT_KEY = "TOOLS";
 
 	@Override
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 
-		// store.setDefault(PreferencePage.ANO_PACK, false);
-		// store.setDefault(PreferencePage.ANO_LOG, false);
-		store.setDefault(PreferencePage.JIRA, true);
-		store.setDefault(PreferencePage.EMAIL, false);
-
-		store.setDefault(PreferencePage.SERVER_URL, TARGET_URL);
-		store.setDefault(PreferencePage.PROJECT_KEY, PROJECT_KEY);
+		store.setDefault(PreferencePageStrings.JIRA, true);
+		store.setDefault(PreferencePageStrings.EMAIL, false);
+		store.setDefault(PreferencePageStrings.SERVER_URL, DeafultPreferences.SERVER_URL);
+		store.setDefault(PreferencePageStrings.PROJECT_KEY, DeafultPreferences.PROJECT_KEY);
 
 	}
 

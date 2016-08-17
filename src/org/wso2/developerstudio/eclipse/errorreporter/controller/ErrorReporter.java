@@ -31,16 +31,17 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
-import org.json.JSONObject;
+//import org.json.JSONObject;
 import org.wso2.developerstudio.eclipse.errorreporter.Activator;
-import org.wso2.developerstudio.eclipse.errorreporter.formats.ErrorInformation;
 import org.wso2.developerstudio.eclipse.errorreporter.publishers.ErrorPublisher;
 import org.wso2.developerstudio.eclipse.errorreporter.publishers.FilePublisher;
 import org.wso2.developerstudio.eclipse.errorreporter.publishers.RemoteServerPublisher;
 import org.wso2.developerstudio.eclipse.errorreporter.reportgenerators.TextReportGenerator;
+import org.wso2.developerstudio.eclipse.errorreporter.templates.ErrorReportInformation;
 import org.wso2.developerstudio.eclipse.errorreporter.ui.dialogs.ErrorNotificationDialog;
 import org.wso2.developerstudio.eclipse.errorreporter.ui.dialogs.UserInputDialog;
 import org.wso2.developerstudio.eclipse.errorreporter.util.InfoCollector;
+import org.wso2.developerstudio.eclipse.errorreporter.util.JSONReader;
 
 //this class handles the complete process of publishing the error reports 
 public class ErrorReporter {
@@ -48,17 +49,17 @@ public class ErrorReporter {
 	private IStatus status;
 	private int userResponse;// to get user input from dialog
 	private InfoCollector errorInfoCollector;
-	private ErrorInformation errorInformation;
+	private ErrorReportInformation errorReportInformation;
 	private TextReportGenerator textReportGenerator;
 	private RemoteServerPublisher jp;
 	private String errorMessage;
 	private String response;
-	private JSONObject json;
+	//private JSONObject json;
 	private String id;
 	private String key;
 
 	// private static final String
-	private static final String TITLE = "Developer Studio Error Report";
+	//private static final String TITLE = "Developer Studio Error Report";
 	private static final String REPORTER = "Reporting the Developer Studio Error";
 
 	Map<String, ErrorPublisher> registeredPublishers;
@@ -73,16 +74,16 @@ public class ErrorReporter {
 	}
 
 	public void init() {
-
+		System.out.println("Init");
 		// create an InfoCollector
-		// get error information and assign it to errorInformation object
+		// get error information and assign it to errorReportInformation object
 		errorInfoCollector = new InfoCollector(status);
-		errorInformation = errorInfoCollector.getInformation();
+		errorReportInformation = errorInfoCollector.getInformation();
 
 		// create textReportGenerator object
 		// store the error report and user space
 		textReportGenerator = new TextReportGenerator();
-		textReportGenerator.createReport(errorInformation);
+		textReportGenerator.createReport(errorReportInformation);
 		errorMessage = textReportGenerator.getTextString();
 
 		userResponse = openErrorDialog();
@@ -101,7 +102,7 @@ public class ErrorReporter {
 
 		case 100:
 			try {
-				jp = new RemoteServerPublisher(errorInformation);
+				jp = new RemoteServerPublisher(errorReportInformation);
 				sendReportJ();
 			}
 
@@ -119,7 +120,7 @@ public class ErrorReporter {
 
 		case 200:
 			try {
-				jp = new RemoteServerPublisher(errorInformation);
+				jp = new RemoteServerPublisher(errorReportInformation);
 				sendReportE();
 			}
 
@@ -144,7 +145,8 @@ public class ErrorReporter {
 
 	// open up the error dialog box and get user input
 	public int openErrorDialog() {
-
+		
+		System.out.println("OpenErrorDialog");
 		// create new shell for the error dialog
 		Shell shell = new Shell();
 
@@ -188,17 +190,17 @@ public class ErrorReporter {
 				try {
 					System.out.println("publishJIRA");
 					response = publishJira();
-					// JSONReader reader=new JSONReader();
-					// id=reader.getJsonId(response);
-					// key=reader.getJsonKey(response);
-					//
-					// System.out.println(id);
-					// System.out.println(response);
-					// System.out.println(key);
-					// // id="5678";
-					// // key="TOOLS-3168";
-					// FilePublisher nw = new FilePublisher();
-					// nw.publish(textReportGenerator);
+					 JSONReader reader=new JSONReader();
+					 id=reader.getJsonId(response);
+					 key=reader.getJsonKey(response);
+					
+					 System.out.println(id);
+					 System.out.println(response);
+					 System.out.println(key);
+					 // id="5678";
+					 // key="TOOLS-3168";
+					 FilePublisher nw = new FilePublisher(key,id);
+					 nw.publish(textReportGenerator);
 
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
@@ -223,18 +225,19 @@ public class ErrorReporter {
 				System.out.println("Sending email and jira");
 				try {
 					response = publishJira();
-					// JSONReader reader=new JSONReader();
-					// id=reader.getJsonId(response);
-					// key=reader.getJsonKey(response);
-					//
-					// System.out.println(id);
-					// System.out.println(key);
-					// System.out.println(response);
+					System.out.println(response);
+					 JSONReader reader=new JSONReader();
+					 id=reader.getJsonId(response);
+					 key=reader.getJsonKey(response);
+					
+					 System.out.println(id);
+					 System.out.println(key);
+					 System.out.println(response);
 					String ret = sendEmail();
 					System.out.println(ret);
 					// id="5678";
 					// key="TOOLS-3168";
-					FilePublisher nw = new FilePublisher();
+					FilePublisher nw = new FilePublisher(key, id);
 					nw.publish(textReportGenerator);
 				}
 
@@ -258,7 +261,7 @@ public class ErrorReporter {
 	public String publishJira() throws Exception {
 		String rp = "";
 		String key;
-		int keyNo = errorInformation.getPackageKey().size();
+		int keyNo = errorReportInformation.getPackageKey().size();
 		System.out.println(keyNo);
 
 		if (keyNo == 0) {
@@ -269,7 +272,7 @@ public class ErrorReporter {
 		}
 
 		else {
-			for (Map.Entry<String, String> entry : errorInformation.getPackageKey().entrySet()) {
+			for (Map.Entry<String, String> entry : errorReportInformation.getPackageKey().entrySet()) {
 				key = entry.getValue();
 				rp = jp.publishJira(key);
 				System.out.println(rp);
@@ -284,7 +287,7 @@ public class ErrorReporter {
 
 		String recipientEmail = Activator.getDefault().getPreferenceStore().getString("REC EMAIL");
 
-		textReportGenerator.createReport(errorInformation);
+		textReportGenerator.createReport(errorReportInformation);
 		String message = textReportGenerator.getTextString();
 
 		if (recipientEmail == "") {
@@ -346,7 +349,7 @@ public class ErrorReporter {
 	public String getKeys() {
 
 		StringBuffer sb = new StringBuffer();
-		for (Map.Entry<String, String> entry : errorInformation.getPackageKey().entrySet()) {
+		for (Map.Entry<String, String> entry : errorReportInformation.getPackageKey().entrySet()) {
 			sb.append("/n");
 			sb.append(entry.getValue());
 

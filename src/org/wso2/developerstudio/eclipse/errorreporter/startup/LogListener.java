@@ -22,21 +22,33 @@ import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IStatus;
 import org.wso2.developerstudio.eclipse.errorreporter.controller.ErrorReporter;
 
+/**
+ * This class contains logic to handle a logging event in the eclipse error log.
+ * 
+ */
+
 public class LogListener implements ILogListener {
 
 	private IStatus loggedStatus;
-	ErrorReporter errorReporter;
+	private ErrorReporter errorReporter;
 
+	/**
+	 * This method handles the error log event, checks whether the logged error
+	 * is releted to org.wso2.developerstufio.eclipse, and if so initiates the
+	 * error reporting process
+	 * 
+	 * @param status
+	 * @param plugin
+	 * 
+	 */
 	@Override
 	public void logging(IStatus status, String plugin) {
 		this.loggedStatus = status;
 
-		// check whether the error has any relavanc to developer studio plugings
+		// check whether the error is related to developer studio plugings
 		if (checkError(status, plugin)) {
 
-			System.out.println("error found");
-			// create error reporter object and report the error to user and
-			// jira
+			// create error reporter object and reports the error to user
 			errorReporter = new ErrorReporter(status);
 			errorReporter.reportError();
 
@@ -44,10 +56,19 @@ public class LogListener implements ILogListener {
 
 	}
 
-	// method to check whether the error belongs to dev studio
+	/**
+	 * This method checks whether the logged error is related to wso2 developer
+	 * studio plugins
+	 * 
+	 * @param status
+	 * @param plugin
+	 * @return whether the logged error is related to wso2 developer studio
+	 *         plugins or not
+	 * 
+	 */
 	private Boolean checkError(IStatus status, String plugin) {
 
-		// To convert the exception to a string
+		// Convert the exception to a string
 		StringWriter sw = new StringWriter();
 		PrintWriter pw = new PrintWriter(sw);
 		status.getException().printStackTrace(pw);
@@ -70,12 +91,24 @@ public class LogListener implements ILogListener {
 
 	}
 
+	/**
+	 * Getters and Setters
+	 * 
+	 */
 	public IStatus getLoggedStatus() {
 		return loggedStatus;
 	}
 
 	public void setLoggedStatus(IStatus loggedStatus) {
 		this.loggedStatus = loggedStatus;
+	}
+
+	public ErrorReporter getErrorReporter() {
+		return errorReporter;
+	}
+
+	public void setErrorReporter(ErrorReporter errorReporter) {
+		this.errorReporter = errorReporter;
 	}
 
 }

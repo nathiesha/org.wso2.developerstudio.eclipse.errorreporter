@@ -25,26 +25,26 @@ import java.net.URL;
 import java.net.URLEncoder;
 import org.json.JSONObject;
 import org.wso2.developerstudio.eclipse.errorreporter.Activator;
-import org.wso2.developerstudio.eclipse.errorreporter.formats.ErrorInformation;
-import org.wso2.developerstudio.eclipse.errorreporter.reportgenerators.JSONRepGenerator;
+import org.wso2.developerstudio.eclipse.errorreporter.reportgenerators.JsonReportGenerator;
+import org.wso2.developerstudio.eclipse.errorreporter.templates.ErrorReportInformation;
 
 public class RemoteServerPublisher {
 
 	private HttpURLConnection connection;
 	private String urlParameters;
 	private JSONObject json;
-	ErrorInformation errorInformation;
+	ErrorReportInformation errorReportInformation;
 
-	public RemoteServerPublisher(ErrorInformation errorInformation) {
+	public RemoteServerPublisher(ErrorReportInformation errorReportInformation) {
 
-		this.errorInformation = errorInformation;
+		this.errorReportInformation = errorReportInformation;
 	}
 
 	void initEmail() throws Exception {
 		// init : read preferences for JIRA resp API connection params
 
-		// JSONRepGenerator nw = new JSONRepGenerator(key);
-		// nw.createReport(errorInformation);
+		// JsonReportGenerator nw = new JsonReportGenerator(key);
+		// nw.createReport(errorReportInformation);
 		// json = nw.getIssue();
 		String emailUrl = Activator.getDefault().getPreferenceStore().getString("EMAIL_URL");
 		URL url = new URL(emailUrl);
@@ -121,8 +121,8 @@ public class RemoteServerPublisher {
 	// implement publish method
 	public String publishJira(String key) throws Exception {
 
-		JSONRepGenerator nw = new JSONRepGenerator(key);
-		nw.createReport(errorInformation);
+		JsonReportGenerator nw = new JsonReportGenerator(key);
+		nw.createReport(errorReportInformation);
 		json = nw.getIssue();
 
 		initJira();
@@ -132,43 +132,64 @@ public class RemoteServerPublisher {
 		// \"TOOLS\"},\"summary\": \"GSOC ERROR REPORTER
 		// TEST.\",\"description\": \"Creating of an issue through Developer
 		// Studio using the REST API\",\"issuetype\": {\"name\": \"Bug\"}}}";
-		System.out.println("/n" + urlParameters);
+		System.out.println(urlParameters);
 
 		String charset = java.nio.charset.StandardCharsets.UTF_8.name();
 		String param1 = urlParameters;
 		String query = String.format("urlParams=%s", URLEncoder.encode(param1, charset));
 
-		/*
-		 * try { // Create connection
-		 * connection.setRequestProperty("Content-Length",
-		 * Integer.toString(query.getBytes().length));
-		 * connection.setRequestProperty("Content-Language", "en-US");
-		 * connection.setRequestProperty("Accept-Charset", charset);
-		 * connection.setRequestProperty("Content-Type",
-		 * "application/x-www-form-urlencoded;charset=" + charset);
-		 * 
-		 * connection.setUseCaches(false); connection.setDoOutput(true);
-		 * 
-		 * // Send request DataOutputStream wr = new
-		 * DataOutputStream(connection.getOutputStream()); wr.writeBytes(query);
-		 * wr.close();
-		 * 
-		 * // Get Response InputStream is;
-		 * 
-		 * if (connection.getResponseCode() >= 400) { is =
-		 * connection.getErrorStream(); } else { is =
-		 * connection.getInputStream(); }
-		 * 
-		 * BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-		 * StringBuilder response = new StringBuilder(); String line;
-		 * 
-		 * while ((line = rd.readLine()) != null) { response.append(line);
-		 * response.append('\r'); } rd.close(); return response.toString(); }
-		 * catch (Exception e) { e.printStackTrace(); return null;
-		 * 
-		 * } finally { if (connection != null) { connection.disconnect(); } }
-		 */
+		
+		  try { // Create connection
+		  connection.setRequestProperty("Content-Length",
+		  Integer.toString(query.getBytes().length));
+		  connection.setRequestProperty("Content-Language", "en-US");
+		  connection.setRequestProperty("Accept-Charset", charset);
+		  connection.setRequestProperty("Content-Type",
+		  "application/x-www-form-urlencoded;charset=" + charset);
+		  
+		  connection.setUseCaches(false); connection.setDoOutput(true);
+		  
+		  // Send request 
+		  DataOutputStream wr = new
+		  DataOutputStream(connection.getOutputStream()); 
+		  wr.writeBytes(query);
+		  wr.close();
+		  
+		  // Get Response 
+		  InputStream is;
+		  
+		  if (connection.getResponseCode() >= 400) { 
+			  is =connection.getErrorStream(); 
+			  } 
+		  else { 
+			  is =connection.getInputStream(); 
+			  }
+		  
+		  BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+		  StringBuilder response = new StringBuilder(); 
+		  String line;
+		  
+		  while ((line = rd.readLine()) != null) { 
+			  response.append(line);
+			  response.append('\r'); 
+		  } 
+		  
+		  rd.close(); 
+		  return response.toString(); }
+		  
+		  catch (Exception e) { 
+			  e.printStackTrace(); 
+			  System.out.println("error");
+			  return null;
+		  
+		 } 
+		  finally { 
+			  if (connection != null) 
+			  { 
+				  connection.disconnect(); 
+				  } 
+			  }
+		 
 
-		return "testJira";
 	}
 }

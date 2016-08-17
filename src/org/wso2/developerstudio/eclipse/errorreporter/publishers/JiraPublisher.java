@@ -26,9 +26,9 @@ import java.net.URL;
 import org.apache.commons.codec.binary.Base64;
 import org.json.JSONObject;
 import org.wso2.developerstudio.eclipse.errorreporter.Activator;
-import org.wso2.developerstudio.eclipse.errorreporter.formats.ErrorInformation;
-import org.wso2.developerstudio.eclipse.errorreporter.reportgenerators.JSONRepGenerator;
+import org.wso2.developerstudio.eclipse.errorreporter.reportgenerators.JsonReportGenerator;
 import org.wso2.developerstudio.eclipse.errorreporter.reportgenerators.TextReportGenerator;
+import org.wso2.developerstudio.eclipse.errorreporter.templates.ErrorReportInformation;
 
 public class JiraPublisher implements ErrorPublisher {
 
@@ -36,11 +36,11 @@ public class JiraPublisher implements ErrorPublisher {
 	private String urlParameters;
 	private JSONObject json;
 	private static final String TARGET_URL = "https://wso2.org/jira/rest/api/2/issue";
-	ErrorInformation errorInformation;
+	ErrorReportInformation errorReportInformation;
 
-	public JiraPublisher(ErrorInformation errorInformation) {
+	public JiraPublisher(ErrorReportInformation errorReportInformation) {
 
-		this.errorInformation = errorInformation;
+		this.errorReportInformation = errorReportInformation;
 	}
 
 	// TOOLS-3418
@@ -62,9 +62,9 @@ public class JiraPublisher implements ErrorPublisher {
 	void init() throws Exception {
 		// init : read preferences for JIRA resp API connection params
 
-		JSONRepGenerator nw = new JSONRepGenerator(
+		JsonReportGenerator nw = new JsonReportGenerator(
 				Activator.getDefault().getPreferenceStore().getString("PROJECT_KEY"));
-		nw.createReport(errorInformation);
+		nw.createReport(errorReportInformation);
 		json = nw.getIssue();
 		String username = Activator.getDefault().getPreferenceStore().getString("JIRA_USERNAME");
 		String password = Activator.getDefault().getPreferenceStore().getString("JIRA_PASSWORD");

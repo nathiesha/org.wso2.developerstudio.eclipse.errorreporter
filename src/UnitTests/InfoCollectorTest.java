@@ -28,7 +28,7 @@ import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.junit.Before;
 import org.junit.Test;
-import org.wso2.developerstudio.eclipse.errorreporter.formats.ErrorInformation;
+import org.wso2.developerstudio.eclipse.errorreporter.templates.ErrorReportInformation;
 import org.wso2.developerstudio.eclipse.errorreporter.util.InfoCollector;
 
 /**
@@ -38,16 +38,17 @@ import org.wso2.developerstudio.eclipse.errorreporter.util.InfoCollector;
 public class InfoCollectorTest {
 	
 	IStatus status;
-	ErrorInformation errorInformation;
+	ErrorReportInformation errorReportInformation;
 	
 	InfoCollector ic;
+	private String s;
 	
 	@Before
 	public void createStatus()
 	{
 		
 		try {
-		      String s = null;
+		      s = null;
 		      System.out.println(s.length());
 		    } 
 		
@@ -83,14 +84,14 @@ public class InfoCollectorTest {
 	   public void testSystemInfo() {
 		   
 		   	 ic.getSystemInfo();
-		   	 errorInformation=ic.getErrorInformation();
-	         assertEquals("Eclipse Build ID does not match ","4.5.2.M20160212-1500",errorInformation.getEclipseBuildId());
-	         assertEquals("Eclipse Product does not match ","org.eclipse.platform.ide",errorInformation.getEclipseProduct());
-	         assertEquals("Eclipse Java Runtime Version does not match ","1.7.0_71-b14",errorInformation.getJavaRuntimeVersion());
-	         assertEquals("Eclipse OsgiWS does not match ","win32",errorInformation.getOsgiWs());
-	         assertEquals("Eclipse OsgiOS does not match ","Windows 8.1",errorInformation.getOsgiOs());
-	         assertEquals("Eclipse OsgiOs Version does not match ","6.3",errorInformation.getOsgiOsVersion());
-	         assertEquals("Eclipse Osgi Arch does not match ","x86_64",errorInformation.getOsgiArch());
+		   	 errorReportInformation=ic.getErrorInformation();
+	         assertEquals("Eclipse Build ID does not match ","4.5.2.M20160212-1500",errorReportInformation.getEclipseBuildId());
+	         assertEquals("Eclipse Product does not match ","org.eclipse.platform.ide",errorReportInformation.getEclipseProduct());
+	         assertEquals("Eclipse Java Runtime Version does not match ","1.7.0_71-b14",errorReportInformation.getJavaRuntimeVersion());
+	         assertEquals("Eclipse OsgiWS does not match ","win32",errorReportInformation.getOsgiWs());
+	         assertEquals("Eclipse OsgiOS does not match ","Windows 8.1",errorReportInformation.getOsgiOs());
+	         assertEquals("Eclipse OsgiOs Version does not match ","6.3",errorReportInformation.getOsgiOsVersion());
+	         assertEquals("Eclipse Osgi Arch does not match ","x86_64",errorReportInformation.getOsgiArch());
 	         
 
 	   }
@@ -99,13 +100,13 @@ public class InfoCollectorTest {
 	   public void testErrorInfo() {
 		   
 		   	 ic.getErrorInfo();
-		   	 errorInformation=ic.getErrorInformation();
-//	         assertEquals("Eclipse Plugin ID does not match ","4.5.2.M20160212-1500",errorInformation.getPluginId());
-//	         assertEquals("Eclipse severity does not match ","org.eclipse.platform.ide",errorInformation.getSeverity());
-//	         assertEquals("Eclipse Code does not match ","1.7.0_71-b14",errorInformation.getCode());
-//	         assertEquals("Eclipse Message does not match ","win32",errorInformation.getMessage());
-//	         assertEquals("Eclipse Exception does not match ","Windows 8.1",errorInformation.getExceptionS());
-//	         assertEquals("Eclipse Plugin Version does not match ","6.3",errorInformation.getPluginVersion());
+		   	 errorReportInformation=ic.getErrorInformation();
+//	         assertEquals("Eclipse Plugin ID does not match ","4.5.2.M20160212-1500",errorReportInformation.getPluginId());
+//	         assertEquals("Eclipse severity does not match ","org.eclipse.platform.ide",errorReportInformation.getSeverity());
+//	         assertEquals("Eclipse Code does not match ","1.7.0_71-b14",errorReportInformation.getCode());
+//	         assertEquals("Eclipse Message does not match ","win32",errorReportInformation.getMessage());
+//	         assertEquals("Eclipse Exception does not match ","Windows 8.1",errorReportInformation.getExceptionS());
+//	         assertEquals("Eclipse Plugin Version does not match ","6.3",errorReportInformation.getPluginVersion());
 	  
 
 	   }

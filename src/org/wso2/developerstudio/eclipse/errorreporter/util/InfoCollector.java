@@ -26,21 +26,21 @@ import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Version;
 import org.wso2.developerstudio.eclipse.errorreporter.Activator;
-import org.wso2.developerstudio.eclipse.errorreporter.formats.ErrorInformation;
+import org.wso2.developerstudio.eclipse.errorreporter.templates.ErrorReportInformation;
 
 public class InfoCollector {
 
 	private IStatus status;
-	private ErrorInformation errorInformation;
+	private ErrorReportInformation errorReportInformation;
 
 	public InfoCollector(IStatus status) {
 
 		this.status = status;
-		errorInformation = new ErrorInformation();
+		errorReportInformation = new ErrorReportInformation();
 	}
 
 	// get all the information regarding the error
-	public ErrorInformation getInformation() {
+	public ErrorReportInformation getInformation() {
 
 		getErrorInfo();
 		getSystemInfo();
@@ -48,44 +48,44 @@ public class InfoCollector {
 		getMultiStatusInfo();
 		getPackageKeyInfo();
 
-		return errorInformation;
+		return errorReportInformation;
 
 	}
 
 	// collect the information regarding the exception
 	public void getErrorInfo() {
 
-		errorInformation.setPluginId(status.getPlugin());
+		errorReportInformation.setPluginId(status.getPlugin());
 		// TODO exception might occur here
 		// status.getPlugin()
 		Bundle bundle = Platform.getBundle("com.google.gson");
 		Version version = bundle.getVersion();
-		errorInformation.setPluginVersion(version.toString());
+		errorReportInformation.setPluginVersion(version.toString());
 
-		errorInformation.setSeverity(status.getSeverity());
-		errorInformation.setMessage(status.getMessage());
-		errorInformation.setCode(status.getCode());
+		errorReportInformation.setSeverity(status.getSeverity());
+		errorReportInformation.setMessage(status.getMessage());
+		errorReportInformation.setCode(status.getCode());
 
-		errorInformation.setException((Exception) status.getException());
+		errorReportInformation.setException((Exception) status.getException());
 
 		// to convert the exception to string format
 		StringWriter sw = new StringWriter();
 		PrintWriter pw = new PrintWriter(sw);
-		errorInformation.getException().printStackTrace(pw);
-		errorInformation.setExceptionS(sw.toString());
+		errorReportInformation.getException().printStackTrace(pw);
+		errorReportInformation.setExceptionS(sw.toString());
 
 	}
 
 	// collect information regarding the environment
 	public void getSystemInfo() {
 
-		errorInformation.setEclipseBuildId(System.getProperty("eclipse.buildId"));
-		errorInformation.setEclipseProduct(System.getProperty("eclipse.product"));
-		errorInformation.setJavaRuntimeVersion(System.getProperty("java.runtime.version"));
-		errorInformation.setOsgiWs(System.getProperty("osgi.ws"));
-		errorInformation.setOsgiOs(System.getProperty("os.name"));
-		errorInformation.setOsgiOsVersion(System.getProperty("os.version"));
-		errorInformation.setOsgiArch(System.getProperty("osgi.arch"));
+		errorReportInformation.setEclipseBuildId(System.getProperty("eclipse.buildId"));
+		errorReportInformation.setEclipseProduct(System.getProperty("eclipse.product"));
+		errorReportInformation.setJavaRuntimeVersion(System.getProperty("java.runtime.version"));
+		errorReportInformation.setOsgiWs(System.getProperty("osgi.ws"));
+		errorReportInformation.setOsgiOs(System.getProperty("os.name"));
+		errorReportInformation.setOsgiOsVersion(System.getProperty("os.version"));
+		errorReportInformation.setOsgiArch(System.getProperty("osgi.arch"));
 
 		// =plugin.Activator.getDefault().getBundle().getVersion().toString();
 	}
@@ -93,9 +93,9 @@ public class InfoCollector {
 	// collect the user set values
 	public void getUserInfo() {
 
-		errorInformation.setName(Activator.getDefault().getPreferenceStore().getString("NAME"));
-		errorInformation.setEmail(Activator.getDefault().getPreferenceStore().getString("EMAIL"));
-		errorInformation.setOrganization((Activator.getDefault().getPreferenceStore().getString("ORGANIZATION")));
+		errorReportInformation.setName(Activator.getDefault().getPreferenceStore().getString("NAME"));
+		errorReportInformation.setEmail(Activator.getDefault().getPreferenceStore().getString("EMAIL"));
+		errorReportInformation.setOrganization((Activator.getDefault().getPreferenceStore().getString("ORGANIZATION")));
 
 	}
 
@@ -113,7 +113,7 @@ public class InfoCollector {
 			message.append("The exception does not contain any multi status information");
 		}
 
-		errorInformation.setMultiStatus(message.toString());
+		errorReportInformation.setMultiStatus(message.toString());
 	}
 
 	// check if multi status information if available
@@ -154,22 +154,22 @@ public class InfoCollector {
 		Map<String, String> packageKey = new HashMap<String, String>();
 
 		for (Map.Entry<String, String> entry : pair.entrySet()) {
-			if (errorInformation.getPluginId().equals(entry.getKey())) {
+			if (errorReportInformation.getPluginId().equals(entry.getKey())) {
 				packageKey.put(entry.getKey(), entry.getValue());
 
 			}
 
-			else if (errorInformation.getExceptionS().contains(entry.getKey())) {
+			else if (errorReportInformation.getExceptionS().contains(entry.getKey())) {
 				packageKey.put(entry.getKey(), entry.getValue());
 			}
 
-			else if (errorInformation.getMultiStatus().contains(entry.getKey())) {
+			else if (errorReportInformation.getMultiStatus().contains(entry.getKey())) {
 				packageKey.put(entry.getKey(), entry.getValue());
 			}
 
 		}
 
-		errorInformation.setPackageKey(packageKey);
+		errorReportInformation.setPackageKey(packageKey);
 
 	}
 
@@ -182,12 +182,12 @@ public class InfoCollector {
 		this.status = status;
 	}
 
-	public ErrorInformation getErrorInformation() {
-		return errorInformation;
+	public ErrorReportInformation getErrorInformation() {
+		return errorReportInformation;
 	}
 
-	public void setErrorInformation(ErrorInformation errorInformation) {
-		this.errorInformation = errorInformation;
+	public void setErrorInformation(ErrorReportInformation errorReportInformation) {
+		this.errorReportInformation = errorReportInformation;
 	}
 
 }

@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
@@ -15,12 +14,15 @@
  * limitations under the License.
  */
 
-package org.wso2.developerstudio.eclipse.errorreporter.reportgenerators;
+package org.wso2.developerstudio.eclipse.errorreporter.constants;
 
-import org.wso2.developerstudio.eclipse.errorreporter.templates.ErrorReportInformation;
+/**
+ * This class contains the default preference constants used by
+ * PreferenceInitializer class.
+ * 
+ */
+public class DeafultPreferences {
 
-public interface ReportGenerator {
-
-	public void createReport(ErrorReportInformation errorReportInformation) throws Exception;
-
+	public static final String SERVER_URL = "http://test4475-jira-publisher-test-1-0-0.wso2apps.com/publish";
+	public static final String PROJECT_KEY = "TOOLS";
 }

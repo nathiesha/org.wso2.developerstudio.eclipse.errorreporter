@@ -28,7 +28,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.wso2.developerstudio.eclipse.errorreporter.ui.preferences.PreferencePage;
+import org.wso2.developerstudio.eclipse.errorreporter.Activator;
+
 
 public class UserInputDialog extends TitleAreaDialog {
 
@@ -189,9 +190,8 @@ public class UserInputDialog extends TitleAreaDialog {
 		setJiraUsernameStr(jiraUsername.getText());
 		setJiraPasswordStr(jiraPassword.getText());
 
-		PreferencePage pf = new PreferencePage();
-		Boolean ab = pf.setValues("NAME", NameStr);
-		System.out.println(ab);
+		Activator.getDefault().getPreferenceStore().setValue("NAME", NameStr);
+
 		// Activator.getDefault().getPreferenceStore().setValue("NAME",
 		// NameStr);
 		// Activator.getDefault().getPreferenceStore().setValue("EMAIL",

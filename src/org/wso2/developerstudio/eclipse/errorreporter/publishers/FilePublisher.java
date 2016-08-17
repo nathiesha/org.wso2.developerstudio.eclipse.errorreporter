@@ -31,15 +31,25 @@ import org.wso2.developerstudio.eclipse.errorreporter.reportgenerators.TextRepor
 
 public class FilePublisher implements ErrorPublisher {
 
+
 	// Error Report Contents
 	private static final String DATE = "\nDate: ";
 	private static final String KEY = "\nIssue Key: ";
 	private static final String ID = "\nIssue ID: ";
+	String Id;
+	String key;
+	
+	public FilePublisher(String key, String Id) {
+
+		this.key=key;
+		this.Id=Id;
+	}
+
+	
 
 	@Override
 	public String publish(TextReportGenerator reportGen) throws Exception {
-		String Id = "abcd";
-		String key = "5678";
+
 		String fileName = Id + ".txt";
 		Bundle bundle = FrameworkUtil.getBundle(getClass());
 		IPath stateLoc = Platform.getStateLocation(bundle);

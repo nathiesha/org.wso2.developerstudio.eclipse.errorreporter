@@ -19,9 +19,18 @@ package org.wso2.developerstudio.eclipse.errorreporter.startup;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.ui.IStartup;
 
+/**
+ * This class implments the start up bahaviour of the plugin.
+ */
+
 public class Startup implements IStartup {
 
 	private static LogListener listener;
+
+	/**
+	 * This method runs when the Eclipse IDE starts creates a LogListener object
+	 * and attaches it to the platform error log.
+	 */
 
 	@Override
 	public void earlyStartup() {
@@ -29,11 +38,12 @@ public class Startup implements IStartup {
 		// attach a listener to the eclipse error log
 		listener = new LogListener();
 		Platform.addLogListener(listener);
-
-		System.out.println("Early start up");
-
+		System.out.println("Early startup");
 	}
 
+	/**
+	 * Getteres and setters
+	 */
 	public static LogListener getListener() {
 		return listener;
 	}

@@ -27,153 +27,71 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.wso2.developerstudio.eclipse.errorreporter.Activator;
+import org.wso2.developerstudio.eclipse.errorreporter.constants.PreferencePageStrings;
+
+/**
+ * This class creates the Error reporter Preference Page and its contents
+ * 
+ */
 
 public class PreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
-
-	private static final String DESCRIPTION = "Set default sending option for Developer Studio Error Reporting tool";
-
-	// group labels
-	private static final String CONTACT_INFO_GROUP = "Contact Information";
-	private static final String SEND_OPTIONS_GROUP = "Sending Options";
-	private static final String GMAIL_USER_CRED = "Gmail - Credentials";
-	private static final String JIRA_USER_CRED = "Jira - Credentials";
-
-	// contact information strings
-	public static final String NAME = "NAME";
-	private static final String EMAIL_USER = "EMAIL";
-	public static final String ORGANIZATION = "ORGANIZATION";
-	private static final String NAME_S = "Name:";
-	private static final String EMAIL_USER_S = "Email:";
-	public static final String ORGANIZATION_S= "Organization:";
-
-	// annonymize options strings
-//	public static final String ANO_PACK = "ANOPACK";
-//	private static final String ANO_PACK_S = "&Anonymize package, class and method names";
-//	public static final String ANO_LOG = "ANOLOG";
-//	private static final String ANO_LOG_S = "&Anonymize error log messages";
-
-	// send options Strings
-	public static final String SEND_OPTIONS = "SENDOPTIONS";
-	private static final String SEND_OPTIONS_S = "Select the sending preferences";
-	public static final String JIRA = "Jira";
-	private static final String JIRA_S = "&Report the error in Jira";
-	public static final String EMAIL = "Email";
-	private static final String EMAIL_S = "&Report the error in Jira and send an email";
-
-	public static final String SERVER_URL = "SERVER_URL";
-	private static final String SERVER_URL_S = "Remote Jira URL:";
-	public static final String PROJECT_KEY = "PROJECT_KEY";
-	private static final String PROJECT_KEY_S = "Project Key:";
-	
-	// Gmail user credentials
-//	private static final String GMAIL_USERNAME = "GMAIL USERNAME";
-//	private static final String GMAIL_USERNAME_S = "Gmail Username:";
-//	private static final String GMAIL_PASSWORD = "GMAIL PASSWORD";
-//	private static final String GMAIL_PASSWORD_S = "Password:";
-	public static final String EMAIL_SERVER_URL = "EMAIL_URL";
-	private static final String EMAIL_SERVER_URL_S = "Remote Email Publisher URL:";
-	private static final String REC_EMAIL = "REC EMAIL";
-	private static final String REC_EMAIL_S = "Recipient Email Address:";
-
-	// Jira user credentials
-//	public static final String JIRA_URL = "JIRA_URL";
-//	private static final String JIRA_URL_S = "Remote Jira URL:";
-//	public static final String PROJECT_KEY = "PROJECT_KEY";
-//	private static final String PROJECT_KEY_S = "Project Key:";
-//	private static final String JIRA_USERNAME = "JIRA_USERNAME";
-//	private static final String JIRA_USERNAME_S = "Username:";
-//	private static final String JIRA_PASSWORD = "JIRA_PASSWORD";
-//	private static final String JIRA_PASSWORD_S = "Password:";
 
 	public PreferencePage() {
 		super(GRID);
 
 	}
 
+	/**
+	 * Thismethod creates the Error reporter Preference Page
+	 * 
+	 */
+	@Override
+	public void init(IWorkbench workbench) {
+
+		setPreferenceStore(Activator.getDefault().getPreferenceStore());
+		setDescription(PreferencePageStrings.DESCRIPTION);
+	}
+
+	/**
+	 * This method creates the Error reporter Preference Page contents
+	 * 
+	 */
 	@Override
 	public void createFieldEditors() {
 
-		Composite top = new Composite(getFieldEditorParent(), SWT.LEFT);
+		Composite composite = new Composite(getFieldEditorParent(), SWT.LEFT);
+		GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
 
-		// Sets the layout data for the top composite's
-		// place in its parent's layout.
+		composite.setLayoutData(gridData);
+		composite.setLayout(new GridLayout());
+		gridData.horizontalAlignment = GridData.FILL;
+		gridData.grabExcessHorizontalSpace = true;
 
-		GridData data = new GridData(GridData.FILL_HORIZONTAL);
-		top.setLayoutData(data);
+		Group userInfoGroup = new Group(composite, SWT.SHADOW_OUT);
+		Group sendOptionsGroup = new Group(composite, SWT.SHADOW_OUT);
+		Group serverInfoGroup = new Group(composite, SWT.SHADOW_OUT);
+		Group gmailInfoGroup = new Group(composite, SWT.SHADOW_OUT);
 
-		// Sets the layout for the top composite's
-		// children to populate.
-		top.setLayout(new GridLayout());
+		userInfoGroup.setText(PreferencePageStrings.CONTACT_INFO_GROUP);
+		sendOptionsGroup.setText(PreferencePageStrings.SEND_OPTIONS_GROUP);
+		serverInfoGroup.setText(PreferencePageStrings.JIRA_USER_CRED);
+		gmailInfoGroup.setText(PreferencePageStrings.GMAIL_USER_CRED);
 
-		data.horizontalAlignment = GridData.FILL;
-		data.grabExcessHorizontalSpace = true;
-		Group con = new Group(top, SWT.SHADOW_OUT);
-		Group sop = new Group(top, SWT.SHADOW_OUT);	
-		Group rem = new Group(top, SWT.SHADOW_OUT);
-		Group guc = new Group(top, SWT.SHADOW_OUT);
-//		Group juc = new Group(top, SWT.SHADOW_OUT);
+		addField(new StringFieldEditor(PreferencePageStrings.NAME, PreferencePageStrings.NAME_S, userInfoGroup));
+		addField(new StringFieldEditor(PreferencePageStrings.EMAIL_USER, PreferencePageStrings.EMAIL_USER_S, userInfoGroup));
+		addField(new StringFieldEditor(PreferencePageStrings.ORGANIZATION, PreferencePageStrings.ORGANIZATION_S, userInfoGroup));
 
-		// set text to groups
-		con.setText(CONTACT_INFO_GROUP);
-		sop.setText(SEND_OPTIONS_GROUP);
-		rem.setText(JIRA_USER_CRED);
-		guc.setText(GMAIL_USER_CRED);
-//		juc.setText(JIRA_USER_CRED);
+		addField(new RadioGroupFieldEditor(PreferencePageStrings.SEND_OPTIONS, PreferencePageStrings.SEND_OPTIONS_S, 1,
+				new String[][] { { PreferencePageStrings.JIRA_S, PreferencePageStrings.JIRA },
+						{ PreferencePageStrings.EMAIL_S, PreferencePageStrings.EMAIL } },
+				sendOptionsGroup));
 
-		addField(new StringFieldEditor(NAME, NAME_S, con));
-		addField(new StringFieldEditor(EMAIL_USER, EMAIL_USER_S, con));
-		addField(new StringFieldEditor(ORGANIZATION, ORGANIZATION_S, con));
+		addField(new StringFieldEditor(PreferencePageStrings.SERVER_URL, PreferencePageStrings.SERVER_URL_S, serverInfoGroup));
+		addField(new StringFieldEditor(PreferencePageStrings.PROJECT_KEY, PreferencePageStrings.PROJECT_KEY_S, serverInfoGroup));
 
-		addField(new RadioGroupFieldEditor(SEND_OPTIONS, SEND_OPTIONS_S, 1,
-				new String[][] { { JIRA_S, JIRA }, { EMAIL_S, EMAIL } }, sop));
-
-		addField(new StringFieldEditor(SERVER_URL, SERVER_URL_S, rem));
-		addField(new StringFieldEditor(PROJECT_KEY, PROJECT_KEY_S, rem));
-		
-		addField(new StringFieldEditor(EMAIL_SERVER_URL, EMAIL_SERVER_URL_S, guc));
-		addField(new StringFieldEditor(REC_EMAIL, REC_EMAIL_S, guc));
-		
-//		addField(new StringFieldEditor(GMAIL_USERNAME, GMAIL_USERNAME_S, guc));
-//		StringFieldEditor passwordGmail = new StringFieldEditor(GMAIL_PASSWORD, GMAIL_PASSWORD_S, guc) {
-//
-//			@Override
-//			protected void doFillIntoGrid(Composite parent, int numColumns) {
-//				super.doFillIntoGrid(parent, numColumns);
-//
-//				getTextControl().setEchoChar('*');
-//			}
-//
-//		};
-//		addField(passwordGmail);
-//
-//		addField(new StringFieldEditor(REC_EMAIL, REC_EMAIL_S, guc));
-//
-//		addField(new StringFieldEditor(JIRA_URL, JIRA_URL_S, juc));
-//		addField(new StringFieldEditor(PROJECT_KEY, PROJECT_KEY_S, juc));
-//		addField(new StringFieldEditor(JIRA_USERNAME, JIRA_USERNAME_S, juc));
-//		StringFieldEditor passwordJira = new StringFieldEditor(JIRA_PASSWORD, JIRA_PASSWORD_S, juc) {
-//
-//			@Override
-//			protected void doFillIntoGrid(Composite parent, int numColumns) {
-//				super.doFillIntoGrid(parent, numColumns);
-//
-//				getTextControl().setEchoChar('*');
-//			}
-//
-//		};
-//		addField(passwordJira);
-	}
-
-	@Override
-	public void init(IWorkbench workbench) {
-		setPreferenceStore(Activator.getDefault().getPreferenceStore());
-		setDescription(DESCRIPTION);
-	}
-
-	public Boolean setValues(String key, String value) {
-		Activator.getDefault().getPreferenceStore().setValue(key, value);
-		super.performApply();
-		return super.performOk();
+		addField(new StringFieldEditor(PreferencePageStrings.EMAIL_SERVER_URL, PreferencePageStrings.EMAIL_SERVER_URL_S,
+				gmailInfoGroup));
+		addField(new StringFieldEditor(PreferencePageStrings.REC_EMAIL, PreferencePageStrings.REC_EMAIL_S, gmailInfoGroup));
 
 	}
 

@@ -14,12 +14,17 @@
  * limitations under the License.
  */
 
-package org.wso2.developerstudio.eclipse.errorreporter.formats;
+package org.wso2.developerstudio.eclipse.errorreporter.templates;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class ErrorInformation {
+/**
+ * This class contains the template of the information regarding the error to be
+ * reported
+ */
+
+public class ErrorReportInformation {
 
 	// error information
 	private String pluginId;
@@ -29,14 +34,13 @@ public class ErrorInformation {
 	private String message;
 	private Exception e;
 	private String exception;
-	private String anoId;
 
 	// user information
 	private String name;
 	private String email;
 	private String organization;
 	private String comment;
-	private String severityUser;
+	private String userDefinedSeverity;
 
 	// system information
 	private String eclipseBuildId;
@@ -49,13 +53,13 @@ public class ErrorInformation {
 
 	// multi status information
 	private String multiStatus;
+
+	// map of plugins related to the exception and their jira Project key
 	private Map<String, String> packageKey = new HashMap<String, String>();
 
-	public ErrorInformation() {
-		// TODO Auto-generated constructor stub
-	}
-
-	// getters and setters
+	/**
+	 * Getteres and setters
+	 */
 	public String getPluginId() {
 		return pluginId;
 	}
@@ -94,14 +98,6 @@ public class ErrorInformation {
 
 	public void setMessage(String message) {
 		this.message = message;
-	}
-
-	public String getAnoId() {
-		return anoId;
-	}
-
-	public void setAnoId(String anoId) {
-		this.anoId = anoId;
 	}
 
 	public String getName() {
@@ -185,11 +181,11 @@ public class ErrorInformation {
 	}
 
 	public String getSeverity2() {
-		return severityUser;
+		return userDefinedSeverity;
 	}
 
 	public void setSeverity2(String severity2) {
-		this.severityUser = severity2;
+		this.userDefinedSeverity = severity2;
 	}
 
 	public Exception getException() {
