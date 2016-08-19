@@ -52,7 +52,9 @@ public class PreferencePageStrings {
 	public static final String SERVER_URL = "SERVER_URL";
 	public static final String SERVER_URL_S = "Remote Jira URL:";
 	public static final String PROJECT_KEY = "PROJECT_KEY";
-	public static final String PROJECT_KEY_S = "Project Key:";
+	public static final String PROJECT_KEY_S = "Default Project Key:";
+	public static final String STATUS_URL = "STATUS_SERVER_URL";
+	public static final String STATUS_URL_S = "Inquire Status URL:";
 
 	// remote server - Email labels
 	public static final String EMAIL_SERVER_URL = "EMAIL_URL";

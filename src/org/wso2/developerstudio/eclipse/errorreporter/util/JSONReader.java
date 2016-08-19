@@ -19,28 +19,44 @@ package org.wso2.developerstudio.eclipse.errorreporter.util;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * This util class contains logic to extract required fields from the JSON
+ * string.
+ */
+
 public class JSONReader {
 
-	public String getJsonId(String jsonStr) throws JSONException {
+	/**
+	 * This method contains logic to extract id from the JSON string.
+	 */
+	public String getJsonId(String jsonStr){
 
 		JSONObject jsonObj;
 
-		jsonObj = new JSONObject(jsonStr);
-		String id = jsonObj.getString("id");
-		System.out.println(id);
-		// first =
-		// jsonObj.getJSONArray("arrArray").getJSONObject(0).getString("a");
-		// System.out.println(first);
+		String id="";
+		try {
+			jsonObj = new JSONObject(jsonStr);
+			id = jsonObj.getString("id");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 
 		return id;
 	}
 
-	public String getJsonKey(String jsonStr) throws JSONException {
+	/**
+	 * This method contains logic to extract key from the JSON string.
+	 */
+	public String getJsonKey(String jsonStr) {
 		JSONObject jsonObj;
+		String key = "";
 
-		jsonObj = new JSONObject(jsonStr);
-		String key = jsonObj.getString("key");
-		System.out.println(key);
+		try {
+			jsonObj = new JSONObject(jsonStr);
+			key = jsonObj.getString("key");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 
 		return key;
 

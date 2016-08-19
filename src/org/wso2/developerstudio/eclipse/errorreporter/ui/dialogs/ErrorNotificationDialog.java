@@ -21,11 +21,10 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Iterator;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.ErrorDialog;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.resource.JFaceResources;
@@ -45,13 +44,17 @@ import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.dialogs.PreferencesUtil;
+import org.wso2.developerstudio.eclipse.errorreporter.constants.DialogBoxLabels;
+import org.wso2.developerstudio.eclipse.errorreporter.constants.ProjectConstants;
+
+/**
+ * This class contains logic create and display the contents of the Error
+ * Notification Dialog, which is opened when an error is detected.
+ */
 
 public class ErrorNotificationDialog extends ErrorDialog {
-
-	private static final String NESTING_INDENT = " ";
-	private static final String DIALOG_TITLE = "A problem was detected";
-	private static final String DIALOG_MESSAGE = "An unexpected error occured. Please press send to report the error to the development team";
-	private static final int DISPLAY_MASK = 0xFFFF;
 
 	private String errorMessage;
 	private IStatus status;
@@ -62,22 +65,42 @@ public class ErrorNotificationDialog extends ErrorDialog {
 	private Button detailsButton;
 	private Clipboard clipboard;
 	private int selection = 0;
-	// private BufferedReader br;
 
+	/**
+	 * This constructor calls its super class constructor and sets values to the
+	 * errorMessage and status fields, which are required t create a report to
+	 * display.
+	 * 
+	 * @param parentShell
+	 * @param errorMessage
+	 * @param status
+	 */
 	public ErrorNotificationDialog(Shell parentShell, String errorMessage, IStatus status) {
-		super(parentShell, DIALOG_TITLE, DIALOG_MESSAGE, status, DISPLAY_MASK);
-
+		super(parentShell, DialogBoxLabels.DIALOG_TITLE, DialogBoxLabels.DIALOG_MESSAGE, status,
+				DialogBoxLabels.DISPLAY_MASK);
 		this.errorMessage = errorMessage;
 		this.status = status;
 
 	}
 
+	/**
+	 * This method sets the title of the dialog box.
+	 * 
+	 * @param shell
+	 */
+
 	@Override
 	protected void configureShell(Shell shell) {
 		super.configureShell(shell);
-		shell.setText(DIALOG_TITLE);
+		shell.setText(DialogBoxLabels.DIALOG_TITLE);
 		// Create the first Group
 	}
+
+	/**
+	 * This method open up the Dialog Box.
+	 * 
+	 * @return the user reponse(OK/CANCEL)
+	 */
 
 	@Override
 	public int open() {
@@ -87,16 +110,26 @@ public class ErrorNotificationDialog extends ErrorDialog {
 
 	}
 
+	/**
+	 * This method creates the contents in the Dialog Box.
+	 * 
+	 * @param parent
+	 * 
+	 */
+
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
 
+		// labels and radio buttons to select the sending options
 		Label label = new Label(parent, SWT.NULL);
-		label.setText("Select sending option: ");
+		label.setText(DialogBoxLabels.SENDING_OPTIONS_LABEL);
 
+		// create radio button-Publish in Jira
 		Button jira = new Button(parent, SWT.RADIO);
-		jira.setText("Publish in Jira");
+		jira.setText(DialogBoxLabels.SENDING_OPTIONS_JIRA);
 		jira.addSelectionListener(new SelectionListener() {
 
+			// if Jira option is selected, return int is set to zero
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				selection = 0;
@@ -105,63 +138,71 @@ public class ErrorNotificationDialog extends ErrorDialog {
 
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
-				// TODO Auto-generated method stub
-
+				selection = 0;
 			}
 
 		});
 
+		// create radio button-Publish in Jira and Email
 		Button email = new Button(parent, SWT.RADIO);
-		email.setText("Publish in Jira and email");
-
+		email.setText(DialogBoxLabels.SENDING_OPTIONS_JIRA_EMAIL);
 		email.addSelectionListener(new SelectionListener() {
 
+			// if Email option is selected, return int is set to one
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-
 				selection = 1;
 			}
 
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
-				// TODO Auto-generated method stub
+				selection = 1;
 
 			}
 
 		});
 
+		// create a link to edit prefernces
 		final Link link = new Link(parent, SWT.NONE);
 		link.setFont(parent.getFont());
-		link.setText("<A>" + "Click here to edit the sending option preferences." + "</A>");
+		link.setText("<A>" + DialogBoxLabels.PREFERENCE_PAGE_LINK + "</A>");
 		GridData data = new GridData(SWT.LEFT, SWT.TOP, false, false);
 		data.horizontalSpan = 3;
 		link.setLayoutData(data);
 
+		// open up the preferences page
 		link.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
 				Shell shell = new Shell();
 				PreferenceDialog pref = PreferencesUtil.createPreferenceDialogOn(shell,
-						"org.wso2.developerstudio.eclipse.errorreporter.page1", null, null);
+						ProjectConstants.PREFERENCE_PAGE, null, null);
 				if (pref != null)
 					pref.open();
 			}
 		});
+
 		// create OK CANCEL and Details buttons
 		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
 		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, true);
 		detailsButton = createButton(parent, IDialogConstants.DETAILS_ID, IDialogConstants.SHOW_DETAILS_LABEL, false);
 	}
 
+	/**
+	 * This method contains the logic to create the contents in the Error Report
+	 * text area
+	 * 
+	 * @param parent
+	 */
+
 	@Override
 	protected List createDropDownList(Composite parent) {
 		// create the list
 		list = new List(parent, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI);
-		// fill the list
+		// fill the list {
 		try {
 			addReportInfo(list, errorMessage);
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		GridData data = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL
@@ -189,38 +230,21 @@ public class ErrorNotificationDialog extends ErrorDialog {
 		return list;
 	}
 
-	@Override
-	protected void buttonPressed(int id) {
-		if (id == IDialogConstants.DETAILS_ID) {
-			// was the details button pressed?
-			toggleDetailsArea();
-		} else {
-			buttonPress(id);
-		}
-	}
+	/**
+	 * This method adds the contents of the errorReport string, to the
+	 * listToPopulate list
+	 * 
+	 * @param listToPopulate
+	 * @param errorReport
+	 */
 
-	private void buttonPress(int id) {
-		if (id == IDialogConstants.CANCEL_ID) {
-			setReturnCode(CANCEL);
-			close();
-		}
+	private void addReportInfo(List listToPopulate, String errorReport) throws IOException {
 
-		if (id == IDialogConstants.OK_ID && selection == 0) {
-			setReturnCode(100);
-			close();
-		}
-
-		if (id == IDialogConstants.OK_ID && selection == 1) {
-			setReturnCode(200);
-			close();
-		}
-	}
-
-	private void addReportInfo(List listToPopulate, String errorMessage) throws IOException {
-
+		// converts the string to a stringBuffer
 		StringBuffer sb = new StringBuffer();
-		sb.append(errorMessage);
+		sb.append(errorReport);
 
+		// add each line to the list
 		java.util.List<String> lines = readLines(sb.toString());
 		for (Iterator<String> iterator = lines.iterator(); iterator.hasNext();) {
 			String line = iterator.next();
@@ -229,9 +253,13 @@ public class ErrorNotificationDialog extends ErrorDialog {
 
 	}
 
-	private java.util.List<String> readLines(final String s) throws IOException {
+	/**
+	 * This method contains logic to convert a string to a List of strings
+	 */
+
+	private java.util.List<String> readLines(final String errorReport) throws IOException {
 		java.util.List<String> lines = new ArrayList<String>();
-		BufferedReader reader = new BufferedReader(new StringReader(s));
+		BufferedReader reader = new BufferedReader(new StringReader(errorReport));
 		String line;
 
 		while ((line = reader.readLine()) != null) {
@@ -241,6 +269,11 @@ public class ErrorNotificationDialog extends ErrorDialog {
 
 		return lines;
 	}
+
+	/**
+	 * This method contains the logic to execute when the details button is
+	 * pressed. This method shows and hides the error report.
+	 */
 
 	private void toggleDetailsArea() {
 		boolean opened = false;
@@ -267,22 +300,23 @@ public class ErrorNotificationDialog extends ErrorDialog {
 		}
 	}
 
-	private void copyToClipboard() {
-		if (clipboard != null) {
-			clipboard.dispose();
-		}
-		StringBuffer statusBuffer = new StringBuffer();
-		populateCopyBuffer(status, statusBuffer, 0);
-		clipboard = new Clipboard(list.getDisplay());
-		clipboard.setContents(new Object[] { statusBuffer.toString() }, new Transfer[] { TextTransfer.getInstance() });
-	}
+	/**
+	 * This method creates the text area in the ErrorNotificationDialog and
+	 * displays the error report in that text area.
+	 * 
+	 * @param buildingStatus
+	 * @param buffer
+	 * @param nesting
+	 * 
+	 */
 
 	private void populateCopyBuffer(IStatus buildingStatus, StringBuffer buffer, int nesting) {
-		if (!buildingStatus.matches(DISPLAY_MASK)) {
+
+		if (!buildingStatus.matches(DialogBoxLabels.DISPLAY_MASK)) {
 			return;
 		}
 		for (int i = 0; i < nesting; i++) {
-			buffer.append(NESTING_INDENT);
+			buffer.append(DialogBoxLabels.NESTING_INDENT);
 		}
 		buffer.append(buildingStatus.getMessage());
 		buffer.append("\n");
@@ -295,7 +329,7 @@ public class ErrorNotificationDialog extends ErrorDialog {
 		} else if (t != null) {
 			// Include low-level exception message
 			for (int i = 0; i < nesting; i++) {
-				buffer.append(NESTING_INDENT);
+				buffer.append(DialogBoxLabels.NESTING_INDENT);
 			}
 			String message = t.getLocalizedMessage();
 			if (message == null) {
@@ -309,6 +343,62 @@ public class ErrorNotificationDialog extends ErrorDialog {
 		for (int i = 0; i < children.length; i++) {
 			populateCopyBuffer(children[i], buffer, nesting + 1);
 		}
+	}
+
+	/**
+	 * This method is called when a button is pressed If the Details button is
+	 * pressed, toggleDetailsArea method is called else buttonPress method is
+	 * called
+	 * 
+	 * @param buttonId
+	 */
+	@Override
+	protected void buttonPressed(int buttonId) {
+		if (buttonId == IDialogConstants.DETAILS_ID) {
+			// was the details button pressed?
+			toggleDetailsArea();
+		} else {
+			// directs to the buttonPress method
+			buttonPress(buttonId);
+		}
+	}
+
+	/**
+	 * This method sets the return codes based on the button user presses.
+	 * 
+	 * @param buttonId
+	 */
+	private void buttonPress(int buttonId) {
+		// if cancel button is pressed
+		if (buttonId == IDialogConstants.CANCEL_ID) {
+			setReturnCode(CANCEL);
+			close();
+		}
+		// if OK button is presses and 1st radio button(Jira) is selected
+		if (buttonId == IDialogConstants.OK_ID && selection == 0) {
+			setReturnCode(100);
+			close();
+		}
+		// if OK button is presses and 2nd radio button(email) is selected
+		if (buttonId == IDialogConstants.OK_ID && selection == 1) {
+			setReturnCode(200);
+			close();
+		}
+	}
+
+	/**
+	 * This method provides functionality for the user to copy the error report
+	 * using a context menu
+	 */
+
+	private void copyToClipboard() {
+		if (clipboard != null) {
+			clipboard.dispose();
+		}
+		StringBuffer statusBuffer = new StringBuffer();
+		populateCopyBuffer(status, statusBuffer, 0);
+		clipboard = new Clipboard(list.getDisplay());
+		clipboard.setContents(new Object[] { statusBuffer.toString() }, new Transfer[] { TextTransfer.getInstance() });
 	}
 
 }

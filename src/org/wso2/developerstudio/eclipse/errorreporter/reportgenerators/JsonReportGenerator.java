@@ -75,7 +75,7 @@ public class JsonReportGenerator implements ReportGenerator {
 	}
 
 	/**
-	 * Getteres and setters
+	 * Getters and setters
 	 */
 
 	public JSONObject getIssue() {

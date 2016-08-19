@@ -28,7 +28,7 @@ public class ErrorReportInformation {
 
 	// error information
 	private String pluginId;
-	private String pluginVersion;//
+	private String pluginVersion;
 	private int code;
 	private int severity;
 	private String message;
@@ -40,7 +40,6 @@ public class ErrorReportInformation {
 	private String email;
 	private String organization;
 	private String comment;
-	private String userDefinedSeverity;
 
 	// system information
 	private String eclipseBuildId;
@@ -180,13 +179,6 @@ public class ErrorReportInformation {
 		this.osgiArch = osgiArch;
 	}
 
-	public String getSeverity2() {
-		return userDefinedSeverity;
-	}
-
-	public void setSeverity2(String severity2) {
-		this.userDefinedSeverity = severity2;
-	}
 
 	public Exception getException() {
 		return e;

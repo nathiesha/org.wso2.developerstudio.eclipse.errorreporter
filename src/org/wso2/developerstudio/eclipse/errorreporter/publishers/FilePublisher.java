@@ -23,85 +23,96 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Platform;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.FrameworkUtil;
+import org.wso2.developerstudio.eclipse.errorreporter.constants.ProjectConstants;
 import org.wso2.developerstudio.eclipse.errorreporter.reportgenerators.TextReportGenerator;
 
-public class FilePublisher implements ErrorPublisher {
+/**
+ * This class contains logic to persistently store the error report.
+ */
 
+public class FilePublisher implements ErrorPublisher {
 
 	// Error Report Contents
 	private static final String DATE = "\nDate: ";
 	private static final String KEY = "\nIssue Key: ";
 	private static final String ID = "\nIssue ID: ";
+
+	// The Id and key value of error
 	String Id;
 	String key;
-	
+
+	/**
+	 * The constructor.
+	 */
 	public FilePublisher(String key, String Id) {
 
-		this.key=key;
-		this.Id=Id;
+		this.key = key;
+		this.Id = Id;
 	}
 
-	
-
+	/**
+	 * This method implements the logic t store the error report in the system
+	 * 
+	 * @param reportGen
+	 * @return filepath
+	 */
 	@Override
-	public String publish(TextReportGenerator reportGen) throws Exception {
+	public String publish(TextReportGenerator reportGen) {
 
+		String filePath = "";
+
+		// file name is created using the issue Id
 		String fileName = Id + ".txt";
-		Bundle bundle = FrameworkUtil.getBundle(getClass());
-		IPath stateLoc = Platform.getStateLocation(bundle);
-
-		File tempFolder = new File(stateLoc.toString());
-		File reportFolder = new File(tempFolder, "ErrorReports");
-
-		if (!reportFolder.exists()) {
-
-			reportFolder.mkdir();
-		}
-
-		File reportTemp = new File(reportFolder, fileName);
-		FileWriter fw = new FileWriter(reportTemp);
-		writeReport(reportGen, fw, Id, key);
-		fw.close();
 
 		// persistent storage in User Directory
 		String userDirLocation = System.getProperty("user.dir");
 
 		File persistentFolder = new File(userDirLocation);
-		File errorReportsFolder = new File(persistentFolder, "ErrorReports");
+		File errorReportsFolder = new File(persistentFolder, ProjectConstants.ERROR_REPORT_DIRECTORY);
 
+		// if the folder does not exist already
 		if (!errorReportsFolder.exists()) {
 
 			errorReportsFolder.mkdir();
 		}
 
 		File reportPersistent = new File(errorReportsFolder, fileName);
-		FileWriter fw2 = new FileWriter(reportPersistent);
-		writeReport(reportGen, fw2, Id, key);
-		fw2.close();
+		FileWriter writer;
+		try {
 
-		String filePath = reportPersistent.getPath();
+			writer = new FileWriter(reportPersistent);
+			writeReport(reportGen, writer, Id, key);
+			writer.close();
+			filePath = reportPersistent.getPath();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		return filePath;
-		// return "ok";
 	}
 
-	// store the errorReport and return its location
+	/**
+	 * This method writes the text file in the given location
+	 * 
+	 * @param reportGen
+	 * @param writer
+	 * @param id
+	 * @param key
+	 */
+	private void writeReport(TextReportGenerator reportGen, FileWriter writer, String id, String key)
+			throws IOException {
 
-	private void writeReport(TextReportGenerator reportGen, FileWriter fw, String id, String key) throws IOException {
-
-		// = new
-		// SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+		// get the system time
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Date date = new Date();
-		String timeStamp = (dateFormat.format(date)); // 2014/08/06 15:59:48
+		String timeStamp = (dateFormat.format(date));
 
-		fw.write(KEY + key);
-		fw.write(ID + id);
-		fw.write(DATE + timeStamp);
-		fw.write(reportGen.getTextString());
+		// store the issue id, key and data values in the file
+		writer.write(KEY + key);
+		writer.write(ID + id);
+		writer.write(DATE + timeStamp);
+		writer.write(reportGen.getTextString());
 
 	}
 

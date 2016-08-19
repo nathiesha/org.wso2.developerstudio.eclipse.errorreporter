@@ -43,9 +43,6 @@ public class JiraPublisher implements ErrorPublisher {
 		this.errorReportInformation = errorReportInformation;
 	}
 
-	// TOOLS-3418
-	// GET
-	/// rest/api/2/issue/{issueIdOrKey}?fields&expand
 	public String getAuth(String username, String password) {
 		try {
 			String s = username + ":" + password;
@@ -90,10 +87,6 @@ public class JiraPublisher implements ErrorPublisher {
 		// post to JIRA api and create issue
 
 		urlParameters = json.toString();
-		// urlParameters="{\"fields\": {\"project\":{ \"key\":
-		// \"TOOLS\"},\"summary\": \"GSOC ERROR REPORTER
-		// TEST.\",\"description\": \"Creating of an issue through Developer
-		// Studio using the REST API\",\"issuetype\": {\"name\": \"Bug\"}}}";
 		try {
 
 			DataOutputStream wr = new DataOutputStream(connection.getOutputStream());

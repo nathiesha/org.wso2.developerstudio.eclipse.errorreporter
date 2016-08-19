@@ -45,7 +45,6 @@ public class TextReportLabels {
 	public static final String EMAIL = "\nEmail: ";
 	public static final String ORGANIZATION = "\nOrganization: ";
 	public static final String COMMENT = "\nComment: ";
-	public static final String SEVERITY_USER = "\nSeverity: ";
 
 	public static final String RELATED_PLUGINS = "\n\n--RELATED PLUGIN IDS--\n";
 

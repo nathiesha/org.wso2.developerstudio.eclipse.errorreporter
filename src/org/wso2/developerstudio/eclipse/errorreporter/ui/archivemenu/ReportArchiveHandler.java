@@ -18,15 +18,13 @@ package org.wso2.developerstudio.eclipse.errorreporter.ui.archivemenu;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.swt.widgets.Shell;
 
 /**
- * Our sample handler extends AbstractHandler, an IHandler base class.
- *
- * @see org.eclipse.core.commands.IHandler
- * @see org.eclipse.core.commands.AbstractHandler
+ * This class contains the execute method, called upon selecting the Report
+ * Archive menu Item.
  */
+
 public class ReportArchiveHandler extends AbstractHandler {
 	/**
 	 * The constructor.
@@ -34,15 +32,19 @@ public class ReportArchiveHandler extends AbstractHandler {
 	public ReportArchiveHandler() {
 	}
 
+	/**
+	 * This method opens up the Report Archive window.
+	 * 
+	 * @param event
+	 */
 	@Override
-	public Object execute(ExecutionEvent event) throws ExecutionException {
+	public Object execute(ExecutionEvent event) {
 		Shell parentShell = new Shell();
 
 		try {
 
 			ReportArchive archive = new ReportArchive(parentShell);
 			archive.open();
-			// ExtensionPointReader.run();
 		}
 
 		catch (Exception e) {

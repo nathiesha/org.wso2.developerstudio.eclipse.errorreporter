@@ -16,13 +16,7 @@
 
 package org.wso2.developerstudio.eclipse.errorreporter.controller;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.Map;
-
-import javax.mail.MessagingException;
-import javax.mail.internet.AddressException;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -31,79 +25,56 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
-//import org.json.JSONObject;
+
 import org.wso2.developerstudio.eclipse.errorreporter.Activator;
-import org.wso2.developerstudio.eclipse.errorreporter.publishers.ErrorPublisher;
+import org.wso2.developerstudio.eclipse.errorreporter.constants.DialogBoxLabels;
+import org.wso2.developerstudio.eclipse.errorreporter.constants.PreferencePageStrings;
 import org.wso2.developerstudio.eclipse.errorreporter.publishers.FilePublisher;
 import org.wso2.developerstudio.eclipse.errorreporter.publishers.RemoteServerPublisher;
 import org.wso2.developerstudio.eclipse.errorreporter.reportgenerators.TextReportGenerator;
 import org.wso2.developerstudio.eclipse.errorreporter.templates.ErrorReportInformation;
+import org.wso2.developerstudio.eclipse.errorreporter.ui.dialogs.EditPreferencesDialog;
 import org.wso2.developerstudio.eclipse.errorreporter.ui.dialogs.ErrorNotificationDialog;
-import org.wso2.developerstudio.eclipse.errorreporter.ui.dialogs.UserInputDialog;
-import org.wso2.developerstudio.eclipse.errorreporter.util.InfoCollector;
+import org.wso2.developerstudio.eclipse.errorreporter.util.InformationCollector;
 import org.wso2.developerstudio.eclipse.errorreporter.util.JSONReader;
 
 //this class handles the complete process of publishing the error reports 
 public class ErrorReporter {
 
 	private IStatus status;
-	private int userResponse;// to get user input from dialog
-	private InfoCollector errorInfoCollector;
 	private ErrorReportInformation errorReportInformation;
 	private TextReportGenerator textReportGenerator;
-	private RemoteServerPublisher jp;
+	private RemoteServerPublisher remotePublisher;
+
+	private int userResponse;
 	private String errorMessage;
 	private String response;
-	//private JSONObject json;
 	private String id;
 	private String key;
 
-	// private static final String
-	//private static final String TITLE = "Developer Studio Error Report";
-	private static final String REPORTER = "Reporting the Developer Studio Error";
-
-	Map<String, ErrorPublisher> registeredPublishers;
-
-	public void addPublisher(String id, ErrorPublisher publisher) {
-		registeredPublishers.put(id, publisher);
-	}
-
+	/**
+	 * The constructor.
+	 */
 	public ErrorReporter(IStatus status) {
 		this.status = status;
 
 	}
 
-	public void init() {
-		System.out.println("Init");
-		// create an InfoCollector
-		// get error information and assign it to errorReportInformation object
-		errorInfoCollector = new InfoCollector(status);
-		errorReportInformation = errorInfoCollector.getInformation();
-
-		// create textReportGenerator object
-		// store the error report and user space
-		textReportGenerator = new TextReportGenerator();
-		textReportGenerator.createReport(errorReportInformation);
-		errorMessage = textReportGenerator.getTextString();
-
-		userResponse = openErrorDialog();
-
-	}
-
-	// this method reports the error to the Developer Studio user
-	// takes necessary action based on the user response
+	/**
+	 * This is the main method of this class, which handles the whole error
+	 * reporting process This method reports the error to the Developer Studio
+	 * user and takes necessary action based on the user response.
+	 */
 	public void reportError() {
 
-		// iterate over all publishers
-		// and call publish() method
-
 		init();
+		userResponse = openErrorDialog();
 		switch (userResponse) {
 
 		case 100:
 			try {
-				jp = new RemoteServerPublisher(errorReportInformation);
-				sendReportJ();
+				remotePublisher = new RemoteServerPublisher(errorReportInformation);
+				sendReportJira();
 			}
 
 			catch (Exception e) {
@@ -120,8 +91,8 @@ public class ErrorReporter {
 
 		case 200:
 			try {
-				jp = new RemoteServerPublisher(errorReportInformation);
-				sendReportE();
+				remotePublisher = new RemoteServerPublisher(errorReportInformation);
+				sendReportJiraEmail();
 			}
 
 			catch (Exception e) {
@@ -143,17 +114,41 @@ public class ErrorReporter {
 
 	}
 
-	// open up the error dialog box and get user input
+	/**
+	 * This method is responsible for initializing the required variables for
+	 * the error reporting process
+	 */
+
+	public void init() {
+
+		// get error information and assign it to errorReportInformation object
+		errorReportInformation = InformationCollector.getInformation(status);
+
+		// create textReportGenerator object
+		// store the error report and user space
+		textReportGenerator = new TextReportGenerator();
+		textReportGenerator.createReport(errorReportInformation);
+		errorMessage = textReportGenerator.getTextString();
+
+	}
+
+	/**
+	 * This method is responsible for displaying the error reporter dialog to
+	 * the user. In case the mandatory fields in the preferences page are not
+	 * filled, this method opens up the EditPreferences dialog
+	 * 
+	 * @return the return value of the dialog boxes(user responses)
+	 */
+
 	public int openErrorDialog() {
-		
-		System.out.println("OpenErrorDialog");
+
 		// create new shell for the error dialog
 		Shell shell = new Shell();
 
 		// if user has filled the preference values
 		if (checkUserInput()) {
 
-			// open up error dialog
+			// open up error notification dialog
 			ErrorNotificationDialog errorDialog = new ErrorNotificationDialog(shell, errorMessage, status);
 			return errorDialog.open();
 
@@ -161,11 +156,11 @@ public class ErrorReporter {
 
 		else {
 			// else open up the User Input Dialog that stores user given values
-			UserInputDialog inputDialog = new UserInputDialog(shell);
+			EditPreferencesDialog inputDialog = new EditPreferencesDialog(shell);
 			int num = inputDialog.open();
 
-			// if user pressed oK
-			if (num == 0) {
+			// if user pressed oK and the preferences valus are filled
+			if (num == 0 & checkUserInput()) {
 				// open up the error dialog box
 				ErrorNotificationDialog errorDialog = new ErrorNotificationDialog(shell, errorMessage, status);
 				return errorDialog.open();
@@ -181,29 +176,36 @@ public class ErrorReporter {
 
 	}
 
-	public void sendReportJ() throws Exception {
+	/**
+	 * This method contains logic create a single thread to perform the
+	 * publishing process of error in Jira , and saving the error report in the
+	 * system.
+	 * 
+	 */
+	public void sendReportJira() {
 
-		Job reporterJob = new Job(REPORTER) {
+		
+		//create new job
+		Job reporterJob = new Job(DialogBoxLabels.REPORTER) {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 
 				try {
-					System.out.println("publishJIRA");
+
+					//get the response
 					response = publishJira();
-					 JSONReader reader=new JSONReader();
-					 id=reader.getJsonId(response);
-					 key=reader.getJsonKey(response);
 					
-					 System.out.println(id);
-					 System.out.println(response);
-					 System.out.println(key);
-					 // id="5678";
-					 // key="TOOLS-3168";
-					 FilePublisher nw = new FilePublisher(key,id);
-					 nw.publish(textReportGenerator);
+					//extract the project key and id from json response
+					JSONReader reader = new JSONReader();
+					id = reader.getJsonId(response);
+					key = reader.getJsonKey(response);
+					
+					//use that id as file name and store the file
+					FilePublisher filePublisher = new FilePublisher(key, id);
+					filePublisher.publish(textReportGenerator);
 
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
+
 					e.printStackTrace();
 				}
 
@@ -211,82 +213,94 @@ public class ErrorReporter {
 			}
 		};
 
+		//create a user thread and schedule it
 		reporterJob.setUser(true);
 		reporterJob.schedule();
 
 	}
 
-	private void sendReportE() {
+	/**
+	 * This method contains logic create a thread to perform the
+	 * publishing process of error in Jira and sending an email and saving the error report in the
+	 * system.
+	 * 
+	 */
+	private void sendReportJiraEmail() {
 
-		Job reporterJob = new Job(REPORTER) {
+		//create new jobn it
+		Job reporterJob = new Job(DialogBoxLabels.REPORTER) {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 
-				System.out.println("Sending email and jira");
-				try {
-					response = publishJira();
-					System.out.println(response);
-					 JSONReader reader=new JSONReader();
-					 id=reader.getJsonId(response);
-					 key=reader.getJsonKey(response);
-					
-					 System.out.println(id);
-					 System.out.println(key);
-					 System.out.println(response);
-					String ret = sendEmail();
-					System.out.println(ret);
-					// id="5678";
-					// key="TOOLS-3168";
-					FilePublisher nw = new FilePublisher(key, id);
-					nw.publish(textReportGenerator);
-				}
-
-				catch (IOException | MessagingException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				//publish the error in Jira
+				response = publishJira();
+				
+				//extract the project key and id from json response
+				JSONReader reader = new JSONReader();
+				id = reader.getJsonId(response);
+				key = reader.getJsonKey(response);
+				
+				//send the email
+				sendEmail();
+				
+				//use that id as file name and store the file
+				FilePublisher nw = new FilePublisher(key, id);
+				nw.publish(textReportGenerator); 
 
 				return Status.OK_STATUS;
 			}
 		};
 
+		//create a user thread and schedule it
 		reporterJob.setUser(true);
 		reporterJob.schedule();
 
 	}
 
-	public String publishJira() throws Exception {
-		String rp = "";
+	/**
+	 * This method contains logic to handle the error publishing procedure through the remote server.
+	 * If multiple project keys are availale, this method posts the issue in all those projects in wso2 jira
+	 * @return the response from the web server
+	 * 
+	 */
+	public String publishJira()  {
+		String response = "";
 		String key;
+		
+		//number of plugins related to the error
 		int keyNo = errorReportInformation.getPackageKey().size();
-		System.out.println(keyNo);
 
+		//if none of the plugins extended are related to the eror, uses the default project key
 		if (keyNo == 0) {
-			key = Activator.getDefault().getPreferenceStore().getString("PROJECT_KEY");
-			rp = jp.publishJira(key);
-			System.out.println(rp);
+			key = Activator.getDefault().getPreferenceStore().getString(PreferencePageStrings.PROJECT_KEY);
+			response = remotePublisher.publishJira(key);
 
 		}
 
+		//else make issue posts for each  project in Jira
 		else {
 			for (Map.Entry<String, String> entry : errorReportInformation.getPackageKey().entrySet()) {
 				key = entry.getValue();
-				rp = jp.publishJira(key);
-				System.out.println(rp);
+				response = remotePublisher.publishJira(key);
+
 			}
 
 		}
-		return rp;
+		return response;
 
 	}
 
-	public String sendEmail() throws IOException, AddressException, MessagingException {
+	/**
+	 * This method contains logic to send the email using remote web server
+	 * @return the response from the remote server
+	 * 
+	 */
+	public String sendEmail(){
 
+		//get the recipient email address from the preferences page
 		String recipientEmail = Activator.getDefault().getPreferenceStore().getString("REC EMAIL");
 
+		//create the text report for the message body
 		textReportGenerator.createReport(errorReportInformation);
 		String message = textReportGenerator.getTextString();
 
@@ -296,14 +310,11 @@ public class ErrorReporter {
 			msg.setMessage("Please enter your gmail username, password and recipient email adress");
 			return "tryAgain";
 		}
-
+		//call remote server email publisher method
 		else {
 			try {
-				System.out.println("Trying to publish in Email publisher");
-				System.out.println(recipientEmail + "  " + message);
-				return jp.publishEmail(recipientEmail, message);
+				return remotePublisher.publishEmail(recipientEmail, message);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				return "error";
 			}
@@ -311,33 +322,22 @@ public class ErrorReporter {
 
 	}
 
-	String readFile(String fileName) throws IOException {
-		BufferedReader br = new BufferedReader(new FileReader(fileName));
-		try {
-			StringBuilder sb = new StringBuilder();
-			String line = br.readLine();
-
-			while (line != null) {
-				sb.append(line);
-				sb.append("\n");
-				line = br.readLine();
-			}
-
-			return sb.toString();
-
-		} finally {
-			br.close();
-		}
-	}
-
-	// this method checks whether user has not entered any value in the
-	// preference page for Jira username and password
+	/**
+	 * This method checks whether user has not entered any value in the
+	 * preference page for Jira username and password.
+	 * 
+	 * @return true if user has entered compulsory fields, false else
+	 */
 	private boolean checkUserInput() {
 
-		String url = Activator.getDefault().getPreferenceStore().getString("SERVER_URL");
+		//get the remote sercer urls from the preferences page
+		String jiraUrl = Activator.getDefault().getPreferenceStore().getString(PreferencePageStrings.SERVER_URL);
+		String emailUrl = Activator.getDefault().getPreferenceStore().getString(PreferencePageStrings.EMAIL_SERVER_URL);
+		String statusUrl = Activator.getDefault().getPreferenceStore().getString(PreferencePageStrings.STATUS_URL);
+		String projectKey = Activator.getDefault().getPreferenceStore().getString(PreferencePageStrings.PROJECT_KEY);
 
-		// checks whether remote server url is not filled
-		if (url == "") {
+		// checks whether remote server urls are filled
+		if (jiraUrl == "" || emailUrl == "" || statusUrl == "" || projectKey == "") {
 
 			return false;
 		}
@@ -346,18 +346,29 @@ public class ErrorReporter {
 			return true;
 	}
 
+	/**
+	 * This method contains logic to get a map of all the related plugin package
+	 * names and their Jira project keys
+	 * 
+	 * @return key values
+	 * 
+	 */
 	public String getKeys() {
 
-		StringBuffer sb = new StringBuffer();
-		for (Map.Entry<String, String> entry : errorReportInformation.getPackageKey().entrySet()) {
-			sb.append("/n");
-			sb.append(entry.getValue());
+		StringBuffer stringBuffer = new StringBuffer();
+		// get all the package project key values
+		for (Map.Entry<String, String> map : errorReportInformation.getPackageKey().entrySet()) {
+			stringBuffer.append("/n");
+			stringBuffer.append(map.getValue());
 
 		}
 
-		return sb.toString();
+		return stringBuffer.toString();
 	}
 
+	/**
+	 * Getters and setters
+	 */
 	public IStatus getStatus() {
 		return status;
 	}

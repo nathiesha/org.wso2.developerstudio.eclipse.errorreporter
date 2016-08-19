@@ -18,6 +18,7 @@ package org.wso2.developerstudio.eclipse.errorreporter.ui.archivemenu;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -42,13 +43,20 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
-import org.json.JSONException;
 import org.wso2.developerstudio.eclipse.errorreporter.Activator;
-//import org.wso2.developerstudio.eclipse.errorreporter.publishers.JiraPublisher;
-import org.wso2.developerstudio.eclipse.errorreporter.util.JiraStatusChecker;
+import org.wso2.developerstudio.eclipse.errorreporter.constants.PreferencePageStrings;
+import org.wso2.developerstudio.eclipse.errorreporter.constants.ProjectConstants;
+import org.wso2.developerstudio.eclipse.errorreporter.constants.ReportArchiveLabels;
+import org.wso2.developerstudio.eclipse.errorreporter.util.IssueStatusChecker;
+
+/**
+ * This class contains the code to create the Report Archive window, which
+ * displays previously reported errors to Jira.
+ */
 
 public class ReportArchive extends TitleAreaDialog {
 
+	// The colomns that are displayed in the error Reports table
 	String key;
 	String dateTime;
 	String error;
@@ -59,13 +67,21 @@ public class ReportArchive extends TitleAreaDialog {
 		super(parentShell);
 	}
 
+	/**
+	 * This method sets the title and message of the Report Archive window.
+	 */
 	@Override
 	public void create() {
 		super.create();
-		setTitle("Error Report Archive");
-		setMessage("This windows displays the errors published to Jira", IMessageProvider.INFORMATION);
+		setTitle(ReportArchiveLabels.REPORT_ARCHIVE_TITLE);
+		setMessage(ReportArchiveLabels.REPORT_ARCHIVE_MESSAGE, IMessageProvider.INFORMATION);
 	}
 
+	/**
+	 * This method creates the contents of the Report Archive window.
+	 * 
+	 * @param parent
+	 */
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		Composite area = (Composite) super.createDialogArea(parent);
@@ -79,34 +95,45 @@ public class ReportArchive extends TitleAreaDialog {
 
 	}
 
-	// create the contents of error report table
+	/**
+	 * This method creates the table that contains the error reports.
+	 * 
+	 * @param container
+	 */
 	private void createTable(Composite container) {
 
+		// create a new table
 		final Table table = new Table(container, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
 		table.setHeaderVisible(true);
-		String[] titles = { "Error Report ID", "ID", "Date & Time", "Error Message" };
+
+		// set the table labels
+		String[] titles = { ReportArchiveLabels.TABLE_LABEL_1, ReportArchiveLabels.TABLE_LABEL_2,
+				ReportArchiveLabels.TABLE_LABEL_3, ReportArchiveLabels.TABLE_LABEL_4 };
 
 		// Create a multiple-line text field
 		final Text text = new Text(container, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
 		text.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
 
+		// create a context menu option for each item-Inquire status
 		final Menu contextMenu = new Menu(table);
 		table.setMenu(contextMenu);
-		MenuItem mItem1 = new MenuItem(contextMenu, SWT.None);
-		mItem1.setText("Inquire status");
+		MenuItem menuItem = new MenuItem(contextMenu, SWT.None);
+		menuItem.setText(ReportArchiveLabels.CONTEXT_MENU_TEXT);
 
+		// set labels for each colomn
 		for (int loopIndex = 0; loopIndex < titles.length; loopIndex++) {
 			TableColumn column = new TableColumn(table, SWT.NULL);
 			column.setText(titles[loopIndex]);
 		}
 
-		File folder = new File(System.getProperty("user.dir"), "ErrorReports");
+		// get the list of files in error folder
+		File folder = new File(System.getProperty("user.dir"), ProjectConstants.ERROR_REPORT_DIRECTORY);
 		File[] listOfFiles = folder.listFiles();
 
 		int fileNo = listOfFiles.length;
-		System.out.println(fileNo);
 		int counter = 0;
 
+		// check whether all the content in the folder are files
 		for (int i = 0; i < fileNo; i++) {
 			if (listOfFiles[i].isFile()) {
 				counter++;
@@ -114,21 +141,16 @@ public class ReportArchive extends TitleAreaDialog {
 			}
 		}
 
+		// set the field values for each table item
 		for (int loopIndex = 0; loopIndex < counter; loopIndex++) {
 			TableItem item = new TableItem(table, SWT.NULL);
 			item.setText("Item " + loopIndex);
 			item.setText(0, listOfFiles[loopIndex].getName());
 
-			try {
-				readFile(listOfFiles[loopIndex].getPath());
-				item.setText(1, key);
-				item.setText(2, dateTime);
-				item.setText(3, error);
-
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			readFile(listOfFiles[loopIndex].getPath());
+			item.setText(1, key);
+			item.setText(2, dateTime);
+			item.setText(3, error);
 
 		}
 
@@ -136,15 +158,20 @@ public class ReportArchive extends TitleAreaDialog {
 			table.getColumn(loopIndex).pack();
 		}
 
-		// table.setBounds(25, 25, 220, 200);
-
+		// add a selection listener to the table item
 		table.addListener(SWT.MouseDown, new Listener() {
+
+			// display the error report contents of the selected table item
 			@Override
 			public void handleEvent(Event event) {
 
-				String file = setText(table);
+				// get file name and fil content
+				String file = getFileName(table);
 				String content = (getContent(file));
+
+				// display the contet in the text area
 				text.setText(content);
+
 				TableItem[] selection = table.getSelection();
 				if (selection.length != 0 && (event.button == 3)) {
 					contextMenu.setVisible(true);
@@ -153,100 +180,167 @@ public class ReportArchive extends TitleAreaDialog {
 			}
 		});
 
-		mItem1.addSelectionListener(new SelectionAdapter() {
+		// add a listener to menu item
+		menuItem.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				try {
-					getStatus("TOOLS-3418");
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (JSONException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+				// get the idof the selected table item and get its current
+				// status
+				TableItem[] selection = table.getSelection();
+				TableItem tb = selection[0];
+				String id = tb.getText(1);
+				getStatus(id);
 
 			}
 		});
 
 	}
 
-	public void getStatus(String id) throws IOException, JSONException {
-		String status2 = "";
-		String targetURL = "https://wso2.org/jira/rest/api/2/issue/" + id + "?fields&expand";
-		String username = Activator.getDefault().getPreferenceStore().getString("JIRA_USERNAME");
-		String password = Activator.getDefault().getPreferenceStore().getString("JIRA_PASSWORD");
-		String userCredentials = username + ":" + password;
-		JiraStatusChecker checker = new JiraStatusChecker();
-		String jsonResponse = checker.executeGet(targetURL, userCredentials);
+	/**
+	 * This method is called when the user selects the Inquire status option of
+	 * the menu
+	 * 
+	 * @param id
+	 */
+	public void getStatus(String id) {
 
-		status2 = checker.getIssueStatus(jsonResponse);
+		String status = "";
 
+		// get remote server url from preferences page
+		String targetURL = Activator.getDefault().getPreferenceStore().getString(PreferencePageStrings.STATUS_URL) + id;
+
+		String jsonResponse = IssueStatusChecker.executeGet(targetURL);
+
+		if (jsonResponse != "Error") {
+			// extract the status from the JSON response
+			status = IssueStatusChecker.getIssueStatus(jsonResponse);
+
+		}
+
+		else {
+			status = "Not Found.";
+		}
+
+		// opens up a message box to display the status to the user
 		Shell shell = new Shell();
 		MessageBox box = new MessageBox(shell);
-		box.setText("Issue status");
-		box.setMessage(status2);
+		box.setText(ReportArchiveLabels.DIALOG_BOX_TITLE);
+		box.setMessage(status);
 		box.open();
 
 	}
 
-	private String setText(Table table) {
+	/**
+	 * This method contains logic to extract the error id of the selected table
+	 * itme and set the file name using that.
+	 * 
+	 * @param table
+	 * @return the filepath of the selected table item
+	 */
+	private String getFileName(Table table) {
 
-		String file = "";
-		String temp;
-		String temp2;
+		String filePath = "";
+		String tableItemId;
+		String fileName;
 		TableItem[] selection = table.getSelection();
 
+		// extract the error id from each selection
 		for (int i = 0; i < selection.length; i++) {
-			temp = selection[i] + "";
-			// System.out.println(temp);
-			temp2 = temp.substring(11, 15);
+			tableItemId = selection[i] + "";
+			fileName = tableItemId.substring(11, 16);
 
-			file = System.getProperty("user.dir") + "\\" + "ErrorReports" + "\\" + temp2 + ".txt";
+			// get the file name of the selected table item
+			filePath = System.getProperty("user.dir") + "\\" + ProjectConstants.ERROR_REPORT_DIRECTORY + "\\" + fileName
+					+ ".txt";
 		}
 
-		return file;
+		return filePath;
 	}
 
+	/**
+	 * This method contains logic to read all the contents of the text report
+	 * 
+	 * @param fileName
+	 * @return The contents of the file
+	 */
 	protected String getContent(String fileName) {
 
 		try {
 			content = new String(Files.readAllBytes(Paths.get(fileName)));
 		} catch (IOException e) {
+
+			Shell shell = new Shell();
+			MessageBox messageBox = new MessageBox(shell);
+			messageBox.setText("Error!");
+			messageBox.setMessage("File not found in the given location.");
 			e.printStackTrace();
 		}
 		return content;
 	}
 
-	private void readFile(String fileName) throws IOException {
-		BufferedReader br = new BufferedReader(new FileReader(fileName));
-		try {
+	/**
+	 * This method contains the logic to extract the information like eror key,
+	 * error id, date time and error message from each error report.
+	 * 
+	 * @param fileName
+	 * 
+	 *            This method has a dependancy on the format of the text report
+	 *            generated. in case the format of the error report canges, this
+	 *            method needs to be updated as well
+	 * 
+	 */
+	private void readFile(String fileName) {
 
-			String line = br.readLine();
-			line = br.readLine();
+		BufferedReader bufferredReader = null;
+		try {
+			// get the file
+			bufferredReader = new BufferedReader(new FileReader(fileName));
+			String line = bufferredReader.readLine();
+
+			// set the key value from the file
+			line = bufferredReader.readLine();
 			key = line.substring(11);
 
-			line = br.readLine();
+			// set the id value from the file
+			line = bufferredReader.readLine();
 			id = line.substring(10);
 
-			line = br.readLine();
+			// set the dae time value from the file
+			line = bufferredReader.readLine();
 			dateTime = line.substring(6);
 
-			line = br.readLine();
-			line = br.readLine();
-			line = br.readLine();
-			line = br.readLine();
-			line = br.readLine();
-			line = br.readLine();
-			line = br.readLine();
-			line = br.readLine();
-			line = br.readLine();
-			line = br.readLine();
+			// skip lines until the reader reaches the error message
+			line = bufferredReader.readLine();
+			line = bufferredReader.readLine();
+			line = bufferredReader.readLine();
+			line = bufferredReader.readLine();
+			line = bufferredReader.readLine();
+			line = bufferredReader.readLine();
+			line = bufferredReader.readLine();
+			line = bufferredReader.readLine();
+			line = bufferredReader.readLine();
+			line = bufferredReader.readLine();
 
 			error = line.substring(9);
+		} catch (FileNotFoundException e) {
 
+			Shell shell = new Shell();
+			MessageBox messageBox = new MessageBox(shell);
+			messageBox.setText("Error!");
+			messageBox.setMessage("File not found in the given location.");
+
+		} catch (IOException e) {
+
+			Shell shell = new Shell();
+			MessageBox messageBox = new MessageBox(shell);
+			messageBox.setText("Error!");
+			messageBox.setMessage("Error report format changed!");
 		} finally {
-			br.close();
+			try {
+				bufferredReader.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

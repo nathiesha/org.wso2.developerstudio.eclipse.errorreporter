@@ -33,4 +33,8 @@ public class JiraIssueFields {
 	
 	public static final String ISSUE_TYPE_NAME_VALUE = "Bug";
 	public static final String TITLE = "Testing error reporting tool-GSoC Project-";
+	
+	//constatnts used in checking Jira issue status
+	public static final String STATUS = "status";
+	public static final String NAME = "name";
 }

@@ -17,7 +17,6 @@
 package org.wso2.developerstudio.eclipse.errorreporter.publishers;
 
 import java.io.IOException;
-//import java.security.Security;
 import java.util.Date;
 import java.util.Properties;
 
@@ -30,7 +29,6 @@ import javax.mail.internet.MimeMessage;
 import org.wso2.developerstudio.eclipse.errorreporter.reportgenerators.TextReportGenerator;
 
 import com.sun.mail.smtp.SMTPTransport;
-//import com.sun.net.ssl.internal.ssl.Provider;
 
 public class EmailPublisher implements ErrorPublisher {
 

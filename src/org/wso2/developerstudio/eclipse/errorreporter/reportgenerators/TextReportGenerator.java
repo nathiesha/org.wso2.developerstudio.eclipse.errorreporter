@@ -59,7 +59,6 @@ public class TextReportGenerator implements ReportGenerator {
 		sb.append(TextReportLabels.EMAIL.concat(errorReportInformation.getEmail()));
 		sb.append(TextReportLabels.ORGANIZATION.concat(errorReportInformation.getOrganization()));
 		sb.append(TextReportLabels.COMMENT + (errorReportInformation.getComment()));
-		sb.append(TextReportLabels.SEVERITY_USER + (errorReportInformation.getSeverity2()));
 		sb.append(TextReportLabels.RELATED_PLUGINS);
 		sb.append(errorReportInformation.getPackage());
 

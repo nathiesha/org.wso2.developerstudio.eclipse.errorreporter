@@ -88,7 +88,8 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 
 		addField(new StringFieldEditor(PreferencePageStrings.SERVER_URL, PreferencePageStrings.SERVER_URL_S, serverInfoGroup));
 		addField(new StringFieldEditor(PreferencePageStrings.PROJECT_KEY, PreferencePageStrings.PROJECT_KEY_S, serverInfoGroup));
-
+		addField(new StringFieldEditor(PreferencePageStrings.STATUS_URL, PreferencePageStrings.STATUS_URL_S, serverInfoGroup));
+		
 		addField(new StringFieldEditor(PreferencePageStrings.EMAIL_SERVER_URL, PreferencePageStrings.EMAIL_SERVER_URL_S,
 				gmailInfoGroup));
 		addField(new StringFieldEditor(PreferencePageStrings.REC_EMAIL, PreferencePageStrings.REC_EMAIL_S, gmailInfoGroup));

@@ -15,26 +15,15 @@
 */
 
 
-package UnitTests;
+package org.wso2.developerstudio.eclipse.errorreporter.constants;
 
-import static org.junit.Assert.assertNotNull;
-import org.eclipse.core.runtime.ILogListener;
-import org.junit.Test;
-import org.wso2.developerstudio.eclipse.errorreporter.startup.Startup;
+public class ProjectConstants {
 
-/**
- * @author Nathie
- *
- */
-public class StartupTest {
+	public static final String EXTENSION_POINT_ID = "org.wso2.deveoperstudio.eclipse.errorreporter.jirakey";
+	public static final String EXTENSION_ATTRIBUTE1 = "package";
+	public static final String EXTENSION_ATTRIBUTE2 = "key";
+	
+	public static final String PREFERENCE_PAGE = "org.wso2.developerstudio.eclipse.errorreporter.page1";
 
-	ILogListener listener;
-		   
-	   @Test
-	   public void listenerCreated() {
-		   
-		     listener=Startup.getListener();
-	         assertNotNull("Early start up method is not run. LogListener object is null ",listener);
-	   }
-
+	public static final String ERROR_REPORT_DIRECTORY = "ErrorReports";
 }

@@ -18,178 +18,233 @@ package org.wso2.developerstudio.eclipse.errorreporter.publishers;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+
+import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Shell;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.wso2.developerstudio.eclipse.errorreporter.Activator;
+import org.wso2.developerstudio.eclipse.errorreporter.constants.PreferencePageStrings;
 import org.wso2.developerstudio.eclipse.errorreporter.reportgenerators.JsonReportGenerator;
 import org.wso2.developerstudio.eclipse.errorreporter.templates.ErrorReportInformation;
 
+/**
+ * This class contains the methods to publish the error in WSO2 Jira, Email the
+ * report through a remote web service.
+ */
 public class RemoteServerPublisher {
 
-	private HttpURLConnection connection;
-	private String urlParameters;
+	private HttpURLConnection connectionJira;
+	private String urlParametersJira;
+	private String query;
+	private HttpURLConnection connectionEmail;
 	private JSONObject json;
 	ErrorReportInformation errorReportInformation;
 
+	/**
+	 * The constructor
+	 */
 	public RemoteServerPublisher(ErrorReportInformation errorReportInformation) {
 
 		this.errorReportInformation = errorReportInformation;
 	}
 
-	void initEmail() throws Exception {
-		// init : read preferences for JIRA resp API connection params
+	/**
+	 * This method contains initial configurations and settings done prior to
+	 * publish the error report in Jira.
+	 * 
+	 * @param key
+	 * @throws JSONException
+	 * @throws IOException
+	 * 
+	 */
+	private void initJira(String key) throws JSONException, IOException {
 
-		// JsonReportGenerator nw = new JsonReportGenerator(key);
-		// nw.createReport(errorReportInformation);
-		// json = nw.getIssue();
-		String emailUrl = Activator.getDefault().getPreferenceStore().getString("EMAIL_URL");
-		URL url = new URL(emailUrl);
-		connection = (HttpURLConnection) url.openConnection();
-		connection.setRequestMethod("POST");
+		// create a new JSON report using the given project key
+		JsonReportGenerator jsonReport = new JsonReportGenerator(key);
+		jsonReport.createReport(errorReportInformation);
 
-	}
+		// convert the text report to a JSON object
+		json = jsonReport.getIssue();
+		urlParametersJira = json.toString();
 
-	void initJira() throws Exception {
-		// init : read preferences for JIRA resp API connection params
-
-		String rem = Activator.getDefault().getPreferenceStore().getString("SERVER_URL");
-		URL url = new URL(rem);
-		connection = (HttpURLConnection) url.openConnection();
-		connection.setRequestMethod("POST");
-
-	}
-
-	// implement publish method
-	public String publishEmail(String recEmail, String body) throws Exception {
-		initEmail();
-		// post to JIRA api and create issue
+		// create the query for the POST request
 		String charset = java.nio.charset.StandardCharsets.UTF_8.name();
-		String param1 = recEmail;
-		String param2 = body;
-		String query = String.format("recmail=%s&body=%s", URLEncoder.encode(param1, charset),
-				URLEncoder.encode(param2, charset));
-		try {
-			// Create connection
-			connection.setRequestProperty("Content-Length", Integer.toString(query.getBytes().length));
-			connection.setRequestProperty("Content-Language", "en-US");
-			connection.setRequestProperty("Accept-Charset", charset);
-			connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=" + charset);
+		query = String.format("urlParams=%s", URLEncoder.encode(urlParametersJira, charset));
 
-			connection.setUseCaches(false);
-			connection.setDoOutput(true);
+		// get the server URL from preference page
+		String remoteURL = Activator.getDefault().getPreferenceStore().getString(PreferencePageStrings.SERVER_URL);
+		URL url = new URL(remoteURL);
+
+		// Create connection
+		connectionJira = (HttpURLConnection) url.openConnection();
+		connectionJira.setRequestMethod("POST");
+		connectionJira.setRequestProperty("Content-Length", Integer.toString(query.getBytes().length));
+		connectionJira.setRequestProperty("Content-Language", "en-US");
+		connectionJira.setRequestProperty("Accept-Charset", charset);
+		connectionJira.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=" + charset);
+		connectionJira.setUseCaches(false);
+		connectionJira.setDoOutput(true);
+
+	}
+
+	/**
+	 * This method contains the logic to send request to the remote server and
+	 * handles the error report publishing task in Jira.
+	 * 
+	 * @param key
+	 * @return response from the server
+	 * 
+	 */
+	public String publishJira(String key) {
+
+		StringBuilder response = new StringBuilder();
+
+		try {
+			initJira(key);
 
 			// Send request
-			System.out.println("InsidePublish");
-			DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-			wr.writeBytes(query);
-			wr.close();
+			DataOutputStream outputStream = new DataOutputStream(connectionJira.getOutputStream());
+			outputStream.writeBytes(query);
+			outputStream.close();
 
 			// Get Response
-			InputStream is;
+			InputStream inputStream;
 
-			if (connection.getResponseCode() >= 400) {
-				is = connection.getErrorStream();
+			if (connectionJira.getResponseCode() >= 400) {
+				inputStream = connectionJira.getErrorStream();
 			} else {
-				is = connection.getInputStream();
+				inputStream = connectionJira.getInputStream();
 			}
 
-			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-			StringBuilder response = new StringBuilder();
+			// get the input stream to a bufferred reader
+			BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 			String line;
 
-			while ((line = rd.readLine()) != null) {
+			while ((line = reader.readLine()) != null) {
 				response.append(line);
 				response.append('\r');
 			}
-			rd.close();
-			return response.toString();
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
+
+			reader.close();
+
+		} catch (JSONException | IOException e1) {
+
+			// Notify the user in case of an error
+			Shell shell = new Shell();
+			MessageBox messageBox = new MessageBox(shell);
+			messageBox.setText("Error");
+			messageBox.setMessage(
+					"Please check the internet connection and Remote server URL in preferences page and try again!");
+			e1.printStackTrace();
 
 		} finally {
-			if (connection != null) {
-				connection.disconnect();
+			// close the connection
+			if (connectionJira != null) {
+				connectionJira.disconnect();
 			}
 		}
+		// return the response from the web service
+		return response.toString();
+
 	}
 
-	// implement publish method
-	public String publishJira(String key) throws Exception {
+	/**
+	 * This method contains initial configurations and settings done prior to
+	 * publish the error report as an Email.
+	 * 
+	 * @param body
+	 * @param recEmail
+	 * @throws IOException
+	 * 
+	 */
 
-		JsonReportGenerator nw = new JsonReportGenerator(key);
-		nw.createReport(errorReportInformation);
-		json = nw.getIssue();
+	void initEmail(String recEmail, String body) throws IOException {
 
-		initJira();
+		//get the remote server URL from the preferences page
+		String emailUrl = Activator.getDefault().getPreferenceStore().getString(PreferencePageStrings.EMAIL_SERVER_URL);
+		URL url = new URL(emailUrl);
 
-		urlParameters = json.toString();
-		// urlParameters="{\"fields\": {\"project\":{ \"key\":
-		// \"TOOLS\"},\"summary\": \"GSOC ERROR REPORTER
-		// TEST.\",\"description\": \"Creating of an issue through Developer
-		// Studio using the REST API\",\"issuetype\": {\"name\": \"Bug\"}}}";
-		System.out.println(urlParameters);
-
+		//create the query to be posted in web service
 		String charset = java.nio.charset.StandardCharsets.UTF_8.name();
-		String param1 = urlParameters;
-		String query = String.format("urlParams=%s", URLEncoder.encode(param1, charset));
+		String query = String.format("recmail=%s&body=%s", URLEncoder.encode(recEmail, charset),
+				URLEncoder.encode(body, charset));
 
-		
-		  try { // Create connection
-		  connection.setRequestProperty("Content-Length",
-		  Integer.toString(query.getBytes().length));
-		  connection.setRequestProperty("Content-Language", "en-US");
-		  connection.setRequestProperty("Accept-Charset", charset);
-		  connection.setRequestProperty("Content-Type",
-		  "application/x-www-form-urlencoded;charset=" + charset);
-		  
-		  connection.setUseCaches(false); connection.setDoOutput(true);
-		  
-		  // Send request 
-		  DataOutputStream wr = new
-		  DataOutputStream(connection.getOutputStream()); 
-		  wr.writeBytes(query);
-		  wr.close();
-		  
-		  // Get Response 
-		  InputStream is;
-		  
-		  if (connection.getResponseCode() >= 400) { 
-			  is =connection.getErrorStream(); 
-			  } 
-		  else { 
-			  is =connection.getInputStream(); 
-			  }
-		  
-		  BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-		  StringBuilder response = new StringBuilder(); 
-		  String line;
-		  
-		  while ((line = rd.readLine()) != null) { 
-			  response.append(line);
-			  response.append('\r'); 
-		  } 
-		  
-		  rd.close(); 
-		  return response.toString(); }
-		  
-		  catch (Exception e) { 
-			  e.printStackTrace(); 
-			  System.out.println("error");
-			  return null;
-		  
-		 } 
-		  finally { 
-			  if (connection != null) 
-			  { 
-				  connection.disconnect(); 
-				  } 
-			  }
-		 
+		// Create connection
+		connectionEmail = (HttpURLConnection) url.openConnection();
+		connectionEmail.setRequestMethod("POST");
+		connectionEmail.setRequestProperty("Content-Length", Integer.toString(query.getBytes().length));
+		connectionEmail.setRequestProperty("Content-Language", "en-US");
+		connectionEmail.setRequestProperty("Accept-Charset", charset);
+		connectionEmail.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=" + charset);
+
+		connectionEmail.setUseCaches(false);
+		connectionEmail.setDoOutput(true);
+
+	}
+
+	/**
+	 * This method contains the logic to connect with remote server and handles
+	 * the error report publishing task as an Email.
+	 * 
+	 * @param key
+	 * @return response from the server
+	 * 
+	 */
+	public String publishEmail(String recEmail, String body) {
+
+		StringBuilder response = new StringBuilder();
+
+		try {
+			initEmail(recEmail, body);
+			
+			// Send request
+			DataOutputStream outputStream;
+			outputStream = new DataOutputStream(connectionEmail.getOutputStream());
+			outputStream.writeBytes(query);
+			outputStream.close();
+
+			// Get Response
+			InputStream inputStream;
+
+			if (connectionEmail.getResponseCode() >= 400) {
+				inputStream = connectionEmail.getErrorStream();
+			} else {
+				inputStream = connectionEmail.getInputStream();
+			}
+
+			//create the response string
+			BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+			String line;
+
+			while ((line = reader.readLine()) != null) {
+				response.append(line);
+				response.append('\r');
+			}
+
+			reader.close();
+
+		} catch (IOException e1) {
+			// Notify the user in case of an error
+			Shell shell = new Shell();
+			MessageBox messageBox = new MessageBox(shell);
+			messageBox.setText("Error");
+			messageBox.setMessage(
+					"Please check the internet connection and Remote server URL in preferences page and try again!");
+			e1.printStackTrace();
+		} finally {
+			if (connectionEmail != null) {
+				connectionEmail.disconnect();
+			}
+
+		}
+		return response.toString();
 
 	}
 }
