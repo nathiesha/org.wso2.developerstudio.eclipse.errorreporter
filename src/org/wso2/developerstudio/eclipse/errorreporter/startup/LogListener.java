@@ -46,10 +46,10 @@ public class LogListener implements ILogListener {
 		this.loggedStatus = status;
 
 		// check whether the error is related to developer studio plugings
-		if (checkError(status, plugin)) {
+		if (checkError(loggedStatus, plugin)) {
 
 			// create error reporter object and reports the error to user
-			errorReporter = new ErrorReporter(status);
+			errorReporter = new ErrorReporter(loggedStatus);
 			errorReporter.reportError();
 
 		}
@@ -69,10 +69,10 @@ public class LogListener implements ILogListener {
 	private Boolean checkError(IStatus status, String plugin) {
 
 		// Convert the exception to a string
-		StringWriter sw = new StringWriter();
-		PrintWriter pw = new PrintWriter(sw);
-		status.getException().printStackTrace(pw);
-		String exception = sw.toString();
+		StringWriter stringWriter = new StringWriter();
+		PrintWriter printWriter = new PrintWriter(stringWriter);
+		status.getException().printStackTrace(printWriter);
+		String exception = stringWriter.toString();
 
 		// check whether the plugin belongs to wso2.developerstudio
 		if (status.getSeverity() == IStatus.ERROR && plugin.contains("org.wso2.developerstudio")) {

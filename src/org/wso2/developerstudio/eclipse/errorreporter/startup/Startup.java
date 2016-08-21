@@ -38,7 +38,7 @@ public class Startup implements IStartup {
 		// attach a listener to the eclipse error log
 		listener = new LogListener();
 		Platform.addLogListener(listener);
-		System.out.println("Early startup");
+
 	}
 
 	/**

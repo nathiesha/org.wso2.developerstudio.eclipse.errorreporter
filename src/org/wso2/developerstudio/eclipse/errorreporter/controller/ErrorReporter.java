@@ -48,7 +48,7 @@ public class ErrorReporter {
 
 	private int userResponse;
 	private String errorMessage;
-	private String response;
+	private String response="";
 	private String id;
 	private String key;
 
@@ -68,9 +68,10 @@ public class ErrorReporter {
 	public void reportError() {
 
 		init();
-		userResponse = openErrorDialog();
+
 		switch (userResponse) {
 
+		//If user press OK and selected the radio button-publish in Jira
 		case 100:
 			try {
 				remotePublisher = new RemoteServerPublisher(errorReportInformation);
@@ -88,7 +89,8 @@ public class ErrorReporter {
 
 			}
 			break;
-
+		
+		//If user press OK and selected the radio button-publish in Jira and Email
 		case 200:
 			try {
 				remotePublisher = new RemoteServerPublisher(errorReportInformation);
@@ -130,6 +132,7 @@ public class ErrorReporter {
 		textReportGenerator.createReport(errorReportInformation);
 		errorMessage = textReportGenerator.getTextString();
 
+		userResponse = openErrorDialog();
 	}
 
 	/**
@@ -197,12 +200,17 @@ public class ErrorReporter {
 					
 					//extract the project key and id from json response
 					JSONReader reader = new JSONReader();
+					
+					//response is passed to json reader only if its a json string
+					if(response.startsWith("{"))
+					{
 					id = reader.getJsonId(response);
 					key = reader.getJsonKey(response);
 					
 					//use that id as file name and store the file
 					FilePublisher filePublisher = new FilePublisher(key, id);
 					filePublisher.publish(textReportGenerator);
+					}
 
 				} catch (Exception e) {
 
@@ -233,19 +241,23 @@ public class ErrorReporter {
 			protected IStatus run(IProgressMonitor monitor) {
 
 				//publish the error in Jira
-				response = publishJira();
-				
-				//extract the project key and id from json response
-				JSONReader reader = new JSONReader();
-				id = reader.getJsonId(response);
-				key = reader.getJsonKey(response);
+//				response = publishJira();
+//				
+//				//extract the project key and id from json response
+//				JSONReader reader = new JSONReader();
+//				//response is passed to json reader only if its a json string
+//				if(response.startsWith("{"))
+//				{
+//					id = reader.getJsonId(response);
+//					key = reader.getJsonKey(response);
+//				
+//				//use that id as file name and store the file
+//				FilePublisher filePublisher = new FilePublisher(key, id);
+//				filePublisher.publish(textReportGenerator);
+//				}
 				
 				//send the email
-				sendEmail();
-				
-				//use that id as file name and store the file
-				FilePublisher nw = new FilePublisher(key, id);
-				nw.publish(textReportGenerator); 
+				sendEmail(); 
 
 				return Status.OK_STATUS;
 			}
@@ -268,6 +280,8 @@ public class ErrorReporter {
 		String key;
 		
 		//number of plugins related to the error
+		if(errorReportInformation.getPackageKey()!=null)
+		{
 		int keyNo = errorReportInformation.getPackageKey().size();
 
 		//if none of the plugins extended are related to the eror, uses the default project key
@@ -277,6 +291,7 @@ public class ErrorReporter {
 
 		}
 
+		}
 		//else make issue posts for each  project in Jira
 		else {
 			for (Map.Entry<String, String> entry : errorReportInformation.getPackageKey().entrySet()) {

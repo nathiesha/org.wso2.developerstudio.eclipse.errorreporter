@@ -23,6 +23,6 @@ package org.wso2.developerstudio.eclipse.errorreporter.constants;
  */
 public class DeafultPreferences {
 
-	public static final String SERVER_URL = "http://test4475-jira-publisher-test-1-0-0.wso2apps.com/publish";
+	//public static final String SERVER_URL = "http://test4475-jira-publisher-test-1-0-0.wso2apps.com/publish";
 	public static final String PROJECT_KEY = "TOOLS";
 }

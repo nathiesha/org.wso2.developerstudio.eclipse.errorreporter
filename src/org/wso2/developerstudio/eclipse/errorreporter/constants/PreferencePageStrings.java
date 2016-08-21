@@ -29,8 +29,8 @@ public class PreferencePageStrings {
 	// group labels
 	public static final String CONTACT_INFO_GROUP = "Contact Information";
 	public static final String SEND_OPTIONS_GROUP = "Sending Options";
-	public static final String GMAIL_USER_CRED = "Gmail - Credentials";
-	public static final String JIRA_USER_CRED = "Jira - Credentials";
+	public static final String GMAIL_USER_CRED = "Gmail - Information";
+	public static final String JIRA_USER_CRED = "Jira - Information";
 
 	// contact information labels
 	public static final String NAME = "NAME";
@@ -58,7 +58,7 @@ public class PreferencePageStrings {
 
 	// remote server - Email labels
 	public static final String EMAIL_SERVER_URL = "EMAIL_URL";
-	public static final String EMAIL_SERVER_URL_S = "Remote Email Publisher URL:";
+	public static final String EMAIL_SERVER_URL_S = "Remote Email URL:";
 	public static final String REC_EMAIL = "REC EMAIL";
-	public static final String REC_EMAIL_S = "Recipient Email Address:";
+	public static final String REC_EMAIL_S = "Recipient Email:";
 }

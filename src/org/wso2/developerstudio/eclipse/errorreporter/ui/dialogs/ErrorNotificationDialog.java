@@ -28,6 +28,8 @@ import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
@@ -46,7 +48,9 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.PreferencesUtil;
+import org.wso2.developerstudio.eclipse.errorreporter.Activator;
 import org.wso2.developerstudio.eclipse.errorreporter.constants.DialogBoxLabels;
+import org.wso2.developerstudio.eclipse.errorreporter.constants.PreferencePageStrings;
 import org.wso2.developerstudio.eclipse.errorreporter.constants.ProjectConstants;
 
 /**
@@ -161,6 +165,22 @@ public class ErrorNotificationDialog extends ErrorDialog {
 			}
 
 		});
+		
+		 Activator.getDefault().getPreferenceStore()
+        .addPropertyChangeListener(new IPropertyChangeListener() {
+
+		@Override
+		public void propertyChange(PropertyChangeEvent event) {
+			 if (event.getProperty() == PreferencePageStrings.SEND_OPTIONS) {
+	            	System.out.println("changed");
+	            	update();
+			
+	} }
+
+		private void update() {
+			// TODO Auto-generated method stub
+			
+		}});
 
 		// create a link to edit prefernces
 		final Link link = new Link(parent, SWT.NONE);

@@ -41,9 +41,11 @@ import org.wso2.developerstudio.eclipse.errorreporter.templates.ErrorReportInfor
 public class RemoteServerPublisher {
 
 	private HttpURLConnection connectionJira;
-	private String urlParametersJira;
-	private String query;
 	private HttpURLConnection connectionEmail;
+	
+	private String urlParametersJira;
+	private String queryJira;
+	private String queryEmail;
 	private JSONObject json;
 	ErrorReportInformation errorReportInformation;
 
@@ -76,7 +78,7 @@ public class RemoteServerPublisher {
 
 		// create the query for the POST request
 		String charset = java.nio.charset.StandardCharsets.UTF_8.name();
-		query = String.format("urlParams=%s", URLEncoder.encode(urlParametersJira, charset));
+		queryJira = String.format("urlParams=%s", URLEncoder.encode(urlParametersJira, charset));
 
 		// get the server URL from preference page
 		String remoteURL = Activator.getDefault().getPreferenceStore().getString(PreferencePageStrings.SERVER_URL);
@@ -85,7 +87,7 @@ public class RemoteServerPublisher {
 		// Create connection
 		connectionJira = (HttpURLConnection) url.openConnection();
 		connectionJira.setRequestMethod("POST");
-		connectionJira.setRequestProperty("Content-Length", Integer.toString(query.getBytes().length));
+		connectionJira.setRequestProperty("Content-Length", Integer.toString(queryJira.getBytes().length));
 		connectionJira.setRequestProperty("Content-Language", "en-US");
 		connectionJira.setRequestProperty("Accept-Charset", charset);
 		connectionJira.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=" + charset);
@@ -111,7 +113,7 @@ public class RemoteServerPublisher {
 
 			// Send request
 			DataOutputStream outputStream = new DataOutputStream(connectionJira.getOutputStream());
-			outputStream.writeBytes(query);
+			outputStream.writeBytes(queryJira);
 			outputStream.close();
 
 			// Get Response
@@ -170,16 +172,17 @@ public class RemoteServerPublisher {
 		//get the remote server URL from the preferences page
 		String emailUrl = Activator.getDefault().getPreferenceStore().getString(PreferencePageStrings.EMAIL_SERVER_URL);
 		URL url = new URL(emailUrl);
+		
 
 		//create the query to be posted in web service
 		String charset = java.nio.charset.StandardCharsets.UTF_8.name();
-		String query = String.format("recmail=%s&body=%s", URLEncoder.encode(recEmail, charset),
+		queryEmail = String.format("recmail=%s&body=%s", URLEncoder.encode(recEmail, charset),
 				URLEncoder.encode(body, charset));
 
 		// Create connection
 		connectionEmail = (HttpURLConnection) url.openConnection();
 		connectionEmail.setRequestMethod("POST");
-		connectionEmail.setRequestProperty("Content-Length", Integer.toString(query.getBytes().length));
+		connectionEmail.setRequestProperty("Content-Length", Integer.toString(queryEmail.getBytes().length));
 		connectionEmail.setRequestProperty("Content-Language", "en-US");
 		connectionEmail.setRequestProperty("Accept-Charset", charset);
 		connectionEmail.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=" + charset);
@@ -205,9 +208,8 @@ public class RemoteServerPublisher {
 			initEmail(recEmail, body);
 			
 			// Send request
-			DataOutputStream outputStream;
-			outputStream = new DataOutputStream(connectionEmail.getOutputStream());
-			outputStream.writeBytes(query);
+			DataOutputStream outputStream = new DataOutputStream(connectionEmail.getOutputStream());
+			outputStream.writeBytes(queryEmail);
 			outputStream.close();
 
 			// Get Response

@@ -34,7 +34,6 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
 		store.setDefault(PreferencePageStrings.JIRA, true);
 		store.setDefault(PreferencePageStrings.EMAIL, false);
-		store.setDefault(PreferencePageStrings.SERVER_URL, DeafultPreferences.SERVER_URL);
 		store.setDefault(PreferencePageStrings.PROJECT_KEY, DeafultPreferences.PROJECT_KEY);
 
 	}

@@ -110,9 +110,11 @@ public class ReportArchive extends TitleAreaDialog {
 		String[] titles = { ReportArchiveLabels.TABLE_LABEL_1, ReportArchiveLabels.TABLE_LABEL_2,
 				ReportArchiveLabels.TABLE_LABEL_3, ReportArchiveLabels.TABLE_LABEL_4 };
 
+        GridData gridData = new GridData(470,200);
+
 		// Create a multiple-line text field
-		final Text text = new Text(container, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
-		text.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
+		final Text text = new Text(container, SWT.MULTI|SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
+		text.setLayoutData(gridData);
 
 		// create a context menu option for each item-Inquire status
 		final Menu contextMenu = new Menu(table);
@@ -165,18 +167,20 @@ public class ReportArchive extends TitleAreaDialog {
 			@Override
 			public void handleEvent(Event event) {
 
-				// get file name and fil content
+				// get file name and fill content
 				String file = getFileName(table);
+				if(file!="")
+				{
 				String content = (getContent(file));
 
 				// display the contet in the text area
 				text.setText(content);
-
+				
 				TableItem[] selection = table.getSelection();
 				if (selection.length != 0 && (event.button == 3)) {
 					contextMenu.setVisible(true);
 				}
-
+				}
 			}
 		});
 
@@ -207,14 +211,13 @@ public class ReportArchive extends TitleAreaDialog {
 		String status = "";
 
 		// get remote server url from preferences page
-		String targetURL = Activator.getDefault().getPreferenceStore().getString(PreferencePageStrings.STATUS_URL) + id;
+		String targetURL = Activator.getDefault().getPreferenceStore().getString(PreferencePageStrings.STATUS_URL);
+		String jsonResponse = IssueStatusChecker.executeGet(targetURL,id);
 
-		String jsonResponse = IssueStatusChecker.executeGet(targetURL);
-
-		if (jsonResponse != "Error") {
+		if (jsonResponse != "Error" && jsonResponse.startsWith("{")) {
 			// extract the status from the JSON response
 			status = IssueStatusChecker.getIssueStatus(jsonResponse);
-
+ 
 		}
 
 		else {
@@ -252,6 +255,7 @@ public class ReportArchive extends TitleAreaDialog {
 			// get the file name of the selected table item
 			filePath = System.getProperty("user.dir") + "\\" + ProjectConstants.ERROR_REPORT_DIRECTORY + "\\" + fileName
 					+ ".txt";
+			
 		}
 
 		return filePath;

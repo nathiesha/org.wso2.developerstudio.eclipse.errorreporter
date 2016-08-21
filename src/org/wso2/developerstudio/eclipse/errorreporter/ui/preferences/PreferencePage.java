@@ -77,23 +77,23 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 		serverInfoGroup.setText(PreferencePageStrings.JIRA_USER_CRED);
 		gmailInfoGroup.setText(PreferencePageStrings.GMAIL_USER_CRED);
 
-		addField(new StringFieldEditor(PreferencePageStrings.NAME, PreferencePageStrings.NAME_S, userInfoGroup));
-		addField(new StringFieldEditor(PreferencePageStrings.EMAIL_USER, PreferencePageStrings.EMAIL_USER_S, userInfoGroup));
-		addField(new StringFieldEditor(PreferencePageStrings.ORGANIZATION, PreferencePageStrings.ORGANIZATION_S, userInfoGroup));
+		addField(new StringFieldEditor(PreferencePageStrings.NAME, PreferencePageStrings.NAME_S,55, userInfoGroup));
+		addField(new StringFieldEditor(PreferencePageStrings.EMAIL_USER, PreferencePageStrings.EMAIL_USER_S,55, userInfoGroup));
+		addField(new StringFieldEditor(PreferencePageStrings.ORGANIZATION, PreferencePageStrings.ORGANIZATION_S, 55, userInfoGroup));
 
 		addField(new RadioGroupFieldEditor(PreferencePageStrings.SEND_OPTIONS, PreferencePageStrings.SEND_OPTIONS_S, 1,
 				new String[][] { { PreferencePageStrings.JIRA_S, PreferencePageStrings.JIRA },
 						{ PreferencePageStrings.EMAIL_S, PreferencePageStrings.EMAIL } },
 				sendOptionsGroup));
 
-		addField(new StringFieldEditor(PreferencePageStrings.SERVER_URL, PreferencePageStrings.SERVER_URL_S, serverInfoGroup));
-		addField(new StringFieldEditor(PreferencePageStrings.PROJECT_KEY, PreferencePageStrings.PROJECT_KEY_S, serverInfoGroup));
-		addField(new StringFieldEditor(PreferencePageStrings.STATUS_URL, PreferencePageStrings.STATUS_URL_S, serverInfoGroup));
+		addField(new StringFieldEditor(PreferencePageStrings.SERVER_URL, PreferencePageStrings.SERVER_URL_S,50, serverInfoGroup));
+		addField(new StringFieldEditor(PreferencePageStrings.PROJECT_KEY, PreferencePageStrings.PROJECT_KEY_S,50, serverInfoGroup));
+		addField(new StringFieldEditor(PreferencePageStrings.STATUS_URL, PreferencePageStrings.STATUS_URL_S,50, serverInfoGroup));
 		
-		addField(new StringFieldEditor(PreferencePageStrings.EMAIL_SERVER_URL, PreferencePageStrings.EMAIL_SERVER_URL_S,
+		addField(new StringFieldEditor(PreferencePageStrings.EMAIL_SERVER_URL, PreferencePageStrings.EMAIL_SERVER_URL_S,50,
 				gmailInfoGroup));
-		addField(new StringFieldEditor(PreferencePageStrings.REC_EMAIL, PreferencePageStrings.REC_EMAIL_S, gmailInfoGroup));
+		addField(new StringFieldEditor(PreferencePageStrings.REC_EMAIL, PreferencePageStrings.REC_EMAIL_S,50, gmailInfoGroup));
 
+	
 	}
-
 }

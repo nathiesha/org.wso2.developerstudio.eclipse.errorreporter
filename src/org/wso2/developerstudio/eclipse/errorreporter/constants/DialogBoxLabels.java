@@ -27,7 +27,7 @@ public class DialogBoxLabels {
 	//ErrorNotificationDialog labels
 	public static final String NESTING_INDENT = " ";
 	public static final String DIALOG_TITLE = "A problem was detected";
-	public static final String DIALOG_MESSAGE = "An unexpected error occured. Please press send to report the error to the development team";
+	public static final String DIALOG_MESSAGE = "An unexpected error occured. Please press OK to report the error to the development team.";
 	public static final int DISPLAY_MASK = 0xFFFF;
 	
 	public static final String SENDING_OPTIONS_LABEL = "Select sending option: ";

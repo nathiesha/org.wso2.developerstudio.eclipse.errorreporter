@@ -21,7 +21,7 @@ public class ReportArchiveLabels {
 	
 	public static final String DIALOG_BOX_TITLE = "Issue status";
 	public static final String REPORT_ARCHIVE_TITLE = "Error Report Archive";
-	public static final String REPORT_ARCHIVE_MESSAGE = "This windows displays the errors published to Jira";
+	public static final String REPORT_ARCHIVE_MESSAGE = "This windows displays the errors published in Jira.";
 	
 	public static final String TABLE_LABEL_1 = "Error Report ID";
 	public static final String TABLE_LABEL_2 = "ID";

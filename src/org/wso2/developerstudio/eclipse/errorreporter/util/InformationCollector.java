@@ -90,10 +90,10 @@ public class InformationCollector {
 		errorReportInformation.setException((Exception) status.getException());
 
 		// to convert the exception to string format
-		StringWriter sw = new StringWriter();
-		PrintWriter pw = new PrintWriter(sw);
-		errorReportInformation.getException().printStackTrace(pw);
-		errorReportInformation.setExceptionS(sw.toString());
+		StringWriter stringWriter = new StringWriter();
+		PrintWriter printWriter = new PrintWriter(stringWriter);
+		errorReportInformation.getException().printStackTrace(printWriter);
+		errorReportInformation.setExceptionS(stringWriter.toString());
 
 	}
 
@@ -157,6 +157,9 @@ public class InformationCollector {
 	private static void getPackageKeyInfo() {
 
 		Map<String, String> packageKeyAll = ExtensionKeyReader.getKeys();
+		
+		if(packageKeyAll.size()>0)
+		{
 		Map<String, String> packageKeyRelavant = new HashMap<String, String>();
 
 		
@@ -178,8 +181,9 @@ public class InformationCollector {
 			}
 
 		}
-
+		
 		errorReportInformation.setPackageKey(packageKeyRelavant);
+		}
 
 	}
 
